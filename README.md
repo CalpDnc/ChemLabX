@@ -1,16 +1,16 @@
 # ChemLabX
 
-Maarif modeline uygun, lise ogrencileri (9-12. sinif) icin **ticari olmayan** kimya egitim platformu.
+Maarif modeline uygun, lise öğrencileri (9-12. sınıf) için **ticari olmayan** kimya eğitim platformu.
 
-## Ozellikler
+## Özellikler
 
-- **Periyodik Cetvel** - 118 element, ptable.com referansli standart duzen
-- **Bilesik Olusturucu** - Temel molekul/bag kavramlari
-- **Sanal Deneyler** - Minimal, guvenli simulasyonlar
-- **Quizler** - Ders pekistirme amacli
-- **Video Cozumler** - Sinif seviyesine gore
+- **Periyodik Cetvel** - 118 element, ptable.com referanslı standart düzen
+- **Bilesik Olusturucu** - Temel molekül/bağ kavramları
+- **Sanal Deneyler** - Minimal, güvenli simülasyonlar
+- **Quizler** - Ders pekiştirme amaçlı
+- **Video Cozumler** - Sınıf seviyesine göre
 
-## Dosya Yapisi
+## Dosya Yapısı
 
 ChemLabX/
 - index.html (Ana sayfa)
@@ -25,11 +25,11 @@ ChemLabX/
 - data/quizzes.json (Quiz sorulari)
 - scripts/validate-elements-json.js (Dogrulayici)
 
-## Kullanim
+## Kullanım
 
 python -m http.server 8000
 node scripts/validate-elements-json.js
 
 ## Lisans
 
-Yalnizca egitim amacli kullanim. Ticari kullanim yasaktir. 
+Yalnizca eğitim amacli kullanım. Ticari kullanım yasaktır. 
