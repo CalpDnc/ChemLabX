@@ -1,0 +1,158 @@
+/* ChemLabX Design System - CSS Değişkenleri */
+
+/* Renk Paleti */
+:root {
+  /* Main Brand Colors */
+  --primary-blue: #2C5AA0;        /* Trustworthy academic blue */
+  --primary-green: #4A7C59;       /* Natural, science-related green */
+  --accent-blue: #5B9BD5;         /* Light, readable blue for links */
+
+  /* Neutral Backgrounds */
+  --bg-primary: #FFFFFF;          /* Clean white for main content */
+  --bg-secondary: #F8F9FA;        /* Very light gray for sections */
+  --bg-tertiary: #E9ECEF;         /* Subtle gray for cards/borders */
+
+  /* Text Colors */
+  --text-primary: #212529;        /* Dark gray for main text */
+  --text-secondary: #6C757D;      /* Medium gray for secondary text */
+  --text-muted: #ADB5BD;          /* Light gray for muted text */
+
+  /* Border and Line Colors */
+  --border-light: #DEE2E6;        /* Light borders */
+  --border-medium: #CED4DA;       /* Medium borders for focus states */
+
+  /* Status Colors - Subtle and Professional */
+  --success: #28A745;            /* Soft green for correct answers */
+  --warning: #FFC107;            /* Muted yellow for warnings */
+  --error: #DC3545;              /* Soft red for errors */
+  --info: #17A2B8;               /* Calm blue for information */
+
+  /* Interactive States */
+  --hover-bg: #F1F3F4;           /* Very subtle hover background */
+  --active-bg: #E3F2FD;          /* Light blue for active states */
+  --focus-ring: #90CAF9;         /* Accessible focus ring */
+
+  /* Shadows - Minimal and Subtle */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Tipografi */
+:root {
+  --font-primary: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+:root {
+  --text-xs: 0.75rem;    /* 12px - Small labels */
+  --text-sm: 0.875rem;   /* 14px - Secondary text */
+  --text-base: 1rem;     /* 16px - Body text */
+  --text-lg: 1.125rem;   /* 18px - Large body text */
+  --text-xl: 1.25rem;    /* 20px - Small headings */
+  --text-2xl: 1.5rem;    /* 24px - Medium headings */
+  --text-3xl: 1.875rem;  /* 30px - Large headings */
+  --text-4xl: 2.25rem;   /* 36px - Page titles */
+}
+
+:root {
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+}
+
+:root {
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+}
+
+/* Boşluk */
+:root {
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+}
+
+:root {
+  --radius-sm: 0.125rem;   /* 2px - Small elements */
+  --radius-md: 0.25rem;    /* 4px - Buttons, inputs */
+  --radius-lg: 0.5rem;     /* 8px - Cards, modals */
+  --radius-xl: 0.75rem;    /* 12px - Large containers */
+}
+
+:root {
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+}
+
+:root {
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ============================================
+   DARK MODE - Karanlık Mod
+   ============================================ */
+[data-theme="dark"] {
+  /* Backgrounds - daha koyu ve zengin */
+  --bg-primary: #0f1419;
+  --bg-secondary: #1a2332;
+  --bg-tertiary: #253450;
+  
+  /* Text Colors - daha parlak */
+  --text-primary: #f0f0f5;
+  --text-secondary: #b0b0c0;
+  --text-muted: #808090;
+  
+  /* Borders */
+  --border-light: #374556;
+  --border-medium: #4a5d7a;
+  
+  /* Interactive */
+  --hover-bg: #2a3a52;
+  --active-bg: #2a5aa8;
+  
+  /* Shadows - daha belirgin */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Sistem karanlık mod tercihi */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a2332;
+    --bg-tertiary: #253450;
+    --text-primary: #f0f0f5;
+    --text-secondary: #b0b0c0;
+    --text-muted: #808090;
+    --border-light: #374556;
+    --border-medium: #4a5d7a;
+    --hover-bg: #2a3a52;
+    --active-bg: #2a5aa8;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.6);
+  }
+}

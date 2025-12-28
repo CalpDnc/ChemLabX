@@ -1,0 +1,45 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="molGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="atomGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="atomGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Molecular structure -->>
+  <!-- Bonds -->
+  <line x1="6" y1="12" x2="12" y2="6" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  <line x1="12" y1="6" x2="18" y2="12" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  <line x1="18" y1="12" x2="12" y2="18" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  <line x1="12" y1="18" x2="6" y2="12" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  <line x1="6" y1="12" x2="18" y2="12" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  <line x1="12" y1="6" x2="12" y2="18" stroke="url(#molGradient)" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
+  
+  <!-- Atoms -->
+  <circle cx="12" cy="6" r="3" fill="url(#atomGradient1)" filter="url(#glow)"/>
+  <circle cx="18" cy="12" r="3" fill="url(#atomGradient2)" filter="url(#glow)"/>
+  <circle cx="12" cy="18" r="3" fill="url(#atomGradient1)" filter="url(#glow)"/>
+  <circle cx="6" cy="12" r="3" fill="url(#atomGradient2)" filter="url(#glow)"/>
+  <circle cx="12" cy="12" r="2.5" fill="url(#molGradient)" filter="url(#glow)"/>
+  
+  <!-- Atom labels -->
+  <text x="12" y="8" text-anchor="middle" font-size="5" font-weight="bold" fill="white">C</text>
+  <text x="18" y="14" text-anchor="middle" font-size="5" font-weight="bold" fill="white">H</text>
+  <text x="12" y="20" text-anchor="middle" font-size="5" font-weight="bold" fill="white">O</text>
+  <text x="6" y="14" text-anchor="middle" font-size="5" font-weight="bold" fill="white">N</text>
+</svg>

@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Sanal Deneyler</title>
+  <meta name="description" content="Güvenli ve eğitim odaklı sanal kimya deneyleri - Maarif modeline uygun">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ChemLabX - Sanal Deneyler">
+  <meta property="og:description" content="Güvenli ve eğitim odaklı sanal kimya deneyleri - Maarif modeline uygun">
+  <meta property="og:image" content="./assets/logos/logo-academic.svg">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#667eea">
+  
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  
+  <style>
+    /* Sınıf Seçici Tabs */
+    .grade-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* Hero */
+    .hero-experiments {
+      margin: var(--space-6) 0 var(--space-4);
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-experiments::after {
+      content: '';
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
+      top: -120px;
+      right: -120px;
+    }
+
+    .hero-experiments h1 {
+      font-size: 2.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-experiments p {
+      max-width: 780px;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      margin: 1.5rem 0 2.5rem;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      transition: border var(--transition-normal), box-shadow var(--transition-normal);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+    }
+
+    .level-filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .level-chip {
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .level-chip:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      background: white;
+    }
+
+    .level-chip.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+    }
+
+    .grade-tab {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .grade-tab:hover {
+      border-color: var(--primary-blue);
+      background: var(--hover-bg);
+    }
+
+    .grade-tab.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+
+    .grade-tab .grade-count {
+      background: rgba(0,0,0,0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+    }
+
+    .grade-tab.active .grade-count {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Sınıf Bölümleri */
+    .grade-section {
+      display: none;
+    }
+
+    .grade-section.active {
+      display: block;
+    }
+
+    .grade-header {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--bg-secondary), white);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .grade-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .grade-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Deney kartları grid düzeni */
+    .experiment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    /* Deney kartı temel stil */
+    .experiment-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .experiment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-color: var(--primary-blue);
+    }
+
+    .experiment-image {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      position: relative;
+    }
+
+    .experiment-image.chemistry { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .experiment-image.physics { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .experiment-image.biology { background: linear-gradient(135deg, #10b981, #059669); }
+    .experiment-image.earth { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .experiment-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.9);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .experiment-content {
+      padding: 1.25rem;
+    }
+
+    .experiment-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .experiment-description {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .experiment-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .experiment-level {
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+
+    .experiment-level.beginner { background: #dcfce7; color: #166534; }
+    .experiment-level.intermediate { background: #fef3c7; color: #92400e; }
+    .experiment-level.advanced { background: #fee2e2; color: #991b1b; }
+
+    /* Modal */
+    .experiment-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .experiment-modal.active {
+      display: flex;
+    }
+
+    .experiment-modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      width: 95%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Kademeli Görsel Adımlar (Stepper) */
+    .visual-stepper {
+      margin: 1rem 0 1.25rem 0;
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.08));
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 1rem;
+    }
+    .vs-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1rem;
+      align-items: center;
+    }
+    .vs-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--muted-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      min-height: 140px;
+    }
+    .visual-emoji { font-size: 3rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2)); }
+    .vs-text h5 { margin: 0 0 0.25rem 0; font-size: 1.05rem; }
+    .vs-text p { margin: 0; opacity: 0.9; }
+    .vs-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .vs-btn {
+      background: white;
+      border: 1px solid var(--border-light);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .vs-btn:hover { background: var(--muted-bg); transform: translateY(-1px); }
+    .vs-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .vs-progress {
+      height: 6px;
+      background: var(--muted-bg);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+    .vs-progress > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #60a5fa, #34d399); transition: width 0.25s ease; }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 0.25rem;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    /* Simülasyon Alanı */
+    .simulation-area {
+      background: #1a1a2e;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .simulation-canvas {
+      width: 100%;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .simulation-controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sim-btn {
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .sim-btn.primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .sim-btn.primary:hover {
+      background: #2563eb;
+    }
+
+    .sim-btn.secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .sim-btn.secondary:hover {
+      background: #d1d5db;
+    }
+
+    .sim-btn.success {
+      background: #10b981;
+      color: white;
+    }
+
+    .sim-btn.danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* Simülasyon Elementleri */
+    .beaker {
+      width: 120px;
+      height: 150px;
+      border: 4px solid #60a5fa;
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      position: relative;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .beaker-liquid {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #3b82f6;
+      border-radius: 0 0 16px 16px;
+      transition: all 0.5s ease;
+    }
+
+    .bubbles {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .bubble {
+      width: 10px;
+      height: 10px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      position: absolute;
+      animation: rise 2s infinite;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+    }
+
+    /* Adımlar */
+    .experiment-steps {
+      margin-top: 1.5rem;
+    }
+
+    .experiment-steps h4 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .step-content h5 {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .step-content p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* Bilgi Kutuları */
+    .info-box {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+    }
+
+    .info-box.objectives {
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+    }
+
+    .info-box.safety {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+    }
+
+    .info-box h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-box ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    .info-box li {
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    /* Slider ve Input */
+    .sim-slider {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+
+    .sim-value {
+      text-align: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .sim-label {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      text-align: center;
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .grade-tabs {
+        gap: 0.25rem;
+      }
+
+      .grade-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .experiment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .simulation-area {
+        padding: 1rem;
+        min-height: 250px;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      .experiment-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+      }
+
+      .experiment-image {
+        height: 160px;
+      }
+    }
+    
+    /* ========== DARK MODE ========== */
+    [data-theme="dark"] .filter-bar {
+      background: #1a2332;
+      border-color: #374556;
+    }
+    
+    [data-theme="dark"] .search-input {
+      background: #253450;
+      border-color: #374556;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .search-input::placeholder {
+      color: #808090;
+    }
+    
+    [data-theme="dark"] .level-chip {
+      background: #253450;
+      border-color: #374556;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .level-chip:hover {
+      background: #2a3f5f;
+      border-color: #667eea;
+      color: #90caf9;
+    }
+    
+    [data-theme="dark"] .grade-tab {
+      background: #1a2332;
+      border-color: #374556;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .grade-tab:hover {
+      background: #253450;
+      border-color: #667eea;
+    }
+    
+    [data-theme="dark"] .grade-tab.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: transparent;
+    }
+    
+    [data-theme="dark"] .grade-header {
+      background: linear-gradient(135deg, #1a2332, #253450);
+      border-left-color: #667eea;
+    }
+    
+    [data-theme="dark"] .grade-header h2 {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .experiment-card {
+      background: #1a2332;
+      border-color: #374556;
+    }
+    
+    [data-theme="dark"] .experiment-card:hover {
+      background: #253450;
+      border-color: #667eea;
+    }
+    
+    [data-theme="dark"] .experiment-title {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .experiment-description {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .experiment-meta {
+      color: #808090;
+    }
+    
+    [data-theme="dark"] .experiment-modal-content {
+      background: #1a2332;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .modal-header {
+      background: #1a2332;
+      border-bottom-color: #374556;
+    }
+    
+    [data-theme="dark"] .modal-title {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .modal-close {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .modal-close:hover {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .visual-stepper {
+      background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.1));
+      border-color: #374556;
+    }
+    
+    [data-theme="dark"] .vs-visual {
+      background: #253450;
+      border-color: #374556;
+    }
+    
+    [data-theme="dark"] .vs-text h5 {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .vs-text p {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .vs-btn {
+      background: #253450;
+      border-color: #374556;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .vs-btn:hover {
+      background: #2a3f5f;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .vs-progress {
+      background: #253450;
+    }
+    
+    [data-theme="dark"] .sim-btn.secondary {
+      background: #253450;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .sim-btn.secondary:hover {
+      background: #2a3f5f;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link">Bileşikler</a>
+        <a href="experiments.html" class="nav-link active">Deneyler</a>
+        <a href="quizzes.html" class="nav-link">Quizler</a>
+        <a href="videos.html" class="nav-link">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    
+    <!-- Başlık -->
+    <section class="hero-experiments">
+      <h1>🔬 Sanal Kimya Deneyleri</h1>
+      <p>MEB müfredatına uygun, sınıf bazlı interaktif deneyler. Gerçek simülasyon, adım adım rehber ve güvenlik notlarıyla.</p>
+      <div class="hero-badges">
+        <span class="hero-badge">🛡️ Güvenli simülasyon</span>
+        <span class="hero-badge">📚 32+ deney</span>
+        <span class="hero-badge">⏱️ 10-30 dk rehberler</span>
+        <span class="hero-badge">🎯 Hedef odaklı adımlar</span>
+      </div>
+    </section>
+
+    <!-- Arama & Seviye filtreleri -->
+    <div class="filter-bar">
+      <input id="experiment-search" class="search-input" type="search" placeholder="Deney ara: ör. titrasyon, gaz yasaları, molekül geometrisi..." aria-label="Deneylerde ara">
+      <div class="level-filters" role="group" aria-label="Seviye filtreleri">
+        <button class="level-chip active" data-level-filter="all">Tümü</button>
+        <button class="level-chip" data-level-filter="beginner">Başlangıç</button>
+        <button class="level-chip" data-level-filter="intermediate">Orta</button>
+        <button class="level-chip" data-level-filter="advanced">İleri</button>
+      </div>
+    </div>
+
+    <!-- Sınıf Seçici -->
+    <div class="grade-tabs">
+      <button class="grade-tab active" data-grade="9">
+        📗 9. Sınıf <span class="grade-count">8</span>
+      </button>
+      <button class="grade-tab" data-grade="10">
+        📘 10. Sınıf <span class="grade-count">8</span>
+      </button>
+      <button class="grade-tab" data-grade="11">
+        📙 11. Sınıf <span class="grade-count">8</span>
+      </button>
+      <button class="grade-tab" data-grade="12">
+        📕 12. Sınıf <span class="grade-count">8</span>
+      </button>
+    </div>
+
+    <!-- 9. SINIF DENEYLERİ -->
+    <div class="grade-section active" data-grade="9">
+      <div class="grade-header">
+        <h2>📗 9. Sınıf Deneyleri</h2>
+        <p>Kimyanın temel kavramları: Madde, atom, periyodik tablo ve karışımlar</p>
+      </div>
+      <div class="experiment-grid">
+        <div class="experiment-card" data-experiment="matter-states">
+          <div class="experiment-image chemistry"><span>🧊</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Maddenin Halleri</h3>
+            <p class="experiment-description">Katı, sıvı ve gaz hallerini simüle edin. Tanecik hareketlerini gözlemleyin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>10 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="atom-model">
+          <div class="experiment-image chemistry"><span>⚛️</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Atom Modelleri</h3>
+            <p class="experiment-description">Dalton'dan Modern atom modeline kadar tüm modelleri keşfedin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="electron-config">
+          <div class="experiment-image chemistry"><span>🔵</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Elektron Dizilimi</h3>
+            <p class="experiment-description">Elementlerin elektron dizilimini interaktif olarak oluşturun.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>12 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="periodic-trends-9">
+          <div class="experiment-image chemistry"><span>📊</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Periyodik Özellikler</h3>
+            <p class="experiment-description">Atom yarıçapı, iyonlaşma enerjisi ve elektronegatiflik trendleri.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="mixture-separation">
+          <div class="experiment-image chemistry"><span>🧫</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Karışımları Ayırma</h3>
+            <p class="experiment-description">Süzme, damıtma, kristallendirme yöntemlerini uygulayın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="density">
+          <div class="experiment-image physics"><span>⚖️</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Yoğunluk Deneyi</h3>
+            <p class="experiment-description">Farklı maddelerin yoğunluklarını ölçün ve karşılaştırın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>10 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="compound-element">
+          <div class="experiment-image chemistry"><span>🔗</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Element ve Bileşik</h3>
+            <p class="experiment-description">Element ve bileşik arasındaki farkları keşfedin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>12 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="physical-chemical">
+          <div class="experiment-image chemistry"><span>🔄</span><span class="experiment-badge">9. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Fiziksel ve Kimyasal Değişim</h3>
+            <p class="experiment-description">İki değişim türünü deneylerle ayırt edin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. SINIF DENEYLERİ -->
+    <div class="grade-section" data-grade="10">
+      <div class="grade-header">
+        <h2>📘 10. Sınıf Deneyleri</h2>
+        <p>Kimyasal bağlar, tepkimeler ve stokiyometri</p>
+      </div>
+      <div class="experiment-grid">
+        <div class="experiment-card" data-experiment="ionic-bond">
+          <div class="experiment-image chemistry"><span>🧲</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">İyonik Bağ Oluşumu</h3>
+            <p class="experiment-description">Metal ve ametaller arasında elektron transferini gözlemleyin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="covalent-bond">
+          <div class="experiment-image chemistry"><span>🔗</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Kovalent Bağ</h3>
+            <p class="experiment-description">Elektronların paylaşımını ve molekül oluşumunu simüle edin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="balancing">
+          <div class="experiment-image chemistry"><span>⚖️</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Denklem Denkleştirme</h3>
+            <p class="experiment-description">Kimyasal denklemleri interaktif olarak denkleştirin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="mol-concept">
+          <div class="experiment-image chemistry"><span>🔢</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Mol Kavramı</h3>
+            <p class="experiment-description">Avogadro sayısı ve mol hesaplamalarını öğrenin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>18 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="limiting-reagent">
+          <div class="experiment-image chemistry"><span>🧪</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Sınırlayıcı Bileşen</h3>
+            <p class="experiment-description">Tepkimelerde sınırlayıcı bileşeni belirlemeyi öğrenin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="gas-laws">
+          <div class="experiment-image physics"><span>💨</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Gaz Yasaları</h3>
+            <p class="experiment-description">Boyle, Charles ve ideal gaz yasalarını simüle edin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="solution-prep">
+          <div class="experiment-image chemistry"><span>🧴</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Çözelti Hazırlama</h3>
+            <p class="experiment-description">Belirli derişimde çözelti hazırlama tekniklerini öğrenin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level beginner">Başlangıç</span>
+              <span>15 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="reaction-types">
+          <div class="experiment-image chemistry"><span>🔥</span><span class="experiment-badge">10. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Tepkime Türleri</h3>
+            <p class="experiment-description">Sentez, ayrışma, yanma ve yer değiştirme tepkimelerini inceleyin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. SINIF DENEYLERİ -->
+    <div class="grade-section" data-grade="11">
+      <div class="grade-header">
+        <h2>📙 11. Sınıf Deneyleri</h2>
+        <p>Modern atom teorisi, gazlar, çözeltiler ve tepkime hızı</p>
+      </div>
+      <div class="experiment-grid">
+        <div class="experiment-card" data-experiment="orbital">
+          <div class="experiment-image chemistry"><span>🌀</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Orbital ve Kuantum Sayıları</h3>
+            <p class="experiment-description">s, p, d orbitallerini 3D görselleştirin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="molecular-geometry">
+          <div class="experiment-image chemistry"><span>🔷</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Molekül Geometrisi (VSEPR)</h3>
+            <p class="experiment-description">Molekül şekillerini VSEPR teorisi ile tahmin edin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>30 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="intermolecular">
+          <div class="experiment-image chemistry"><span>🤝</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Moleküller Arası Kuvvetler</h3>
+            <p class="experiment-description">Van der Waals, dipol-dipol ve hidrojen bağlarını keşfedin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="reaction-rate">
+          <div class="experiment-image chemistry"><span>⏱️</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Tepkime Hızı</h3>
+            <p class="experiment-description">Sıcaklık, derişim ve katalizörün tepkime hızına etkisi.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="equilibrium">
+          <div class="experiment-image chemistry"><span>⚖️</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Kimyasal Denge</h3>
+            <p class="experiment-description">Le Chatelier ilkesi ve denge sabiti hesaplamaları.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>30 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="solubility">
+          <div class="experiment-image chemistry"><span>💧</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Çözünürlük Dengesi</h3>
+            <p class="experiment-description">Çözünürlük çarpımı (Kçç) hesaplamalarını yapın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="colligative">
+          <div class="experiment-image chemistry"><span>🌡️</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Koligatif Özellikler</h3>
+            <p class="experiment-description">Kaynama noktası yükselmesi ve donma noktası alçalması.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="enthalpy">
+          <div class="experiment-image chemistry"><span>🔥</span><span class="experiment-badge">11. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Entalpi ve Hess Yasası</h3>
+            <p class="experiment-description">Tepkime ısılarını ölçün ve Hess yasasını uygulayın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>30 dk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. SINIF DENEYLERİ -->
+    <div class="grade-section" data-grade="12">
+      <div class="grade-header">
+        <h2>📕 12. Sınıf Deneyleri</h2>
+        <p>Asit-baz, elektrokimya ve organik kimya</p>
+      </div>
+      <div class="experiment-grid">
+        <div class="experiment-card" data-experiment="acid-base">
+          <div class="experiment-image chemistry"><span>🧪</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Asit-Baz Titrasyonu</h3>
+            <p class="experiment-description">pH metre ile titrasyon yapın ve eşdeğerlik noktasını bulun.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="buffer">
+          <div class="experiment-image chemistry"><span>🛡️</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Tampon Çözeltiler</h3>
+            <p class="experiment-description">Tampon çözelti hazırlayın ve pH değişimini gözlemleyin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="electrolysis">
+          <div class="experiment-image chemistry"><span>⚡</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Elektroliz</h3>
+            <p class="experiment-description">Suyun ve tuzlu suyun elektrolizini gerçekleştirin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="galvanic-cell">
+          <div class="experiment-image chemistry"><span>🔋</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Galvanik Pil</h3>
+            <p class="experiment-description">Farklı metallerle pil yapın ve potansiyel farkını ölçün.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>30 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="redox">
+          <div class="experiment-image chemistry"><span>🔄</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Redoks Tepkimeleri</h3>
+            <p class="experiment-description">Yükseltgenme-indirgenme tepkimelerini denkleştirin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="organic-groups">
+          <div class="experiment-image biology"><span>🧬</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Fonksiyonel Gruplar</h3>
+            <p class="experiment-description">Alkol, aldehit, keton, karboksilli asit ve esterleri tanıyın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="polymerization">
+          <div class="experiment-image biology"><span>🔗</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Polimerizasyon</h3>
+            <p class="experiment-description">Ekleme ve yoğuşma polimerizasyonunu simüle edin.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level intermediate">Orta</span>
+              <span>20 dk</span>
+            </div>
+          </div>
+        </div>
+        <div class="experiment-card" data-experiment="esterification">
+          <div class="experiment-image chemistry"><span>🍎</span><span class="experiment-badge">12. Sınıf</span></div>
+          <div class="experiment-content">
+            <h3 class="experiment-title">Esterleşme</h3>
+            <p class="experiment-description">Karboksilli asit ve alkolden ester sentezi yapın.</p>
+            <div class="experiment-meta">
+              <span class="experiment-level advanced">İleri</span>
+              <span>25 dk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <!-- Deney detaylarını gösteren açılır pencere -->
+  <div class="experiment-modal" id="experiment-modal">
+    <div class="experiment-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Deney Başlığı</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Deney içeriği burada yüklenecek -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-brand-text">ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline"> Modeline Uygun Kimya Eğitim Platform</p>
+      <p class="text-xs mt-2">Bu platform ticari amaçlı değildir ve sadece eğitim amaçlı kullanılmaktadır.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Sınıf Tab Değiştirme
+    document.querySelectorAll('.grade-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.grade-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.grade-section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`.grade-section[data-grade="${tab.dataset.grade}"]`).classList.add('active');
+      });
+    });
+
+    // Arama & seviye filtresi
+    const searchInput = document.getElementById('experiment-search');
+    const levelChips = document.querySelectorAll('[data-level-filter]');
+    const experimentCards = document.querySelectorAll('.experiment-card');
+
+    const getCardLevel = (card) => {
+      const levelEl = card.querySelector('.experiment-level');
+      if (!levelEl) return 'all';
+      if (levelEl.classList.contains('beginner')) return 'beginner';
+      if (levelEl.classList.contains('intermediate')) return 'intermediate';
+      if (levelEl.classList.contains('advanced')) return 'advanced';
+      return 'all';
+    };
+
+    const applyFilters = () => {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      const activeLevel = document.querySelector('.level-chip.active')?.dataset.levelFilter || 'all';
+
+      experimentCards.forEach(card => {
+        const title = card.querySelector('.experiment-title')?.textContent.toLowerCase() || '';
+        const desc = card.querySelector('.experiment-description')?.textContent.toLowerCase() || '';
+        const cardLevel = getCardLevel(card);
+
+        const matchesLevel = activeLevel === 'all' || cardLevel === activeLevel;
+        const matchesQuery = !query || title.includes(query) || desc.includes(query);
+
+        card.style.display = (matchesLevel && matchesQuery) ? 'block' : 'none';
+      });
+    };
+
+    searchInput?.addEventListener('input', applyFilters);
+
+    levelChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        levelChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        applyFilters();
+      });
+    });
+
+    applyFilters();
+
+    // Deney Verileri (JSON'dan yüklenir)
+    let experiments = {};
+    let experimentsLoaded = false;
+
+    async function loadExperiments() {
+      try {
+        const res = await fetch('data/experiments.json', { cache: 'no-store' });
+        experiments = await res.json();
+        experimentsLoaded = true;
+        setupExperimentCards();
+      } catch (e) {
+        console.error('Deney verileri yüklenemedi', e);
+      }
+    }
+    loadExperiments();
+
+    function setupExperimentCards() {
+      document.querySelectorAll('.experiment-card').forEach(card => {
+        card.addEventListener('click', () => openExperimentModal(card.dataset.experiment));
+      });
+    }
+
+    // Stepper durumu
+    const stepperState = { steps: [], index: 0 };
+
+    function getStepVisualMarkup(step) {
+      const t = `${step.title} ${step.desc}`.toLowerCase();
+      const pick = (emoji) => `<div class="visual-emoji">${emoji}</div>`;
+      if (/terazi|kütle|tart/i.test(t)) return pick('⚖️');
+      if (/hacim|su|damla|pH/i.test(t)) return pick('💧');
+      if (/ısı|ısıt|sıcak/i.test(t)) return pick('🔥');
+      if (/karış|çöz|seyrelt/i.test(t)) return pick('🌀');
+      if (/graf|trend|periyodik/i.test(t)) return pick('📊');
+      if (/elektron|iyon|transfer/i.test(t)) return pick('⚡');
+      if (/hücre|pil|galvanik/i.test(t)) return pick('🔋');
+      if (/orbital|yörünge/i.test(t)) return pick('🌀');
+      if (/ester|asit|baz/i.test(t)) return pick('🧪');
+      return pick('🔬');
+    }
+
+    function buildStepperHTML() {
+      return `
+        <div class="visual-stepper" aria-label="Kademeli görsel anlatım">
+          <div class="vs-row">
+            <div class="vs-visual" id="vs-visual"></div>
+            <div class="vs-text">
+              <h5 id="vs-title">Adım</h5>
+              <p id="vs-desc">Açıklama</p>
+              <div class="vs-controls">
+                <button class="vs-btn" id="vs-prev">◀ Önceki</button>
+                <button class="vs-btn" id="vs-next">Sonraki ▶</button>
+                <span class="sim-label" id="vs-counter" style="margin-left: .25rem;">1/1</span>
+              </div>
+              <div class="vs-progress"><span id="vs-progress-bar"></span></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function updateStepper() {
+      const i = stepperState.index;
+      const steps = stepperState.steps;
+      if (!steps || steps.length === 0) return;
+      const step = steps[i];
+      const visual = document.getElementById('vs-visual');
+      const title = document.getElementById('vs-title');
+      const desc = document.getElementById('vs-desc');
+      const counter = document.getElementById('vs-counter');
+      const bar = document.getElementById('vs-progress-bar');
+      const prev = document.getElementById('vs-prev');
+      const next = document.getElementById('vs-next');
+      if (!visual) return;
+      visual.innerHTML = getStepVisualMarkup(step);
+      title.textContent = step.title;
+      desc.textContent = step.desc;
+      counter.textContent = `${i + 1}/${steps.length}`;
+      const pct = Math.round(((i + 1) / steps.length) * 100);
+      bar.style.width = `${pct}%`;
+      prev.disabled = i === 0;
+      next.disabled = i >= steps.length - 1;
+    }
+
+    function initStepper(exp) {
+      stepperState.steps = Array.isArray(exp.steps) ? exp.steps : [];
+      stepperState.index = 0;
+      updateStepper();
+      const prev = document.getElementById('vs-prev');
+      const next = document.getElementById('vs-next');
+      if (prev && next) {
+        prev.onclick = () => { if (stepperState.index > 0) { stepperState.index--; updateStepper(); } };
+        next.onclick = () => { if (stepperState.index < stepperState.steps.length - 1) { stepperState.index++; updateStepper(); } };
+      }
+    }
+
+    function openExperimentModal(key) {
+      const exp = experiments[key];
+      if (!exp) return;
+      modalTitle.textContent = exp.title;
+      modalBody.innerHTML = `
+        <div class="info-box objectives">
+          <h4>📚 Öğrenme Hedefleri</h4>
+          <ul>${(exp.objectives||[]).map(o => `<li>${o}</li>`).join('')}</ul>
+        </div>
+
+        ${buildStepperHTML()}
+
+        <div class="simulation-area" id="sim-area">
+          <div class="simulation-canvas" id="sim-canvas"></div>
+          <div class="simulation-controls">
+            <button class="sim-btn primary" onclick="startSimulation('${exp.simulation}')">▶ Başlat</button>
+            <button class="sim-btn secondary" onclick="resetSimulation()">↺ Sıfırla</button>
+          </div>
+        </div>
+
+        <div class="experiment-steps">
+          <h4>🔬 Deney Adımları</h4>
+          ${(exp.steps||[]).map((s, i) => `
+            <div class="step">
+              <div class="step-number">${i + 1}</div>
+              <div class="step-content">
+                <h5>${s.title}</h5>
+                <p>${s.desc}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="info-box safety">
+          <h4>⚠️ Güvenlik</h4>
+          <ul>${(exp.safety||[]).map(s => `<li>${s}</li>`).join('')}</ul>
+        </div>
+      `;
+      modal.classList.add('active');
+      initStepper(exp);
+      initSimulation(exp.simulation);
+    }
+
+    // Modal Sistemi
+    const modal = document.getElementById('experiment-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    document.getElementById('modal-close').onclick = () => modal.classList.remove('active');
+    modal.onclick = e => { if (e.target === modal) modal.classList.remove('active'); };
+
+    // Simülasyon Çekirdeği ve Geliştirmeler
+    let simInterval = null;
+    let simRunning = false;
+
+    function initSimulation(type) {
+      const canvas = document.getElementById('sim-canvas');
+      canvas.innerHTML = getSimulationHTML(type);
+      // Tip bazlı başlangıç ayarı
+      if (type === 'matter') setMatterState('solid');
+      if (type === 'gas') updateGas();
+      if (type === 'density') initDensity();
+      if (type === 'solution') initSolutionPrep();
+      if (type === 'mol') initMolConcept();
+      if (type === 'rate') initReactionRate();
+      if (type === 'equilib') initEquilibrium();
+    }
+
+    function getSimulationHTML(type) {
+      const sims = {
+        matter: `<div style="text-align:center;color:white">
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Sıcaklık:</label>
+            <input type="range" class="sim-slider" id="temp-slider" min="0" max="100" value="20" oninput="updateMatterTemp()">
+            <span class="sim-label" id="temp-label">20°C</span>
+          </div>
+          <div id="particles" style="width:240px;height:160px;border:2px solid #60a5fa;margin:0 auto;position:relative;overflow:hidden;border-radius:10px;background:rgba(255,255,255,0.05)"></div>
+          <div style="margin-top:1rem">
+            <button class="sim-btn secondary" onclick="setMatterState('solid')">🧊 Katı</button>
+            <button class="sim-btn secondary" onclick="setMatterState('liquid')">💧 Sıvı</button>
+            <button class="sim-btn secondary" onclick="setMatterState('gas')">💨 Gaz</button>
+          </div>
+          <p class="sim-label" id="state-label">Bir hal seçin</p>
+        </div>`,
+        gas: `<div style="text-align:center;color:white">
+          <div class="sim-value" id="pressure-val">P = 1.00 atm</div>
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center">
+            <label class="sim-label">Hacim:</label>
+            <input type="range" class="sim-slider" id="volume-slider" min="1" max="10" value="5" oninput="updateGas()">
+            <span class="sim-label">V: <span id="vol-val">5</span> L</span>
+          </div>
+          <div style="margin-top:1rem;position:relative;height:180px">
+            <div id="gas-container" style="width:140px;height:140px;border:3px solid #60a5fa;margin:0 auto;border-radius:10px;transition:all 0.3s;position:relative;overflow:hidden"></div>
+          </div>
+          <p class="sim-label">Boyle Yasası: P ∝ 1/V (T sabit)</p>
+        </div>`,
+        titration: `<div style="text-align:center;color:white">
+          <div style="display:flex;justify-content:center;gap:2rem;align-items:flex-end">
+            <div>
+              <div style="width:60px;height:120px;border:3px solid #60a5fa;border-top:none;border-radius:0 0 10px 10px;position:relative;background:rgba(59,130,246,0.1)">
+                <div id="base-level" style="position:absolute;bottom:0;left:0;right:0;height:80%;background:#3b82f6;border-radius:0 0 7px 7px;transition:height 0.3s"></div>
+              </div>
+              <p class="sim-label">NaOH (baz)</p>
+            </div>
+            <div>
+              <div id="flask" style="width:80px;height:100px;border:3px solid #f472b6;border-radius:0 0 40px 40px;position:relative;background:rgba(244,114,182,0.1)">
+                <div id="solution" style="position:absolute;bottom:0;left:0;right:0;height:50%;background:#f472b6;border-radius:0 0 37px 37px;transition:all 0.3s"></div>
+              </div>
+              <p class="sim-label">HCl + İndikatör</p>
+            </div>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:1rem;justify-content:center;align-items:center">
+            <button class="sim-btn primary" onclick="addDrop()">💧 Damla Ekle</button>
+            <label class="sim-label">Damla hacmi:</label>
+            <input type="range" class="sim-slider" id="drop-slider" min="1" max="5" value="2">
+            <span class="sim-label" id="ph-label">pH: <span id="ph-val">2.0</span></span>
+          </div>
+          <p class="sim-label">Eşdeğerliğe yaklaşırken renk değişimi belirginleşir</p>
+        </div>`,
+        ionic: `<div style="text-align:center;color:white">
+          <div style="display:flex;justify-content:center;gap:3rem;align-items:center;position:relative" id="ionic-atoms">
+            <div id="na-atom" style="width:60px;height:60px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;transition:all 0.5s">Na</div>
+            <div id="electron" style="width:10px;height:10px;border-radius:50%;background:#fff;position:absolute;left:50%;top:50%;opacity:0"></div>
+            <div id="cl-atom" style="width:60px;height:60px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;transition:all 0.5s">Cl</div>
+          </div>
+          <p class="sim-label" id="ionic-label" style="margin-top:1rem">Elektron transferini başlatın</p>
+        </div>`,
+        electrolysis: `<div style="text-align:center;color:white">
+          <div style="display:flex;justify-content:center;gap:1rem">
+            <div style="text-align:center">
+              <div style="width:20px;height:80px;background:#666;margin:0 auto"></div>
+              <div id="h2-bubbles" style="height:30px"></div>
+              <p class="sim-label">Katot (H₂) <span id="h2-count">0</span></p>
+            </div>
+            <div style="width:140px;height:90px;border:3px solid #60a5fa;border-radius:10px;background:rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center">
+              <span>NaCl (suda)</span>
+            </div>
+            <div style="text-align:center">
+              <div style="width:20px;height:80px;background:#666;margin:0 auto"></div>
+              <div id="cl2-bubbles" style="height:30px"></div>
+              <p class="sim-label">Anot (Cl₂) <span id="cl2-count">0</span></p>
+            </div>
+          </div>
+          <p class="sim-label" id="elec-label" style="margin-top:1rem">⚡ Akım verin</p>
+        </div>`,
+        density: `<div style="text-align:center;color:white">
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Kütle (g):</label>
+            <input type="range" class="sim-slider" id="mass-slider" min="10" max="200" value="80" oninput="updateDensity()">
+            <span class="sim-label" id="mass-label">80 g</span>
+          </div>
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Hacim (cm³):</label>
+            <input type="range" class="sim-slider" id="vol-slider-d" min="20" max="200" value="80" oninput="updateDensity()">
+            <span class="sim-label" id="vol-label-d">80 cm³</span>
+          </div>
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Su yoğunluğu (g/cm³):</label>
+            <input type="range" class="sim-slider" id="water-slider" min="0.8" max="1.2" step="0.01" value="1.00" oninput="updateDensity()">
+            <span class="sim-label" id="water-label">1.00</span>
+          </div>
+          <div style="display:flex;justify-content:center;gap:2rem;align-items:flex-end;margin-top:0.5rem">
+            <div id="tank" style="width:120px;height:160px;border:3px solid #60a5fa;border-radius:10px;background:rgba(59,130,246,0.25);position:relative;overflow:hidden">
+              <div id="object" style="width:50px;height:50px;background:#f59e0b;border-radius:8px;position:absolute;left:35px;bottom:10px;transition:bottom 0.3s, transform 0.3s"></div>
+            </div>
+            <div>
+              <div class="sim-value" id="density-val">d = 1.00 g/cm³</div>
+              <p class="sim-label" id="float-label">Durum: batıyor/yüzüyor</p>
+            </div>
+          </div>
+        </div>`,
+        solution: `<div style="text-align:center;color:white">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;max-width:420px;margin:0 auto">
+            <label class="sim-label">Hedef M (mol/L) <input type="number" id="sol-M" value="0.5" step="0.1" class="sim-input"></label>
+            <label class="sim-label">Hacim (L) <input type="number" id="sol-V" value="1.0" step="0.1" class="sim-input"></label>
+            <label class="sim-label">Molar kütle (g/mol) <input type="number" id="sol-MM" value="58.44" step="0.01" class="sim-input"></label>
+            <label class="sim-label">Saflık (%) <input type="number" id="sol-purity" value="100" step="1" class="sim-input"></label>
+          </div>
+          <div class="simulation-controls" style="margin-top:0.5rem">
+            <button class="sim-btn primary" onclick="calcSolutionPrep()">Hesapla</button>
+          </div>
+          <div style="margin-top:0.75rem">
+            <div class="sim-value" id="sol-grams">Gerekli kütle: - g</div>
+            <p class="sim-label">Adımlar: Tart → Çöz → Hacme tamamla</p>
+          </div>
+        </div>`,
+        mol: `<div style="text-align:center;color:white">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;max-width:420px;margin:0 auto">
+            <label class="sim-label">Kütle (g) <input type="number" id="mol-mass" value="10" step="0.1" class="sim-input"></label>
+            <label class="sim-label">Molar kütle (g/mol) <input type="number" id="mol-MM" value="18.015" step="0.001" class="sim-input"></label>
+          </div>
+          <div class="simulation-controls" style="margin-top:0.5rem">
+            <button class="sim-btn primary" onclick="calcMol()">Hesapla</button>
+          </div>
+          <div style="margin-top:0.75rem">
+            <div class="sim-value" id="mol-n">n = - mol</div>
+            <p class="sim-label" id="mol-N">Tanecik sayısı: -</p>
+          </div>
+        </div>`,
+        rate: `<div style="text-align:center;color:white">
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">[A] (mol/L):</label>
+            <input type="range" class="sim-slider" id="rate-A" min="0.1" max="1.0" step="0.1" value="0.5" oninput="updateRate()">
+            <span class="sim-label" id="rate-A-label">0.5</span>
+          </div>
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">T (K):</label>
+            <input type="range" class="sim-slider" id="rate-T" min="280" max="340" step="1" value="300" oninput="updateRate()">
+            <span class="sim-label" id="rate-T-label">300</span>
+          </div>
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Eₐ (kJ/mol):</label>
+            <input type="range" class="sim-slider" id="rate-Ea" min="20" max="80" step="1" value="50" oninput="updateRate()">
+            <span class="sim-label" id="rate-Ea-label">50</span>
+          </div>
+          <div class="sim-value" id="rate-k">k = - s⁻¹</div>
+          <div class="sim-value" id="rate-r">r = - mol·L⁻¹·s⁻¹</div>
+          <p class="sim-label">Arrhenius: k = A·e^(−Eₐ/RT) (A≈10⁷)</p>
+        </div>`,
+        equilib: `<div style="text-align:center;color:white">
+          <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-bottom:0.5rem">
+            <label class="sim-label">Kc:</label>
+            <input type="range" class="sim-slider" id="eq-K" min="0.1" max="10" step="0.1" value="1.0" oninput="updateEquilibrium()">
+            <span class="sim-label" id="eq-K-label">1.0</span>
+          </div>
+          <div style="display:flex;gap:2rem;justify-content:center;align-items:flex-end;margin-top:0.5rem">
+            <div style="text-align:center">
+              <div id="eq-A" style="width:60px;height:80px;background:#3b82f6;border-radius:8px"></div>
+              <p class="sim-label">[A]</p>
+            </div>
+            <div style="text-align:center">
+              <div id="eq-B" style="width:60px;height:80px;background:#f59e0b;border-radius:8px"></div>
+              <p class="sim-label">[B]</p>
+            </div>
+          </div>
+          <div class="simulation-controls" style="margin-top:0.5rem">
+            <button class="sim-btn secondary" onclick="perturbEq('A')">A ekle</button>
+            <button class="sim-btn secondary" onclick="perturbEq('B')">B ekle</button>
+          </div>
+          <p class="sim-label">Le Chatelier: Etki azaltılır, denge yeniden kurulur</p>
+        </div>`
+      };
+      return sims[type] || `<div style="text-align:center;color:white"><p style="font-size:3rem;opacity:0.5">🔬</p><p>Simülasyonu başlatın</p></div>`;
+    }
+
+    function startSimulation(type) {
+      simRunning = true;
+      if (type === 'ionic') runIonicSim();
+      else if (type === 'electrolysis') runElectrolysisSim();
+    }
+
+    function resetSimulation() {
+      simRunning = false;
+      if (simInterval) clearInterval(simInterval);
+      const canvas = document.getElementById('sim-canvas');
+      if (canvas) canvas.innerHTML = canvas.innerHTML;
+    }
+
+    // Madde Halleri (geliştirilmiş sıcaklık etkisi)
+    function updateMatterTemp() {
+      const t = Number(document.getElementById('temp-slider').value);
+      const label = document.getElementById('temp-label');
+      label.textContent = `${t}°C`;
+      // Gaz animasyon hızına etki
+      const particles = document.querySelectorAll('#particles .gas');
+      particles.forEach(p => {
+        const speed = Math.max(0.6, t / 60);
+        p.style.animationDuration = `${speed}s`;
+      });
+    }
+
+    function setMatterState(state) {
+      const container = document.getElementById('particles');
+      const label = document.getElementById('state-label');
+      if (!container) return;
+      container.innerHTML = '';
+      const colors = ['#60a5fa', '#34d399', '#f472b6', '#fbbf24'];
+      if (state === 'solid') {
+        for (let i = 0; i < 16; i++) {
+          const p = document.createElement('div');
+          p.style.cssText = `position:absolute;width:18px;height:18px;background:${colors[i%4]};border-radius:50%;left:${(i%4)*55+15}px;top:${Math.floor(i/4)*35+10}px;animation:vibrate 0.12s infinite`;
+          container.appendChild(p);
+        }
+        label.textContent = '🧊 Katı: Düzenli yapı, düşük hareketlilik';
+      } else if (state === 'liquid') {
+        for (let i = 0; i < 14; i++) {
+          const p = document.createElement('div');
+          p.style.cssText = `position:absolute;width:18px;height:18px;background:${colors[i%4]};border-radius:50%;left:${Math.random()*180+10}px;top:${Math.random()*80+60}px;animation:float 2.2s infinite ease-in-out;animation-delay:${Math.random()}s`;
+          container.appendChild(p);
+        }
+        label.textContent = '💧 Sıvı: Orta hareketlilik, akışkanlık';
+      } else {
+        for (let i = 0; i < 10; i++) {
+          const p = document.createElement('div');
+          p.className = 'gas';
+          p.style.cssText = `position:absolute;width:14px;height:14px;background:${colors[i%4]};border-radius:50%;left:${Math.random()*210}px;top:${Math.random()*140}px;animation:gas ${1+Math.random()}s infinite linear`;
+          container.appendChild(p);
+        }
+        label.textContent = '💨 Gaz: Yüksek hareketlilik, boşlukta serbest hareket';
+        updateMatterTemp();
+      }
+    }
+
+    // Gaz Yasası (Boyle)
+    function updateGas() {
+      const vol = Number(document.getElementById('volume-slider').value);
+      const pressure = (5 / vol).toFixed(2);
+      document.getElementById('vol-val').textContent = vol;
+      document.getElementById('pressure-val').textContent = `P = ${pressure} atm`;
+      const container = document.getElementById('gas-container');
+      if (container) {
+        container.style.width = (vol * 16 + 60) + 'px';
+        container.style.height = (vol * 16 + 60) + 'px';
+        // Parçacık yoğunluğu
+        container.innerHTML = '';
+        const count = Math.max(6, Math.floor(60 / vol));
+        for (let i = 0; i < count; i++) {
+          const d = document.createElement('div');
+          d.style.cssText = `width:10px;height:10px;background:#fff;border-radius:50%;position:absolute;left:${Math.random()* (container.clientWidth-10)}px;top:${Math.random()* (container.clientHeight-10)}px;opacity:0.8;animation:gas ${0.8+Math.random()}s infinite linear`;
+          container.appendChild(d);
+        }
+      }
+    }
+
+    // Titrasyon (geliştirilmiş pH eğrisi)
+    let phValue = 2.0;
+    function addDrop() {
+      const drop = Number(document.getElementById('drop-slider').value);
+      // Basit eğri: eşdeğerlik yakınında hızlı değişim
+      if (phValue < 12) {
+        const delta = phValue < 6 ? 0.2 * drop : (phValue < 7.4 ? 0.9 * drop : 0.15 * drop);
+        phValue = Math.min(phValue + delta, 12);
+        document.getElementById('ph-val').textContent = phValue.toFixed(1);
+        const solution = document.getElementById('solution');
+        const baseLevel = document.getElementById('base-level');
+        if (solution && baseLevel) {
+          const hue = phValue < 7 ? 330 : (phValue < 8.5 ? 260 : 200);
+          solution.style.background = `hsl(${hue}, 70%, 60%)`;
+          baseLevel.style.height = Math.max(80 - (phValue - 2) * 6, 10) + '%';
+        }
+      }
+    }
+
+    // İyonik Bağ (elektron animasyonu)
+    function runIonicSim() {
+      const na = document.getElementById('na-atom');
+      const cl = document.getElementById('cl-atom');
+      const e = document.getElementById('electron');
+      const label = document.getElementById('ionic-label');
+      if (!na || !cl || !e) return;
+      label.textContent = 'Elektron transfer ediliyor...';
+      e.style.opacity = '1';
+      e.style.transition = 'transform 1s ease-in-out';
+      e.style.transform = 'translateX(60px)';
+      setTimeout(() => {
+        na.innerHTML = 'Na<sup>+</sup>';
+        cl.innerHTML = 'Cl<sup>-</sup>';
+        na.style.background = '#ef4444';
+        cl.style.background = '#22c55e';
+        label.textContent = '✓ Na⁺ ve Cl⁻ oluştu. İyonik bağ kuruldu!';
+      }, 1000);
+    }
+
+    // Elektroliz (ürün sayacı)
+    function runElectrolysisSim() {
+      const label = document.getElementById('elec-label');
+      const h2Count = document.getElementById('h2-count');
+      const cl2Count = document.getElementById('cl2-count');
+      let h2 = 0, cl2 = 0;
+      if (label) label.textContent = '⚡ Elektroliz başladı...';
+      if (simInterval) clearInterval(simInterval);
+      simInterval = setInterval(() => {
+        ['h2-bubbles', 'cl2-bubbles'].forEach(id => {
+          const container = document.getElementById(id);
+          if (container && container.children.length < 5) {
+            const bubble = document.createElement('div');
+            bubble.style.cssText = `width:8px;height:8px;background:rgba(255,255,255,0.7);border-radius:50%;position:absolute;left:${Math.random()*12}px;animation:rise 1.2s forwards`;
+            container.style.position = 'relative';
+            container.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 1200);
+          }
+        });
+        h2 += 1; cl2 += 1; // görsel sayaç
+        if (h2Count) h2Count.textContent = h2;
+        if (cl2Count) cl2Count.textContent = cl2;
+      }, 350);
+    }
+
+    // Yoğunluk
+    function initDensity() { updateDensity(); }
+    function updateDensity() {
+      const m = Number(document.getElementById('mass-slider').value);
+      const V = Number(document.getElementById('vol-slider-d').value);
+      const rhoW = Number(document.getElementById('water-slider').value);
+      document.getElementById('mass-label').textContent = `${m} g`;
+      document.getElementById('vol-label-d').textContent = `${V} cm³`;
+      document.getElementById('water-label').textContent = rhoW.toFixed(2);
+      const rho = m / V;
+      document.getElementById('density-val').textContent = `d = ${rho.toFixed(2)} g/cm³`;
+      const float = rho < rhoW;
+      document.getElementById('float-label').textContent = float ? 'Durum: ✅ Yüzüyor' : 'Durum: ❌ Batıyor';
+      const obj = document.getElementById('object');
+      if (obj) obj.style.bottom = float ? '80px' : '10px';
+    }
+
+    // Çözelti hazırlama
+    function initSolutionPrep() {}
+    function calcSolutionPrep() {
+      const M = Number(document.getElementById('sol-M').value);
+      const V = Number(document.getElementById('sol-V').value);
+      const MM = Number(document.getElementById('sol-MM').value);
+      const purity = Math.max(1, Number(document.getElementById('sol-purity').value));
+      const gramsPure = M * V * MM;
+      const gramsToWeigh = gramsPure * (100 / purity);
+      document.getElementById('sol-grams').textContent = `Gerekli kütle: ${gramsToWeigh.toFixed(2)} g (${purity}% saflık)`;
+    }
+
+    // Mol kavramı
+    function initMolConcept() {}
+    function calcMol() {
+      const m = Number(document.getElementById('mol-mass').value);
+      const MM = Number(document.getElementById('mol-MM').value);
+      const n = m / MM;
+      const N = n * 6.022e23;
+      document.getElementById('mol-n').textContent = `n = ${n.toFixed(3)} mol`;
+      document.getElementById('mol-N').textContent = `Tanecik sayısı: ${N.toExponential(2)}`;
+    }
+
+    // Tepkime hızı
+    function initReactionRate() { updateRate(); }
+    function updateRate() {
+      const A = 1e7; // s⁻¹
+      const R = 8.314; // J·mol⁻¹·K⁻¹
+      const concA = Number(document.getElementById('rate-A').value);
+      const T = Number(document.getElementById('rate-T').value);
+      const Ea_kJ = Number(document.getElementById('rate-Ea').value);
+      document.getElementById('rate-A-label').textContent = concA.toFixed(1);
+      document.getElementById('rate-T-label').textContent = T.toFixed(0);
+      document.getElementById('rate-Ea-label').textContent = Ea_kJ.toFixed(0);
+      const Ea = Ea_kJ * 1000;
+      const k = A * Math.exp(-Ea / (R * T));
+      const r = k * concA; // 1. mertebe
+      document.getElementById('rate-k').textContent = `k = ${k.toExponential(2)} s⁻¹`;
+      document.getElementById('rate-r').textContent = `r = ${r.toExponential(2)} mol·L⁻¹·s⁻¹`;
+    }
+
+    // Denge
+    let eqA = 1.0, eqB = 1.0; // başlangıç derişimleri
+    function initEquilibrium() { eqA = 1.0; eqB = 1.0; updateEquilibrium(); }
+    function updateEquilibrium() {
+      const K = Number(document.getElementById('eq-K').value);
+      document.getElementById('eq-K-label').textContent = K.toFixed(1);
+      // Basit denge: A ⇌ B, K = [B]/[A]
+      const total = eqA + eqB;
+      eqB = Math.min(total, (K * total) / (1 + K));
+      eqA = total - eqB;
+      const hA = Math.max(30, eqA * 80);
+      const hB = Math.max(30, eqB * 80);
+      document.getElementById('eq-A').style.height = `${hA}px`;
+      document.getElementById('eq-B').style.height = `${hB}px`;
+    }
+    function perturbEq(side) {
+      if (side === 'A') eqA += 0.2; else eqB += 0.2;
+      updateEquilibrium();
+    }
+    
+    // Karanlık Mod
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('chemlabx-theme');
+    if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+    themeToggle.addEventListener('click', function() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('chemlabx-theme', newTheme);
+    });
+
+    // Mobil Menü
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mainNav = document.getElementById('mainNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    mobileMenuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mainNav.classList.toggle('active');
+      mobileOverlay.classList.toggle('active');
+    });
+    mobileOverlay.addEventListener('click', function() {
+      mobileMenuToggle.classList.remove('active');
+      mainNav.classList.remove('active');
+      this.classList.remove('active');
+    });
+  </script>
+  
+  <style>
+    @keyframes vibrate { 0%,100%{transform:translate(0,0)} 50%{transform:translate(2px,2px)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes gas { 0%{transform:translate(0,0)} 25%{transform:translate(30px,-20px)} 50%{transform:translate(-20px,30px)} 75%{transform:translate(20px,10px)} 100%{transform:translate(0,0)} }
+    @keyframes rise { 0%{bottom:0;opacity:1} 100%{bottom:30px;opacity:0} }
+  </style>
+</body>
+</html>

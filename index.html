@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Kimya Eğitim Platformu</title>
+  <meta name="description" content="Maarif modeline uygun, lise öğrencileri için interaktif kimya eğitim platformu">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ChemLabX - Kimya Eğitim Platformu">
+  <meta property="og:description" content="Maarif modeline uygun, lise öğrencileri için interaktif kimya eğitim platformu">
+  <meta property="og:image" content="./assets/logos/logo-academic.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#667eea">
+  
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    }
+    
+    /* Dark Mode Background */
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+    }
+
+    .hero-section {
+      padding: var(--space-8);
+      margin: var(--space-8) 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      pointer-events: none;
+      animation: pulse 15s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .hero-section h1, .hero-section p {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .hero-section .btn {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-section .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-grid .card {
+      background: white;
+      border: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Dark Mode Cards */
+    [data-theme="dark"] .feature-grid .card {
+      background: #1a2332;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .feature-grid .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-grid .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-grid .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+    }
+    
+    [data-theme="dark"] .feature-grid .card:hover {
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .feature-grid .card .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .feature-grid .card .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .content-grid > div {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(102, 126, 234, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    /* Dark Mode Content Grid */
+    [data-theme="dark"] .content-grid > div {
+      background: linear-gradient(135deg, #1a2332 0%, #253450 100%);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .content-grid > div:hover {
+      border-color: rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    [data-theme="dark"] .content-grid > div:hover {
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+    
+    /* Dark Mode Maarif Modeli Kapsamı Bölümü */
+    [data-theme="dark"] .maarif-section {
+      background: linear-gradient(135deg, #1a2332 0%, #253450 100%) !important;
+      border-color: rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .feature-grid h3 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    @media (min-width: 1920px) {
+      .hero-section { padding: var(--space-12); margin: var(--space-10) 0; }
+      .hero-section h1 { font-size: 3rem; }
+      .hero-section p { font-size: 1.3rem; max-width: 900px; }
+      .feature-grid { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 2.5rem; }
+      .content-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+    }
+    @media (min-width: 2400px) {
+      .hero-section { padding: var(--space-16); margin: var(--space-12) 0; }
+      .hero-section h1 { font-size: 3.5rem; }
+      .hero-section p { font-size: 1.5rem; max-width: 1100px; }
+      .feature-grid { grid-template-columns: repeat(4, 1fr); gap: 3rem; }
+      .content-grid { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 2.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hero-section { padding: var(--space-6); margin: var(--space-4) 0; }
+      .feature-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .content-grid { grid-template-columns: 1fr; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center" style="text-decoration: none;">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40" style="filter: none;">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link active">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link">Bileşikler</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+        <a href="quizzes.html" class="nav-link">Quizler</a>
+        <a href="videos.html" class="nav-link">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    
+    <!-- Hero -->
+    <section class="hero-section text-center">
+      <h1 class="text-4xl font-bold mb-4">ChemLabX'e Hoş Geldiniz</h1>
+      <p class="text-lg mb-6 max-w-2xl mx-auto">
+        Maarif modeline uygun, lise öğrencileri için geliştirilmiş interaktif kimya eğitim platformu.
+        Sınıf içi öğrenmeyi destekleyen, dikkat dağıtmayan bir öğrenme ortamı.
+      </p>
+      <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
+        <a href="elements.html" class="btn btn-primary" style="background: white; color: #667eea; border: 2px solid white;">
+          <img src="./assets/icons/periodic-table.svg" alt="" width="20" height="20" class="mr-2">
+          Periyodik Cetvele Başla
+        </a>
+        <a href="experiments.html" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; backdrop-filter: blur(10px);">
+          <img src="./assets/icons/experiment.svg" alt="" width="20" height="20" class="mr-2">
+          Deneyleri İncele
+        </a>
+      </div>
+    </section>
+
+    <!-- Özellikler -->
+    <section class="feature-grid">
+      <!-- Kart 1: Periyodik Cetvel -->
+      <div class="card">
+        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+          <img src="./assets/icons/periodic-table.svg" alt="" width="24" height="24" style="filter: brightness(0) invert(1);">
+        </div>
+        <h3 class="text-xl font-semibold mb-3">İnteraktif Periyodik Cetvel</h3>
+        <p class="text-secondary mb-4">
+          Maarif modeline uygun element bilgileri, atom yapısı ve periyodik özellikler.
+          Öğrencilerin keşfetmesi için tasarlanmış basit arayüz.
+        </p>
+        <a href="elements.html" class="btn btn-secondary">Keşfet</a>
+      </div>
+
+      <!-- Kart 2: Sanal Deneyler -->
+      <div class="card">
+        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+          <img src="./assets/icons/experiment.svg" alt="" width="24" height="24" style="filter: brightness(0) invert(1);">
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Sanal Deneyler</h3>
+        <p class="text-secondary mb-4">
+          Güvenli ve eğitim odaklı sanal kimya deneyleri. Gerçek laboratuvar ortamını
+          simüle eden, öğrenmeyi destekleyen interaktif uygulamalar.
+        </p>
+        <a href="experiments.html" class="btn btn-secondary">Deneylere Bak</a>
+      </div>
+
+      <!-- Kart 3: Bileşik Oluşturucu -->
+      <div class="card">
+        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+          <img src="./assets/icons/molecule.svg" alt="" width="24" height="24" style="filter: brightness(0) invert(1);">
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Bileşik Oluşturucu</h3>
+        <p class="text-secondary mb-4">
+          Temel bağlanma kavramlarını anlamak için basit molekül ve bileşik oluşturma aracı.
+          Görsel öğrenmeyi destekleyen, adım adım rehberli arayüz.
+        </p>
+        <a href="compounds.html" class="btn btn-secondary">Oluşturmaya Başla</a>
+      </div>
+
+      <!-- Kart 4: Eğitim Quizleri -->
+      <div class="card">
+        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+          <img src="./assets/icons/quiz.svg" alt="" width="24" height="24">
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Eğitim Quizleri</h3>
+        <p class="text-secondary mb-4">
+          Dersleri pekiştirmek için hazırlanmış kısa ve odaklı quizler.
+          Anında geri bildirim ile öğrenme sürecini destekler.
+        </p>
+        <a href="quizzes.html" class="btn btn-secondary">Quiz Çöz</a>
+      </div>
+    </section>
+
+    <!-- Eğitim İçeriği Önizleme -->
+    <!-- Maarif modeli kapsam konuları -->
+    <section class="card m-8 maarif-section" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%); border: 1px solid rgba(102, 126, 234, 0.15); box-shadow: 0 8px 30px rgba(0,0,0,0.08);">
+      <h2 class="text-2xl font-bold mb-6 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Maarif Modeli Kapsamı</h2>
+      <div class="content-grid">
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">⚛️</span>
+          </div>
+          <h4 class="font-semibold mb-2">Atom Yapısı</h4>
+          <p class="text-sm text-secondary">Proton, nötron, elektron ve kuantum modeli</p>
+        </div>
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">📊</span>
+          </div>
+          <h4 class="font-semibold mb-2">Periyodik Özellikler</h4>
+          <p class="text-sm text-secondary">Grup ve periyot trendleri, element aileleri</p>
+        </div>
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">🔗</span>
+          </div>
+          <h4 class="font-semibold mb-2">Bağlanma</h4>
+          <p class="text-sm text-secondary">İyonik, kovalent ve metalik bağlar</p>
+        </div>
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">⚡</span>
+          </div>
+          <h4 class="font-semibold mb-2">Kimya Reaksiyonları</h4>
+          <p class="text-sm text-secondary">Denge, hız, enerji değişimleri</p>
+        </div>
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">🧪</span>
+          </div>
+          <h4 class="font-semibold mb-2">Asit-Baz</h4>
+          <p class="text-sm text-secondary">pH, tampon çözeltiler, titrasyon</p>
+        </div>
+        <div class="text-center">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <span style="color: white; font-weight: bold; font-size: 1.2rem;">🧬</span>
+          </div>
+          <h4 class="font-semibold mb-2">Organik Kimya</h4>
+          <p class="text-sm text-secondary">Temel fonksiyonel gruplar ve reaksiyonlar</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <!-- Telif hakkı ve bilgilendirme metni -->
+  <footer class="footer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: 4rem;">
+    <div class="container footer-content" style="color: white;">
+      <p class="footer-brand-text" style="color: white;">
+        ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline footer-logo-white"> Modeline Uygun Kimya Eğitim Platform
+      </p>
+      <p class="text-xs mt-2" style="opacity: 0.9;">Bu platform ticari amaçlı değildir ve sadece eğitim amaçlı kullanılmaktadır.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Karanlık Mod
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('chemlabx-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+    themeToggle.addEventListener('click', function() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('chemlabx-theme', newTheme);
+    });
+
+    // Mobil Menü
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mainNav = document.getElementById('mainNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    
+    mobileMenuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mainNav.classList.toggle('active');
+      mobileOverlay.classList.toggle('active');
+    });
+    
+    mobileOverlay.addEventListener('click', function() {
+      mobileMenuToggle.classList.remove('active');
+      mainNav.classList.remove('active');
+      this.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "ChemLabX - Kimya Eğitim Platformu",
+  "short_name": "ChemLabX",
+  "description": "Maarif modeline uygun, lise öğrencileri için interaktif kimya eğitim platformu",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/logos/logo-minimal.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "science"],
+  "lang": "tr"
+}

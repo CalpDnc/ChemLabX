@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Sayfa Bulunamadı | ChemLabX</title>
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  <style>
+    .error-page {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .error-code {
+      font-size: 8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .error-molecule {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .error-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+    .error-description {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .error-btn {
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .error-btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .error-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    .error-btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-medium);
+    }
+    .error-btn-secondary:hover {
+      background: var(--hover-bg);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center" style="text-decoration: none;">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40">
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="error-page">
+    <div class="error-molecule">⚗️</div>
+    <div class="error-code">404</div>
+    <h1 class="error-title">Bu Element Bulunamadı!</h1>
+    <p class="error-description">
+      Aradığınız sayfa periyodik cetvelde yok gibi görünüyor. 
+      Belki yanlış bir formül denediniz?
+    </p>
+    <div class="error-actions">
+      <a href="index.html" class="error-btn error-btn-primary">Ana Sayfaya Dön</a>
+      <a href="elements.html" class="error-btn error-btn-secondary">Periyodik Cetvel</a>
+    </div>
+  </main>
+
+  <footer class="footer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: auto;">
+    <div class="container footer-content" style="color: white;">
+      <p style="color: white;">ChemLabX - Maarif Modeline Uygun Kimya Eğitim Platformu</p>
+    </div>
+  </footer>
+</body>
+</html>

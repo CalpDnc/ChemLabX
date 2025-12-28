@@ -1,0 +1,35 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="videoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Video screen/monitor -->
+  <rect x="2" y="4" width="20" height="14" rx="2" fill="none" stroke="url(#videoGradient)" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Screen inner gradient -->
+  <rect x="4" y="6" width="16" height="10" rx="1" fill="url(#videoGradient)" opacity="0.1"/>
+  
+  <!-- Play button circle -->
+  <circle cx="12" cy="11" r="4.5" fill="url(#playGradient)" filter="url(#shadow)"/>
+  
+  <!-- Play triangle -->
+  <path d="M 10.5 9 L 10.5 13 L 14 11 Z" fill="white"/>
+  
+  <!-- Monitor stand -->
+  <line x1="12" y1="18" x2="12" y2="20" stroke="url(#videoGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="8" y1="21" x2="16" y2="21" stroke="url(#videoGradient)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Signal waves -->
+  <path d="M 5 3 Q 4 2 3 1" stroke="url(#videoGradient)" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/>
+  <path d="M 19 3 Q 20 2 21 1" stroke="url(#videoGradient)" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/>
+</svg>

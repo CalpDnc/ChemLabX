@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Ders Anlatımları</title>
+  <meta name="description" content="Maarif modeline uygun kimya ders anlatımları - Sınıf seviyesine göre">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ChemLabX - Ders Anlatımları">
+  <meta property="og:description" content="Maarif modeline uygun kimya ders anlatımları - Sınıf seviyesine göre">
+  <meta property="og:image" content="./assets/logos/logo-academic.svg">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#667eea">
+  
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  
+  <style>
+    /* Video sayfası ana container */
+    .video-page-header {
+      text-align: center;
+      padding: var(--space-8) 0;
+      margin-bottom: var(--space-6);
+    }
+
+    .video-page-header h1 {
+      font-size: var(--text-4xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+    }
+
+    .video-page-header p {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Sınıf seçim tabları */
+    .grade-tabs {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .grade-tab {
+      padding: var(--space-3) var(--space-6);
+      border: 2px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      cursor: pointer;
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .grade-tab:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .grade-tab.active {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+      color: white;
+    }
+
+    .grade-tab .grade-number {
+      display: block;
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-1);
+    }
+
+    .grade-tab .grade-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+
+    /* Video içerik bölümleri */
+    .grade-content {
+      display: none;
+    }
+
+    .grade-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Konu başlıkları */
+    .topic-section {
+      margin-bottom: var(--space-8);
+    }
+
+    .topic-title {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .topic-title::before {
+      content: "📚";
+      font-size: 1.2em;
+    }
+
+    /* Video kartları grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-6);
+    }
+
+    /* Video kartı */
+    .video-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition-normal);
+      cursor: pointer;
+    }
+
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-blue);
+    }
+
+    /* Video thumbnail alanı */
+    .video-thumbnail {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 aspect ratio */
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      overflow: hidden;
+    }
+
+    .video-thumbnail img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-thumbnail .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      background: rgba(255, 0, 0, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .video-thumbnail .play-icon::after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 24px solid white;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      margin-left: 6px;
+    }
+
+    .video-card:hover .play-icon {
+      transform: translate(-50%, -50%) scale(1.1);
+      background: rgba(255, 0, 0, 1);
+    }
+
+    .video-duration {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Video bilgileri */
+    .video-info {
+      padding: var(--space-4);
+    }
+
+    .video-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+
+    .video-channel {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .video-channel::before {
+      content: "📺";
+      font-size: 0.9em;
+    }
+
+    .video-views {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    /* Video modal */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-modal.active {
+      display: flex;
+    }
+
+    .video-modal-content {
+      width: 90%;
+      max-width: 1200px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .video-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .video-modal-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .video-modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      transition: background var(--transition-fast);
+    }
+
+    .video-modal-close:hover {
+      background: var(--hover-bg);
+    }
+
+    .video-embed-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      background: #000;
+    }
+
+    .video-embed-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Boş durum */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-16) var(--space-8);
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: var(--text-xl);
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .empty-state p {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Link ekleme formu (yönetici için) */
+    .add-video-section {
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-top: var(--space-8);
+      text-align: center;
+    }
+
+    .add-video-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-6);
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--text-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .add-video-btn:hover {
+      background: #244A8A;
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================
+       BÖLÜM: 2K VE ÜZERİ GENİŞ EKRANLAR
+       AÇIKLAMA: WQHD (2560x1440) ve üzeri ekranlar için ölçekleme
+       ========================================================== */
+    @media (min-width: 1920px) {
+      .video-page-header {
+        padding: var(--space-10) 0;
+      }
+      
+      .video-page-header h1 {
+        font-size: 2.75rem;
+      }
+      
+      .grade-tabs {
+        gap: var(--space-4);
+      }
+      
+      .grade-tab {
+        padding: var(--space-4) var(--space-8);
+        min-width: 140px;
+      }
+      
+      .video-grid {
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: var(--space-8);
+      }
+      
+      .video-info {
+        padding: var(--space-5);
+      }
+      
+      .video-title {
+        font-size: var(--text-lg);
+      }
+      
+      .video-modal-content {
+        max-width: 1400px;
+      }
+    }
+
+    @media (min-width: 2400px) {
+      .video-page-header h1 {
+        font-size: 3.25rem;
+      }
+      
+      .video-page-header p {
+        font-size: var(--text-xl);
+        max-width: 900px;
+      }
+      
+      .grade-tab {
+        padding: var(--space-5) var(--space-10);
+        min-width: 160px;
+      }
+      
+      .grade-tab .grade-number {
+        font-size: var(--text-3xl);
+      }
+      
+      .video-grid {
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: var(--space-10);
+      }
+      
+      .topic-title {
+        font-size: var(--text-2xl);
+      }
+      
+      .video-info {
+        padding: var(--space-6);
+      }
+      
+      .video-title {
+        font-size: var(--text-xl);
+      }
+    }
+
+    /* Mobil uyumluluk */
+    @media (max-width: 768px) {
+      .grade-tabs {
+        gap: var(--space-2);
+      }
+      
+      .grade-tab {
+        padding: var(--space-2) var(--space-4);
+        min-width: 80px;
+      }
+      
+      .grade-tab .grade-number {
+        font-size: var(--text-xl);
+      }
+      
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .video-modal-content {
+        width: 95%;
+        margin: var(--space-4);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center" style="text-decoration: none;">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link">Bileşikler</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+        <a href="quizzes.html" class="nav-link">Quizler</a>
+        <a href="videos.html" class="nav-link active">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    
+    <!-- Sayfa Başlığı -->
+    <div class="video-page-header">
+      <h1>📘 Ders Anlatımları</h1>
+      <p>Maarif müfredatına uygun, sınıf seviyesine göre düzenlenmiş kimya ders anlatımları ve soru çözümleri</p>
+    </div>
+
+    <!-- Sınıf Seçim Tabları -->
+    <div class="grade-tabs">
+      <button class="grade-tab active" data-grade="9">
+        <span class="grade-number">9</span>
+        <span class="grade-label">Sınıf</span>
+      </button>
+      <button class="grade-tab" data-grade="10">
+        <span class="grade-number">10</span>
+        <span class="grade-label">Sınıf</span>
+      </button>
+      <button class="grade-tab" data-grade="11">
+        <span class="grade-number">11</span>
+        <span class="grade-label">Sınıf</span>
+      </button>
+      <button class="grade-tab" data-grade="12">
+        <span class="grade-number">12</span>
+        <span class="grade-label">Sınıf</span>
+      </button>
+    </div>
+
+    <!-- ========== 9. SINIF İÇERİĞİ ========== -->
+    <div class="grade-content active" id="grade-9">
+      
+      <!-- Konu: Kimyanın Temel Kavramları -->
+      <div class="topic-section">
+        <h2 class="topic-title">Kimyanın Temel Kavramları</h2>
+        <div class="video-grid" id="videos-9-temel">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Atom ve Periyodik Sistem -->
+      <div class="topic-section">
+        <h2 class="topic-title">Atom ve Periyodik Sistem</h2>
+        <div class="video-grid" id="videos-9-atom">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Kimyasal Türler Arası Etkileşimler -->
+      <div class="topic-section">
+        <h2 class="topic-title">Kimyasal Türler Arası Etkileşimler</h2>
+        <div class="video-grid" id="videos-9-etkilesim">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 10. SINIF İÇERİĞİ ========== -->
+    <div class="grade-content" id="grade-10">
+      
+      <!-- Konu: Asitler ve Bazlar -->
+      <div class="topic-section">
+        <h2 class="topic-title">Asitler ve Bazlar</h2>
+        <div class="video-grid" id="videos-10-asit">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Karışımlar -->
+      <div class="topic-section">
+        <h2 class="topic-title">Karışımlar</h2>
+        <div class="video-grid" id="videos-10-karisim">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Kimyasal Tepkimeler -->
+      <div class="topic-section">
+        <h2 class="topic-title">Kimyasal Tepkimeler</h2>
+        <div class="video-grid" id="videos-10-tepkime">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 11. SINIF İÇERİĞİ ========== -->
+    <div class="grade-content" id="grade-11">
+      
+      <!-- Konu: Modern Atom Teorisi -->
+      <div class="topic-section">
+        <h2 class="topic-title">Modern Atom Teorisi</h2>
+        <div class="video-grid" id="videos-11-modern">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Gazlar -->
+      <div class="topic-section">
+        <h2 class="topic-title">Gazlar</h2>
+        <div class="video-grid" id="videos-11-gaz">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Kimyasal Tepkimelerde Enerji -->
+      <div class="topic-section">
+        <h2 class="topic-title">Kimyasal Tepkimelerde Enerji</h2>
+        <div class="video-grid" id="videos-11-enerji">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Tepkime Hızları -->
+      <div class="topic-section">
+        <h2 class="topic-title">Tepkime Hızları</h2>
+        <div class="video-grid" id="videos-11-hiz">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== 12. SINIF İÇERİĞİ ========== -->
+    <div class="grade-content" id="grade-12">
+      
+      <!-- Konu: Kimyasal Denge -->
+      <div class="topic-section">
+        <h2 class="topic-title">Kimyasal Denge</h2>
+        <div class="video-grid" id="videos-12-denge">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Çözünürlük Dengesi -->
+      <div class="topic-section">
+        <h2 class="topic-title">Çözünürlük Dengesi</h2>
+        <div class="video-grid" id="videos-12-cozunurluk">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Elektrokimya -->
+      <div class="topic-section">
+        <h2 class="topic-title">Elektrokimya</h2>
+        <div class="video-grid" id="videos-12-elektro">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+      <!-- Konu: Organik Kimya -->
+      <div class="topic-section">
+        <h2 class="topic-title">Organik Kimya</h2>
+        <div class="video-grid" id="videos-12-organik">
+          <!-- Videolar JavaScript ile yüklenecek -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Modal -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <h3 class="video-modal-title" id="modalTitle">Video Başlığı</h3>
+        <button class="video-modal-close" onclick="closeVideoModal()">&times;</button>
+      </div>
+      <div class="video-embed-container">
+        <iframe 
+          id="videoIframe"
+          src="" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-brand-text">ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline"> Modeline Uygun Kimya Eğitim Platform</p>
+      <p class="text-xs mt-2">Lise öğrencileri için interaktif öğrenme - Bilimsel keşiflerin kapısı</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // ==========================================================
+    // VİDEO VERİLERİ
+    // AÇIKLAMA: Buraya YouTube video linklerini ekleyin
+    // FORMAT: { videoId: 'YOUTUBE_ID', title: 'Başlık', channel: 'Kanal', duration: 'Süre' }
+    // ==========================================================
+    
+    const videoData = {
+      // ===== 9. SINIF VİDEOLARI =====
+      "9-temel": [
+        { videoId: "dQw4w9WgXcQ", title: "Kimyanın Temel Kavramları - Giriş", channel: "Örnek Kanal", duration: "15:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Madde ve Özellikleri", channel: "Örnek Kanal", duration: "12:45" },
+        { videoId: "dQw4w9WgXcQ", title: "Element, Bileşik ve Karışımlar", channel: "Örnek Kanal", duration: "18:20" },
+      ],
+      "9-atom": [
+        { videoId: "dQw4w9WgXcQ", title: "Atom Modelleri ve Tarihçesi", channel: "Örnek Kanal", duration: "20:15" },
+        { videoId: "dQw4w9WgXcQ", title: "Periyodik Tablo Nasıl Okunur?", channel: "Örnek Kanal", duration: "14:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Elektron Dizilimi ve Değerlik", channel: "Örnek Kanal", duration: "16:45" },
+      ],
+      "9-etkilesim": [
+        { videoId: "dQw4w9WgXcQ", title: "İyonik ve Kovalent Bağlar", channel: "Örnek Kanal", duration: "22:10" },
+        { videoId: "dQw4w9WgXcQ", title: "Moleküller Arası Etkileşimler", channel: "Örnek Kanal", duration: "17:55" },
+      ],
+      
+      // ===== 10. SINIF VİDEOLARI =====
+      "10-asit": [
+        { videoId: "dQw4w9WgXcQ", title: "Asit-Baz Tanımları", channel: "Örnek Kanal", duration: "19:30" },
+        { videoId: "dQw4w9WgXcQ", title: "pH ve pOH Hesaplamaları", channel: "Örnek Kanal", duration: "24:15" },
+        { videoId: "dQw4w9WgXcQ", title: "Nötralleşme Tepkimeleri", channel: "Örnek Kanal", duration: "16:40" },
+      ],
+      "10-karisim": [
+        { videoId: "dQw4w9WgXcQ", title: "Homojen ve Heterojen Karışımlar", channel: "Örnek Kanal", duration: "13:25" },
+        { videoId: "dQw4w9WgXcQ", title: "Çözeltiler ve Derişim", channel: "Örnek Kanal", duration: "21:50" },
+      ],
+      "10-tepkime": [
+        { videoId: "dQw4w9WgXcQ", title: "Kimyasal Denklem Denkleştirme", channel: "Örnek Kanal", duration: "18:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Mol Kavramı ve Hesaplamaları", channel: "Örnek Kanal", duration: "25:15" },
+      ],
+      
+      // ===== 11. SINIF VİDEOLARI =====
+      "11-modern": [
+        { videoId: "dQw4w9WgXcQ", title: "Kuantum Sayıları", channel: "Örnek Kanal", duration: "23:40" },
+        { videoId: "dQw4w9WgXcQ", title: "Orbital Kavramı ve Şekilleri", channel: "Örnek Kanal", duration: "19:55" },
+        { videoId: "dQw4w9WgXcQ", title: "Elektron Spin ve Pauli İlkesi", channel: "Örnek Kanal", duration: "17:30" },
+      ],
+      "11-gaz": [
+        { videoId: "dQw4w9WgXcQ", title: "İdeal Gaz Yasası (PV=nRT)", channel: "Örnek Kanal", duration: "22:15" },
+        { videoId: "dQw4w9WgXcQ", title: "Kısmi Basınç ve Dalton Yasası", channel: "Örnek Kanal", duration: "18:40" },
+      ],
+      "11-enerji": [
+        { videoId: "dQw4w9WgXcQ", title: "Entalpi ve Hess Yasası", channel: "Örnek Kanal", duration: "26:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Bağ Enerjisi Hesaplamaları", channel: "Örnek Kanal", duration: "20:15" },
+      ],
+      "11-hiz": [
+        { videoId: "dQw4w9WgXcQ", title: "Tepkime Hızı ve Faktörleri", channel: "Örnek Kanal", duration: "21:45" },
+        { videoId: "dQw4w9WgXcQ", title: "Aktivasyon Enerjisi", channel: "Örnek Kanal", duration: "16:20" },
+      ],
+      
+      // ===== 12. SINIF VİDEOLARI =====
+      "12-denge": [
+        { videoId: "dQw4w9WgXcQ", title: "Kimyasal Denge ve Kc Hesabı", channel: "Örnek Kanal", duration: "28:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Le Chatelier İlkesi", channel: "Örnek Kanal", duration: "22:45" },
+        { videoId: "dQw4w9WgXcQ", title: "Denge Sabiti Problemleri", channel: "Örnek Kanal", duration: "35:20" },
+      ],
+      "12-cozunurluk": [
+        { videoId: "dQw4w9WgXcQ", title: "Çözünürlük Çarpımı (Kçç)", channel: "Örnek Kanal", duration: "24:15" },
+        { videoId: "dQw4w9WgXcQ", title: "Ortak İyon Etkisi", channel: "Örnek Kanal", duration: "19:30" },
+      ],
+      "12-elektro": [
+        { videoId: "dQw4w9WgXcQ", title: "Elektrokimyasal Piller", channel: "Örnek Kanal", duration: "27:40" },
+        { videoId: "dQw4w9WgXcQ", title: "Elektroliz ve Faraday Yasaları", channel: "Örnek Kanal", duration: "23:55" },
+        { videoId: "dQw4w9WgXcQ", title: "Standart Elektrot Potansiyeli", channel: "Örnek Kanal", duration: "21:10" },
+      ],
+      "12-organik": [
+        { videoId: "dQw4w9WgXcQ", title: "Hidrokarbonlar: Alkan, Alken, Alkin", channel: "Örnek Kanal", duration: "32:30" },
+        { videoId: "dQw4w9WgXcQ", title: "Fonksiyonel Gruplar", channel: "Örnek Kanal", duration: "28:45" },
+        { videoId: "dQw4w9WgXcQ", title: "İzomeri Türleri", channel: "Örnek Kanal", duration: "25:20" },
+      ],
+    };
+
+    // ==========================================================
+    // FONKSİYONLAR
+    // ==========================================================
+
+    // YouTube thumbnail URL'i oluştur
+    function getYouTubeThumbnail(videoId) {
+      return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    }
+
+    // Video kartı HTML'i oluştur
+    function createVideoCard(video) {
+      return `
+        <div class="video-card" onclick="openVideoModal('${video.videoId}', '${video.title.replace(/'/g, "\\'")}')">
+          <div class="video-thumbnail">
+            <img src="${getYouTubeThumbnail(video.videoId)}" alt="${video.title}" loading="lazy">
+            <div class="play-icon"></div>
+            <span class="video-duration">${video.duration}</span>
+          </div>
+          <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <div class="video-meta">
+              <span class="video-channel">${video.channel}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Boş durum HTML'i
+    function createEmptyState() {
+      return `
+        <div class="empty-state">
+          <div class="empty-state-icon">📹</div>
+          <h3>Henüz Video Eklenmemiş</h3>
+          <p>Bu konuya ait ders anlatımları yakında eklenecektir.</p>
+        </div>
+      `;
+    }
+
+    // Videoları yükle
+    function loadVideos() {
+      // Tüm video containerları için
+      Object.keys(videoData).forEach(key => {
+        const containerId = `videos-${key}`;
+        const container = document.getElementById(containerId);
+        
+        if (container) {
+          const videos = videoData[key];
+          
+          if (videos && videos.length > 0) {
+            container.innerHTML = videos.map(createVideoCard).join('');
+          } else {
+            container.innerHTML = createEmptyState();
+          }
+        }
+      });
+    }
+
+    // Sınıf sekmelerini değiştir
+    function switchGrade(grade) {
+      // Tüm tabları deaktif yap
+      document.querySelectorAll('.grade-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Tüm içerikleri gizle
+      document.querySelectorAll('.grade-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Seçilen tabı aktif yap
+      document.querySelector(`[data-grade="${grade}"]`).classList.add('active');
+      
+      // Seçilen içeriği göster
+      document.getElementById(`grade-${grade}`).classList.add('active');
+    }
+
+    // Video modalını aç
+    function openVideoModal(videoId, title) {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('videoIframe');
+      const modalTitle = document.getElementById('modalTitle');
+      
+      modalTitle.textContent = title;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+      modal.classList.add('active');
+      
+      // Arka plan scroll'u engelle
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Video modalını kapat
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('videoIframe');
+      
+      iframe.src = '';
+      modal.classList.remove('active');
+      
+      // Arka plan scroll'u aç
+      document.body.style.overflow = '';
+    }
+
+    // Sayfa yüklendiğinde çalıştır
+    document.addEventListener('DOMContentLoaded', () => {
+      // Videoları yükle
+      loadVideos();
+      
+      // Tab tıklama olayları
+      document.querySelectorAll('.grade-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          switchGrade(tab.dataset.grade);
+        });
+      });
+      
+      // Modal dışına tıklayınca kapat
+      document.getElementById('videoModal').addEventListener('click', (e) => {
+        if (e.target.classList.contains('video-modal')) {
+          closeVideoModal();
+        }
+      });
+      
+      // ESC tuşu ile modalı kapat
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeVideoModal();
+        }
+      });
+      
+      // Karanlık Mod
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('chemlabx-theme');
+      if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('chemlabx-theme', newTheme);
+      });
+
+      // Mobil Menü
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mainNav = document.getElementById('mainNav');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+      mobileMenuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        mainNav.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+      });
+      mobileOverlay.addEventListener('click', function() {
+        mobileMenuToggle.classList.remove('active');
+        mainNav.classList.remove('active');
+        this.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

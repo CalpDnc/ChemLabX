@@ -1,0 +1,482 @@
+{
+  "matter-states": {
+    "title": "Maddenin Halleri",
+    "objectives": [
+      "Katı, sıvı ve gaz hallerini tanımak",
+      "Tanecik hareketlerini anlamak",
+      "Hal değişimlerini gözlemlemek"
+    ],
+    "simulation": "matter",
+    "steps": [
+      { "title": "Katı Hal", "desc": "Tanecikler düzenli dizilmiş, titreşim hareketi yapar." },
+      { "title": "Sıvı Hal", "desc": "Tanecikler birbiri üzerinden kayar, şekil alır." },
+      { "title": "Gaz Hal", "desc": "Tanecikler hızlı ve rastgele hareket eder." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "atom-model": {
+    "title": "Atom Modelleri",
+    "objectives": [
+      "Dalton atom modelini öğrenmek",
+      "Thomson üzümlü kek modelini anlamak",
+      "Rutherford ve Bohr modellerini karşılaştırmak"
+    ],
+    "simulation": "atom",
+    "steps": [
+      { "title": "Dalton Modeli", "desc": "Atom bölünemez, içi dolu bir küredir." },
+      { "title": "Thomson Modeli", "desc": "Pozitif yük içinde elektronlar dağılmış." },
+      { "title": "Bohr Modeli", "desc": "Elektronlar belirli yörüngelerde döner." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "electron-config": {
+    "title": "Elektron Dizilimi",
+    "objectives": [
+      "Aufbau ilkesini öğrenmek",
+      "Pauli ilkesini anlamak",
+      "Hund kuralını uygulamak"
+    ],
+    "simulation": "electron",
+    "steps": [
+      { "title": "Element Seçin", "desc": "Periyodik tablodan bir element seçin." },
+      { "title": "Orbitalleri Doldurun", "desc": "Elektronları sırayla yerleştirin." },
+      { "title": "Kontrol Edin", "desc": "Dizilimin doğruluğunu kontrol edin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "periodic-trends-9": {
+    "title": "Periyodik Özellikler",
+    "objectives": [
+      "Atom yarıçapı değişimini anlamak",
+      "İyonlaşma enerjisi trendini öğrenmek",
+      "Elektronegatiflik kavramını kavramak"
+    ],
+    "simulation": "periodic",
+    "steps": [
+      { "title": "Grup İçi Trend", "desc": "Aşağı indikçe atom yarıçapı artar." },
+      { "title": "Periyot İçi Trend", "desc": "Sağa gidildikçe yarıçap azalır." },
+      { "title": "Grafik İncele", "desc": "Değişimleri grafikte gözlemleyin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "mixture-separation": {
+    "title": "Karışımları Ayırma",
+    "objectives": [
+      "Süzme yöntemini öğrenmek",
+      "Damıtma işlemini anlamak",
+      "Kristallendirmeyi uygulamak"
+    ],
+    "simulation": "separation",
+    "steps": [
+      { "title": "Karışım Hazırlayın", "desc": "Kum ve tuz karışımı oluşturun." },
+      { "title": "Süzme Yapın", "desc": "Katı maddeyi süzerek ayırın." },
+      { "title": "Buharlaştırın", "desc": "Suyu buharlaştırarak tuzu elde edin." }
+    ],
+    "safety": ["Sıcak sıvılara dikkat edin"]
+  },
+  "density": {
+    "title": "Yoğunluk Deneyi",
+    "objectives": [
+      "Yoğunluk formülünü uygulamak",
+      "Farklı maddelerin yoğunluklarını ölçmek",
+      "Batma-yüzme ilişkisini anlamak"
+    ],
+    "simulation": "density",
+    "steps": [
+      { "title": "Kütle Ölçün", "desc": "Cismin kütlesini terazide ölçün." },
+      { "title": "Hacim Belirleyin", "desc": "Su taşırma yöntemiyle hacmi bulun." },
+      { "title": "Hesaplayın", "desc": "d = m/V formülünü uygulayın." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "compound-element": {
+    "title": "Element ve Bileşik",
+    "objectives": [
+      "Element kavramını öğrenmek",
+      "Bileşik oluşumunu anlamak",
+      "İkisi arasındaki farkları kavramak"
+    ],
+    "simulation": "compound",
+    "steps": [
+      { "title": "Element İncele", "desc": "Tek tür atomdan oluşur." },
+      { "title": "Bileşik Oluştur", "desc": "Farklı atomları birleştirin." },
+      { "title": "Karşılaştır", "desc": "Özellikleri karşılaştırın." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "physical-chemical": {
+    "title": "Fiziksel ve Kimyasal Değişim",
+    "objectives": [
+      "Fiziksel değişimi tanımak",
+      "Kimyasal değişimi anlamak",
+      "İkisini ayırt edebilmek"
+    ],
+    "simulation": "changes",
+    "steps": [
+      { "title": "Fiziksel Değişim", "desc": "Buzun erimesi - madde aynı kalır." },
+      { "title": "Kimyasal Değişim", "desc": "Paslanma - yeni madde oluşur." },
+      { "title": "Belirtileri İncele", "desc": "Renk, gaz, çökelti değişimlerini gözlemleyin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "ionic-bond": {
+    "title": "İyonik Bağ Oluşumu",
+    "objectives": [
+      "Elektron transferini anlamak",
+      "Katyon ve anyon oluşumunu görmek",
+      "İyonik bileşik özelliklerini öğrenmek"
+    ],
+    "simulation": "ionic",
+    "steps": [
+      { "title": "Metal Seçin", "desc": "Na atomunu seçin (1 elektron verir)." },
+      { "title": "Ametal Seçin", "desc": "Cl atomunu seçin (1 elektron alır)." },
+      { "title": "Transfer İzleyin", "desc": "Elektron geçişini gözlemleyin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "covalent-bond": {
+    "title": "Kovalent Bağ",
+    "objectives": [
+      "Elektron paylaşımını anlamak",
+      "Tek ve çoklu bağları öğrenmek",
+      "Polar ve apolar bağları ayırt etmek"
+    ],
+    "simulation": "covalent",
+    "steps": [
+      { "title": "Atomları Seçin", "desc": "İki hidrojen atomu seçin." },
+      { "title": "Yaklaştırın", "desc": "Atomları birbirine yaklaştırın." },
+      { "title": "Bağı Gözleyin", "desc": "Ortaklaşa elektronları izleyin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "balancing": {
+    "title": "Denklem Denkleştirme",
+    "objectives": [
+      "Kütlenin korunumunu anlamak",
+      "Atom sayılarını eşitlemeyi öğrenmek",
+      "Katsayı kullanımını kavramak"
+    ],
+    "simulation": "balance",
+    "steps": [
+      { "title": "Denklemi İncele", "desc": "Reaktan ve ürünleri belirleyin." },
+      { "title": "Atomları Say", "desc": "Her iki taraftaki atom sayılarını bulun." },
+      { "title": "Katsayı Ekle", "desc": "Sayıları eşitlemek için katsayı girin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "mol-concept": {
+    "title": "Mol Kavramı",
+    "objectives": [
+      "Avogadro sayısını öğrenmek",
+      "Mol-kütle ilişkisini anlamak",
+      "Mol hesaplamalarını yapmak"
+    ],
+    "simulation": "mol",
+    "steps": [
+      { "title": "Tanecik Sayısı", "desc": "1 mol = 6.02 × 10²³ tanecik." },
+      { "title": "Mol Kütlesi", "desc": "Atom kütlesi kadar gram 1 moldür." },
+      { "title": "Hesaplama Yap", "desc": "Verilen değerlerle mol hesaplayın." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "limiting-reagent": {
+    "title": "Sınırlayıcı Bileşen",
+    "objectives": [
+      "Sınırlayıcı bileşeni belirlemeyi öğrenmek",
+      "Verim hesabı yapmak",
+      "Tepkime sonuçlarını tahmin etmek"
+    ],
+    "simulation": "limiting",
+    "steps": [
+      { "title": "Mol Hesapla", "desc": "Her reaktanın mol sayısını bulun." },
+      { "title": "Oran Karşılaştır", "desc": "Stokiyometrik orana göre karşılaştırın." },
+      { "title": "Sınırlayıcı Bul", "desc": "Önce biten maddeyi belirleyin." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "gas-laws": {
+    "title": "Gaz Yasaları",
+    "objectives": [
+      "Boyle yasasını anlamak",
+      "Charles yasasını öğrenmek",
+      "İdeal gaz denklemini uygulamak"
+    ],
+    "simulation": "gas",
+    "steps": [
+      { "title": "Boyle Yasası", "desc": "Sabit T'de P₁V₁ = P₂V₂." },
+      { "title": "Charles Yasası", "desc": "Sabit P'de V₁/T₁ = V₂/T₂." },
+      { "title": "İdeal Gaz", "desc": "PV = nRT denklemini kullanın." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "solution-prep": {
+    "title": "Çözelti Hazırlama",
+    "objectives": [
+      "Molarite hesabı yapmak",
+      "Seyreltme işlemini öğrenmek",
+      "Doğru çözelti hazırlamak"
+    ],
+    "simulation": "solution",
+    "steps": [
+      { "title": "Hesaplama", "desc": "Gerekli madde miktarını hesaplayın." },
+      { "title": "Tartım", "desc": "Hassas terazide tartın." },
+      { "title": "Çözme", "desc": "Balon jojeyle hacme tamamlayın." }
+    ],
+    "safety": ["Kimyasalları dikkatli kullanın"]
+  },
+  "reaction-types": {
+    "title": "Tepkime Türleri",
+    "objectives": [
+      "Sentez tepkimesini tanımak",
+      "Ayrışma tepkimesini anlamak",
+      "Yer değiştirme tepkimelerini öğrenmek"
+    ],
+    "simulation": "reactions",
+    "steps": [
+      { "title": "Sentez", "desc": "A + B → AB şeklinde birleşme." },
+      { "title": "Ayrışma", "desc": "AB → A + B şeklinde ayrılma." },
+      { "title": "Yer Değiştirme", "desc": "AB + C → AC + B şeklinde değişim." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "orbital": {
+    "title": "Orbital ve Kuantum Sayıları",
+    "objectives": [
+      "s, p, d orbitallerini tanımak",
+      "Kuantum sayılarını öğrenmek",
+      "3D orbital şekillerini görselleştirmek"
+    ],
+    "simulation": "orbital",
+    "steps": [
+      { "title": "s Orbitali", "desc": "Küresel simetrik, 1 orbital." },
+      { "title": "p Orbitali", "desc": "Dambıl şeklinde, 3 orbital." },
+      { "title": "d Orbitali", "desc": "Papatya şeklinde, 5 orbital." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "molecular-geometry": {
+    "title": "Molekül Geometrisi (VSEPR)",
+    "objectives": [
+      "VSEPR teorisini anlamak",
+      "Bağ açılarını hesaplamak",
+      "Molekül şekillerini tahmin etmek"
+    ],
+    "simulation": "vsepr",
+    "steps": [
+      { "title": "Merkez Atom", "desc": "Merkez atomu ve bağları belirleyin." },
+      { "title": "Elektron Çiftleri", "desc": "Bağ ve yalnız çiftleri sayın." },
+      { "title": "Geometri Belirle", "desc": "VSEPR tablosundan şekli bulun." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "intermolecular": {
+    "title": "Moleküller Arası Kuvvetler",
+    "objectives": [
+      "Van der Waals kuvvetlerini öğrenmek",
+      "Dipol-dipol etkileşimini anlamak",
+      "Hidrojen bağını kavramak"
+    ],
+    "simulation": "intermol",
+    "steps": [
+      { "title": "London Kuvvetleri", "desc": "Tüm moleküllerde bulunan zayıf kuvvet." },
+      { "title": "Dipol-Dipol", "desc": "Polar moleküller arasında oluşur." },
+      { "title": "Hidrojen Bağı", "desc": "F, O, N ile H arasında güçlü etkileşim." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "reaction-rate": {
+    "title": "Tepkime Hızı",
+    "objectives": [
+      "Hız ifadesini yazmak",
+      "Hıza etki eden faktörleri öğrenmek",
+      "Aktivasyon enerjisini anlamak"
+    ],
+    "simulation": "rate",
+    "steps": [
+      { "title": "Derişim Etkisi", "desc": "Derişim arttıkça hız artar." },
+      { "title": "Sıcaklık Etkisi", "desc": "10°C artış hızı 2-3 kat artırır." },
+      { "title": "Katalizör", "desc": "Aktivasyon enerjisini düşürür." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "equilibrium": {
+    "title": "Kimyasal Denge",
+    "objectives": [
+      "Denge kavramını anlamak",
+      "Le Chatelier ilkesini uygulamak",
+      "Denge sabiti hesaplamak"
+    ],
+    "simulation": "equilib",
+    "steps": [
+      { "title": "Denge Kurulumu", "desc": "İleri ve geri hız eşitlenir." },
+      { "title": "Le Chatelier", "desc": "Sisteme yapılan etki azaltılır." },
+      { "title": "Kc Hesabı", "desc": "Ürünler/Reaktanlar oranı." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "solubility": {
+    "title": "Çözünürlük Dengesi",
+    "objectives": [
+      "Çözünürlük çarpımını öğrenmek",
+      "Çökelme koşullarını anlamak",
+      "Kçç hesabı yapmak"
+    ],
+    "simulation": "solub",
+    "steps": [
+      { "title": "Doygun Çözelti", "desc": "Çözünen ve çöken denge halinde." },
+      { "title": "Kçç İfadesi", "desc": "İyon derişimlerinin çarpımı." },
+      { "title": "Çökelme Tahmini", "desc": "Q > Kçç ise çökelti oluşur." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "colligative": {
+    "title": "Koligatif Özellikler",
+    "objectives": [
+      "Buhar basıncı düşmesini anlamak",
+      "Kaynama noktası yükselmesini öğrenmek",
+      "Donma noktası alçalmasını kavramak"
+    ],
+    "simulation": "collig",
+    "steps": [
+      { "title": "Çözünen Ekle", "desc": "Saf suya tuz ekleyin." },
+      { "title": "Kaynama", "desc": "Kaynama noktası yükselir." },
+      { "title": "Donma", "desc": "Donma noktası düşer." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "enthalpy": {
+    "title": "Entalpi ve Hess Yasası",
+    "objectives": [
+      "Entalpi kavramını öğrenmek",
+      "Ekzotermik-endotermik tepkimeleri ayırt etmek",
+      "Hess yasasını uygulamak"
+    ],
+    "simulation": "enthalpy",
+    "steps": [
+      { "title": "Ekzotermik", "desc": "Isı açığa çıkar, ΔH < 0." },
+      { "title": "Endotermik", "desc": "Isı absorplanır, ΔH > 0." },
+      { "title": "Hess Yasası", "desc": "Toplam ΔH yoldan bağımsızdır." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "acid-base": {
+    "title": "Asit-Baz Titrasyonu",
+    "objectives": [
+      "pH kavramını anlamak",
+      "Titrasyon tekniğini öğrenmek",
+      "Eşdeğerlik noktasını bulmak"
+    ],
+    "simulation": "titration",
+    "steps": [
+      { "title": "Çözeltileri Hazırla", "desc": "Asit ve baz çözeltilerini hazırlayın." },
+      { "title": "Titrasyon Yap", "desc": "Yavaşça ekleyerek pH değişimini izleyin." },
+      { "title": "Eşdeğerlik", "desc": "Renk değişimi eşdeğerlik noktasını gösterir." }
+    ],
+    "safety": ["Asit ve bazları dikkatli kullanın"]
+  },
+  "buffer": {
+    "title": "Tampon Çözeltiler",
+    "objectives": [
+      "Tampon kavramını anlamak",
+      "Henderson-Hasselbalch denklemini öğrenmek",
+      "pH hesabı yapmak"
+    ],
+    "simulation": "buffer",
+    "steps": [
+      { "title": "Tampon Hazırla", "desc": "Zayıf asit ve tuzunu karıştırın." },
+      { "title": "Asit Ekle", "desc": "pH değişiminin az olduğunu gözleyin." },
+      { "title": "Baz Ekle", "desc": "Tamponun etkisini görün." }
+    ],
+    "safety": ["Kimyasalları dikkatli kullanın"]
+  },
+  "electrolysis": {
+    "title": "Elektroliz",
+    "objectives": [
+      "Elektroliz kavramını anlamak",
+      "Anot ve katot tepkimelerini öğrenmek",
+      "Faraday yasalarını uygulamak"
+    ],
+    "simulation": "electrolysis",
+    "steps": [
+      { "title": "Devre Kur", "desc": "Elektroliz hücresini hazırlayın." },
+      { "title": "Akım Ver", "desc": "DC güç kaynağını bağlayın." },
+      { "title": "Ürünleri Gözle", "desc": "Elektrotlarda oluşan ürünleri inceleyin." }
+    ],
+    "safety": ["Elektrik güvenliğine dikkat edin"]
+  },
+  "galvanic-cell": {
+    "title": "Galvanik Pil",
+    "objectives": [
+      "Galvanik pil prensibini anlamak",
+      "Standart potansiyelleri öğrenmek",
+      "Pil potansiyeli hesaplamak"
+    ],
+    "simulation": "galvanic",
+    "steps": [
+      { "title": "Hücre Kur", "desc": "Zn ve Cu elektrotları hazırlayın." },
+      { "title": "Tuz Köprüsü", "desc": "Hücreleri tuz köprüsüyle bağlayın." },
+      { "title": "Voltaj Ölç", "desc": "Potansiyel farkını ölçün." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "redox": {
+    "title": "Redoks Tepkimeleri",
+    "objectives": [
+      "Yükseltgenme-indirgenmeyi anlamak",
+      "Yarı tepkimeleri yazmak",
+      "Redoks denklemlerini denkleştirmek"
+    ],
+    "simulation": "redox",
+    "steps": [
+      { "title": "Yarı Tepkimeler", "desc": "Yükseltgenme ve indirgenmeyi ayırın." },
+      { "title": "Elektron Dengele", "desc": "Elektron sayılarını eşitleyin." },
+      { "title": "Topla", "desc": "Yarı tepkimeleri toplayın." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "organic-groups": {
+    "title": "Fonksiyonel Gruplar",
+    "objectives": [
+      "Alkol grubunu tanımak",
+      "Aldehit ve ketonu ayırt etmek",
+      "Ester ve karboksilli asidi öğrenmek"
+    ],
+    "simulation": "functional",
+    "steps": [
+      { "title": "Alkol (-OH)", "desc": "Hidroksil grubu içerir." },
+      { "title": "Aldehit (-CHO)", "desc": "Karbonil grubu uçta." },
+      { "title": "Ester (-COO-)", "desc": "Asit ve alkolün tepkimesiyle oluşur." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "polymerization": {
+    "title": "Polimerizasyon",
+    "objectives": [
+      "Monomer kavramını öğrenmek",
+      "Ekleme polimerizasyonunu anlamak",
+      "Yoğuşma polimerizasyonunu kavramak"
+    ],
+    "simulation": "polymer",
+    "steps": [
+      { "title": "Monomerler", "desc": "Tekrarlanan küçük birimler." },
+      { "title": "Ekleme", "desc": "Çift bağ açılarak zincir oluşur." },
+      { "title": "Yoğuşma", "desc": "Su çıkışıyla bağ oluşur." }
+    ],
+    "safety": ["Güvenli simülasyon deneyidir"]
+  },
+  "esterification": {
+    "title": "Esterleşme",
+    "objectives": [
+      "Ester oluşumunu anlamak",
+      "Tepkime koşullarını öğrenmek",
+      "Hidroliz tepkimesini kavramak"
+    ],
+    "simulation": "ester",
+    "steps": [
+      { "title": "Reaktanlar", "desc": "Karboksilli asit ve alkol seçin." },
+      { "title": "Katalizör", "desc": "H₂SO₄ katalizör olarak ekleyin." },
+      { "title": "Ester Oluşumu", "desc": "Su çıkışıyla ester oluşur." }
+    ],
+    "safety": ["Asitleri dikkatli kullanın"]
+  }
+}

@@ -1,0 +1,2023 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Bileşik Oluşturucu</title>
+  <meta name="description" content="İnteraktif molekül ve bileşik oluşturucu - Maarif modeline uygun">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ChemLabX - Bileşik Oluşturucu">
+  <meta property="og:description" content="İnteraktif molekül ve bileşik oluşturucu - Maarif modeline uygun">
+  <meta property="og:image" content="./assets/logos/logo-academic.svg">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#667eea">
+  
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  <style>
+    /* Ana Layout - Desktop: İki Kolon (Sol Panel + Sağ Canvas) */
+    .compound-builder {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      align-items: flex-start;
+    }
+
+    /* Element Paleti - Sol Panel */
+    .element-palette {
+      width: 280px;
+      min-width: 280px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #f8f9fa 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      border: 1px solid var(--border-light);
+      max-height: 700px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    
+    /* Canvas Area - Sağ Panel */
+    .canvas-area {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    [data-theme="dark"] .element-palette {
+      background: linear-gradient(135deg, #0d1929 0%, #1a2d4a 100%);
+      border-color: #2a4a6a;
+    }
+    
+    [data-theme="dark"] .element-group h4 {
+      color: #90caf9;
+    }
+
+    .element-group {
+      margin-bottom: 1rem;
+    }
+
+    .element-group h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Element Grid - 4 Kolon */
+    .palette-elements {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+    }
+
+    .palette-element {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .palette-element:hover {
+      transform: scale(1.15);
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .palette-element.selected {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Element Renkleri */
+    .palette-element.H { background: #e8f5e8; color: #2e7d32; }
+    .palette-element.C { background: #424242; color: white; }
+    .palette-element.N { background: #3f51b5; color: white; }
+    .palette-element.O { background: #f44336; color: white; }
+    .palette-element.S { background: #ffeb3b; color: #333; }
+    .palette-element.P { background: #ff9800; color: white; }
+    .palette-element.F, .palette-element.Cl { background: #4caf50; color: white; }
+    .palette-element.Br { background: #8d4004; color: white; }
+    .palette-element.I { background: #9c27b0; color: white; }
+    .palette-element.Li, .palette-element.Na, .palette-element.K { background: #ff5722; color: white; }
+    .palette-element.Mg, .palette-element.Ca, .palette-element.Ba { background: #8bc34a; color: white; }
+    .palette-element.Al { background: #9e9e9e; color: white; }
+    .palette-element.Fe { background: #795548; color: white; }
+    .palette-element.Cu { background: #ff7043; color: white; }
+    .palette-element.Zn { background: #78909c; color: white; }
+    .palette-element.He, .palette-element.Ne, .palette-element.Ar { background: #00bcd4; color: white; }
+
+    /* Araçlar Bölümü */
+    .tools-group {
+      border-top: 1px solid var(--border-light);
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    
+    [data-theme="dark"] .tools-group {
+      border-top-color: #2a4a6a;
+    }
+
+    .canvas-controls.vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .control-btn {
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .control-btn:hover {
+      background: var(--hover-bg);
+      transform: translateY(-1px);
+    }
+    
+    [data-theme="dark"] .control-btn {
+      background: #253450;
+      border-color: #374556;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .control-btn:hover {
+      background: #2d3f5f;
+    }
+
+    .control-btn.danger:hover {
+      background: #fee2e2;
+      border-color: #f87171;
+      color: #dc2626;
+    }
+    
+    [data-theme="dark"] .control-btn.danger:hover {
+      background: #3a1a1a;
+      border-color: #ef5350;
+      color: #ef5350;
+    }
+
+    .control-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+
+    /* Canvas Alanı */
+    .canvas-area {
+      background: white;
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    [data-theme="dark"] .canvas-area {
+      background: #0d1929;
+      border-color: #2a4a6a;
+    }
+
+    .canvas-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+    
+    [data-theme="dark"] .canvas-header {
+      background: #1a2d4a;
+      border-bottom-color: #374556;
+    }
+    
+    [data-theme="dark"] .canvas-header h3,
+    [data-theme="dark"] .element-palette h3,
+    [data-theme="dark"] .info-panel h3,
+    [data-theme="dark"] .bond-types-section h3,
+    [data-theme="dark"] .preset-molecules h3 {
+      color: #f0f0f5;
+    }
+
+    .canvas-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .bond-type-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bond-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-right: 0.5rem;
+    }
+
+    .bond-btn {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .bond-btn {
+      background: #253450;
+      border-color: #374556;
+      color: #f0f0f5;
+    }
+
+    .bond-btn:hover {
+      background: var(--hover-bg);
+    }
+    
+    [data-theme="dark"] .bond-btn:hover {
+      background: #2d3f5f;
+    }
+
+    .bond-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+
+    .bond-icon {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .canvas-content {
+      flex: 1;
+      min-height: 350px;
+      position: relative;
+      background: linear-gradient(90deg, #f0f0f0 1px, transparent 1px),
+                  linear-gradient(#f0f0f0 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    [data-theme="dark"] .canvas-content {
+      background: #0d1929;
+    }
+
+    .canvas-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .canvas-placeholder p {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .canvas-placeholder .hint {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    
+    [data-theme="dark"] .canvas-placeholder {
+      color: #90caf9;
+    }
+    
+    [data-theme="dark"] .canvas-placeholder .hint {
+      color: #b0b8c8;
+    }
+
+    .canvas-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border-light);
+      background: #fafafa;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .canvas-footer {
+      background: #1a2d4a;
+      border-top-color: #2a4a6a;
+      color: #b0b8c8;
+    }
+
+    .bond-info-mini {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    [data-theme="dark"] .bond-info-mini {
+      color: #90caf9;
+    }
+
+    /* Uyarı/Hata Mesajları */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      background: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.3s ease;
+      max-width: 350px;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .toast {
+      background: #1a2332;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      color: #f0f0f5;
+    }
+
+    [data-theme="dark"] .toast-message,
+    [data-theme="dark"] .toast-close {
+      color: #b0b0c0;
+    }
+
+    [data-theme="dark"] .toast.error { background: #2a1a1a; }
+    [data-theme="dark"] .toast.warning { background: #2a241a; }
+    [data-theme="dark"] .toast.success { background: #1a2a22; }
+    [data-theme="dark"] .toast.info { background: #1a2230; }
+
+    .toast.error { border-left: 4px solid #ef4444; background: #fef2f2; }
+    .toast.warning { border-left: 4px solid #f59e0b; background: #fffbeb; }
+    .toast.success { border-left: 4px solid #10b981; background: #ecfdf5; }
+    .toast.info { border-left: 4px solid #3b82f6; background: #eff6ff; }
+
+    .toast-icon { font-size: 1.25rem; }
+    .toast-content { flex: 1; }
+    .toast-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .toast-message { font-size: 0.8rem; color: var(--text-secondary); }
+    .toast-close { background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--text-secondary); padding: 0; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    .toast.hiding { animation: slideOut 0.3s ease forwards; }
+
+    /* Atomlar */
+    .atom {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+      user-select: none;
+      border: 2px solid rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+    }
+
+    .atom:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 20;
+    }
+
+    .atom.selected-for-bond {
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
+      animation: pulse 1s infinite;
+    }
+
+    .atom.bonding {
+      box-shadow: 0 0 12px 4px rgba(59, 130, 246, 0.6);
+    }
+
+    [data-theme="dark"] .atom.bonding {
+      box-shadow: 0 0 10px 3px rgba(150, 200, 255, 0.35);
+    }
+
+    .atom.dragging { 
+      opacity: 0.8; 
+      z-index: 1000; 
+      transition: none !important;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.2); }
+    }
+
+    /* Atom Renkleri */
+    .atom.H { background: #90ee90; color: #1a5c1a; }
+    .atom.C { background: #424242; color: white; }
+    .atom.N { background: #3f51b5; color: white; }
+    .atom.O { background: #f44336; color: white; }
+    .atom.S { background: #ffeb3b; color: #333; }
+    .atom.P { background: #ff9800; color: white; }
+    .atom.F, .atom.Cl { background: #4caf50; color: white; }
+    .atom.Br { background: #8d4004; color: white; }
+    .atom.I { background: #9c27b0; color: white; }
+    .atom.Li, .atom.Na, .atom.K { background: #ff5722; color: white; }
+    .atom.Mg, .atom.Ca, .atom.Ba { background: #8bc34a; color: white; }
+    .atom.Al { background: #9e9e9e; color: white; }
+    .atom.Fe { background: #795548; color: white; }
+    .atom.Cu { background: #ff7043; color: white; }
+    .atom.Zn { background: #78909c; color: white; }
+    .atom.He, .atom.Ne, .atom.Ar { background: #00bcd4; color: white; }
+
+    /* Bağlar */
+    .bond-line {
+      position: absolute;
+      background: transparent;
+      transform-origin: left center;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .bond-line.single { height: 3px; }
+    .bond-line.double { height: 6px; }
+    .bond-line.triple { height: 9px; }
+
+    [data-theme="dark"] .bond-line { background: transparent; }
+
+    .bond-line.ionic { background: linear-gradient(90deg, #f44336, #2196f3); border-radius: 2px; }
+
+    /* Bağ Türleri Kartları */
+    .bond-types-section { margin: 2rem 0; }
+
+    .bond-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .bond-card {
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      background: white;
+      border: 2px solid var(--border-light);
+      transition: all 0.2s ease;
+    }
+
+    .bond-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .bond-card.covalent { border-left: 4px solid #2196f3; }
+    .bond-card.polar-covalent { border-left: 4px solid #9c27b0; }
+    .bond-card.ionic { border-left: 4px solid #f44336; }
+    .bond-card.metallic { border-left: 4px solid #ff9800; }
+
+    .bond-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .bond-card-icon { font-size: 1.25rem; }
+    .bond-card h4 { font-size: 1rem; font-weight: 600; }
+    .bond-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+    .bond-example { font-size: 0.8rem; color: var(--primary-blue); margin-bottom: 0.5rem; }
+    .electronegativity-diff { font-size: 0.75rem; padding: 0.25rem 0.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); display: inline-block; color: var(--text-primary); }
+    
+    [data-theme="dark"] .electronegativity-diff { background: #2a4a6a; color: #b0b8c8; }
+    [data-theme="dark"] .bond-card { background: #1a2d4a; border-color: #2a4a6a; }
+    [data-theme="dark"] .bond-card h4 { color: #f0f0f5; }
+    .bond-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-blue); }
+
+    /* Bilgi Paneli */
+    .info-panel {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+    
+    [data-theme="dark"] .info-panel {
+      background: linear-gradient(135deg, #0d1929 0%, #1a2d4a 100%);
+      border-color: #2a4a6a;
+    }
+    
+    [data-theme="dark"] .info-label {
+      color: #90caf9;
+    }
+    
+    [data-theme="dark"] .info-value {
+      color: #f0f0f5;
+    }
+
+    .molecule-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .info-item {
+      text-align: center;
+      padding: 1rem;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .info-item { background: #1a2d4a; border-color: #2a4a6a; color: #f0f0f5; }
+
+    .info-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; text-transform: uppercase; }
+    .info-value { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+    .formula-display { font-family: 'Times New Roman', serif; font-size: 1.25rem; }
+
+    .bond-type-display.covalent { color: #2196f3; }
+    .bond-type-display.ionic { color: #f44336; }
+    .bond-type-display.polar { color: #9c27b0; }
+
+    /* Elektronegatiflik Barı */
+    .electronegativity-bar {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+    }
+    
+    [data-theme="dark"] .electronegativity-bar { background: #1a2d4a; border-color: #2a4a6a; }
+
+    .bar-label { font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 0.75rem; }
+
+    .en-bar {
+      height: 12px;
+      background: linear-gradient(to right, #4caf50 0%, #4caf50 17%, #ffeb3b 17%, #ffeb3b 57%, #f44336 57%, #f44336 100%);
+      border-radius: 6px;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .en-fill {
+      position: absolute;
+      top: -4px;
+      width: 4px;
+      height: 20px;
+      background: #333;
+      border-radius: 2px;
+      transition: left 0.3s ease;
+      left: 0%;
+    }
+    
+    [data-theme="dark"] .en-fill { background: #90caf9; }
+    
+    .en-markers { display: flex; justify-content: space-between; position: relative; margin-top: 0.5rem; }
+    .en-markers .marker { position: absolute; font-size: 0.7rem; color: var(--text-secondary); transform: translateX(-50%); }
+    .en-value { display: block; text-align: center; font-weight: 600; font-size: 1rem; margin-top: 1.5rem; color: var(--text-primary); }
+    
+    [data-theme="dark"] .en-value { color: #f0f0f5; }
+    [data-theme="dark"] .bar-label { color: #90caf9; }
+
+    /* Responsive - Tablet */
+    @media (max-width: 1024px) {
+      .element-palette { width: 240px; min-width: 240px; }
+      .palette-elements { grid-template-columns: repeat(4, 1fr); }
+      .palette-element { width: 38px; height: 38px; font-size: 0.85rem; }
+      .bond-type-selector { flex-wrap: wrap; }
+      .canvas-content { min-height: 280px; }
+    }
+    
+    /* Responsive - Mobile */
+    @media (max-width: 768px) {
+      .compound-builder { flex-direction: column; gap: 1rem; }
+      .element-palette { width: 100%; min-width: 100%; max-height: 280px; order: 2; }
+      .canvas-area { width: 100%; order: 1; }
+      .palette-elements { grid-template-columns: repeat(6, 1fr); gap: 0.4rem; }
+      .palette-element { width: 44px; height: 44px; font-size: 0.9rem; }
+      .canvas-content { min-height: 250px; }
+    }
+    
+    @media (max-width: 480px) {
+      .palette-elements { grid-template-columns: repeat(5, 1fr); }
+      .palette-element { width: 40px; height: 40px; font-size: 0.8rem; }
+    }
+
+    @media (min-width: 1920px) {
+      .element-palette { width: 340px; min-width: 340px; }
+      .palette-element { width: 52px; height: 52px; font-size: 1rem; }
+      .canvas-content { min-height: 450px; }
+    }
+    
+    /* Hazır Moleküller */
+    .preset-molecules {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+    }
+    
+    [data-theme="dark"] .preset-molecules { background: #0d1929; }
+    
+    .preset-filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+    
+    [data-theme="dark"] .filter-btn { background: #1a2d4a; border-color: #2a4a6a; color: #f0f0f5; }
+    [data-theme="dark"] .filter-btn:hover, [data-theme="dark"] .filter-btn.active { background: #667eea; border-color: #667eea; }
+    
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+    
+    .preset-molecule {
+      padding: 1.25rem 1rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+    
+    .preset-molecule:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .preset-molecule.hidden { display: none; }
+    
+    [data-theme="dark"] .preset-molecule { background: #1a2d4a; border-color: #2a4a6a; color: #f0f0f5; }
+    [data-theme="dark"] .preset-molecule:hover { border-color: #667eea; background: #1e3a5f; }
+    [data-theme="dark"] .preset-name { color: #f0f0f5; }
+    [data-theme="dark"] .preset-formula { color: #90caf9; }
+    
+    .preset-icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .preset-name { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.2rem; }
+    .preset-formula { font-size: 0.8rem; color: var(--text-secondary); font-family: 'Times New Roman', serif; margin-bottom: 0.35rem; }
+    .preset-bond-type { font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); display: inline-block; }
+    .preset-bond-type.covalent { background: #e3f2fd; color: #1565c0; }
+    .preset-bond-type.ionic { background: #ffebee; color: #c62828; }
+    .preset-bond-type.polar { background: #fff3e0; color: #e65100; }
+    
+    [data-theme="dark"] .preset-bond-type.covalent { background: #1e3a5f; color: #90caf9; }
+    [data-theme="dark"] .preset-bond-type.ionic { background: #3a1a1a; color: #ef9a9a; }
+    [data-theme="dark"] .preset-bond-type.polar { background: #3a2a1a; color: #ffcc80; }
+    
+    @media (max-width: 1200px) { .preset-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 900px) { .preset-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .preset-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } .preset-molecule { padding: 1rem 0.75rem; } }
+  </style>
+</head>
+<body>
+  <!-- Toast Mesajları -->
+  <div class="toast-container" id="toast-container"></div>
+  
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link active">Bileşikler</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+        <a href="quizzes.html" class="nav-link">Quizler</a>
+        <a href="videos.html" class="nav-link">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    
+    <!-- Başlık Bölümü -->
+    <div class="text-center p-6">
+      <h1 class="text-3xl font-bold text-primary mb-4">Bileşik Oluşturucu</h1>
+      <p class="text-lg text-secondary mb-6">
+        Moleküllerinizi oluşturun ve bağlanma kavramlarını öğrenin.
+        Elementleri sürükleyip bırakarak bileşiklerinizi oluşturabilirsiniz.
+      </p>
+    </div>
+
+    <!-- Bileşik Oluşturucu Grid -->
+    <div class="compound-builder">
+      <!-- Sol Panel: Element Paleti -->
+      <div class="element-palette">
+        <h3 class="text-xl font-semibold mb-4">🧪 Elementler</h3>
+
+        <div class="element-group">
+          <h4>Ametaller</h4>
+          <div class="palette-elements">
+            <div class="palette-element H" data-element="H" data-valence="1" data-electronegativity="2.20">H</div>
+            <div class="palette-element C" data-element="C" data-valence="4" data-electronegativity="2.55">C</div>
+            <div class="palette-element N" data-element="N" data-valence="3" data-electronegativity="3.04">N</div>
+            <div class="palette-element O" data-element="O" data-valence="2" data-electronegativity="3.44">O</div>
+            <div class="palette-element S" data-element="S" data-valence="2" data-electronegativity="2.58">S</div>
+            <div class="palette-element P" data-element="P" data-valence="3" data-electronegativity="2.19">P</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h4>Halojenler</h4>
+          <div class="palette-elements">
+            <div class="palette-element F" data-element="F" data-valence="1" data-electronegativity="3.98">F</div>
+            <div class="palette-element Cl" data-element="Cl" data-valence="1" data-electronegativity="3.16">Cl</div>
+            <div class="palette-element Br" data-element="Br" data-valence="1" data-electronegativity="2.96">Br</div>
+            <div class="palette-element I" data-element="I" data-valence="1" data-electronegativity="2.66">I</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h4>Alkali Metaller</h4>
+          <div class="palette-elements">
+            <div class="palette-element Li" data-element="Li" data-valence="1" data-electronegativity="0.98">Li</div>
+            <div class="palette-element Na" data-element="Na" data-valence="1" data-electronegativity="0.93">Na</div>
+            <div class="palette-element K" data-element="K" data-valence="1" data-electronegativity="0.82">K</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h4>Toprak Alkali Metaller</h4>
+          <div class="palette-elements">
+            <div class="palette-element Mg" data-element="Mg" data-valence="2" data-electronegativity="1.31">Mg</div>
+            <div class="palette-element Ca" data-element="Ca" data-valence="2" data-electronegativity="1.00">Ca</div>
+            <div class="palette-element Ba" data-element="Ba" data-valence="2" data-electronegativity="0.89">Ba</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h4>Diğer Metaller</h4>
+          <div class="palette-elements">
+            <div class="palette-element Al" data-element="Al" data-valence="3" data-electronegativity="1.61">Al</div>
+            <div class="palette-element Fe" data-element="Fe" data-valence="3" data-electronegativity="1.83">Fe</div>
+            <div class="palette-element Cu" data-element="Cu" data-valence="2" data-electronegativity="1.90">Cu</div>
+            <div class="palette-element Zn" data-element="Zn" data-valence="2" data-electronegativity="1.65">Zn</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h4>Soy Gazlar</h4>
+          <div class="palette-elements">
+            <div class="palette-element He" data-element="He" data-valence="0" data-electronegativity="0">He</div>
+            <div class="palette-element Ne" data-element="Ne" data-valence="0" data-electronegativity="0">Ne</div>
+            <div class="palette-element Ar" data-element="Ar" data-valence="0" data-electronegativity="0">Ar</div>
+          </div>
+        </div>
+
+        <div class="element-group tools-group">
+          <h4>🔧 Araçlar</h4>
+          <div class="canvas-controls vertical">
+            <button class="control-btn danger" id="clear-canvas">🗑️ Temizle</button>
+            <button class="control-btn" id="undo">↩️ Geri Al</button>
+            <button class="control-btn" id="delete-mode">❌ Sil Modu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ Panel: Çizim Alanı (Canvas) -->
+      <div class="canvas-area" id="canvas">
+        <div class="canvas-header">
+          <h3>🔬 Molekülünüz</h3>
+          <div class="bond-type-selector">
+            <span class="bond-label">Bağ Türü:</span>
+            <button class="bond-btn active" id="single-bond" data-bond="single">
+              <span class="bond-icon">―</span>
+              <span>Tek</span>
+            </button>
+            <button class="bond-btn" id="double-bond" data-bond="double">
+              <span class="bond-icon">=</span>
+              <span>Çift</span>
+            </button>
+            <button class="bond-btn" id="triple-bond" data-bond="triple">
+              <span class="bond-icon">≡</span>
+              <span>Üçlü</span>
+            </button>
+          </div>
+        </div>
+        <div class="canvas-content" id="canvas-content">
+          <div class="canvas-placeholder">
+            <p>🎯 Elementleri seçip buraya tıklayın</p>
+            <p class="hint">İki atoma tıklayarak bağ oluşturabilirsiniz</p>
+          </div>
+        </div>
+        <div class="canvas-footer">
+          <div class="bond-info-mini">
+            <span id="current-bond-type">Kovalent Bağ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Molekül Bilgi Paneli -->
+    <div class="info-panel">
+      <h3 class="text-xl font-semibold mb-4">📊 Molekül Bilgileri</h3>
+      <div class="molecule-info" id="molecule-info">
+        <div class="info-item">
+          <div class="info-label">Molekül Formülü</div>
+          <div class="info-value formula-display" id="formula">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Atom Sayısı</div>
+          <div class="info-value" id="atom-count">0</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Bağ Sayısı</div>
+          <div class="info-value" id="bond-count">0</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Bağ Türü</div>
+          <div class="info-value bond-type-display" id="bond-type-info">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Molekül Kütlesi</div>
+          <div class="info-value" id="molecular-mass">0 g/mol</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Molekül Geometrisi</div>
+          <div class="info-value" id="molecule-geometry">-</div>
+        </div>
+      </div>
+      <div class="electronegativity-bar">
+        <span class="bar-label">Elektronegatiflik Farkı (ΔEN):</span>
+        <div class="en-bar">
+          <div class="en-fill" id="en-bar-fill"></div>
+          <div class="en-markers">
+            <span class="marker" style="left: 1%">0</span>
+            <span class="marker" style="left: 25%">0.5</span>
+            <span class="marker" style="left: 50%">1.0</span>
+            <span class="marker" style="left: 75%">1.7</span>
+            <span class="marker" style="left: 99%">3.0</span>
+          </div>
+        </div>
+        <span class="en-value" id="en-diff-value">0</span>
+      </div>
+    </div>
+
+    <!-- Bağ Türleri Bilgi Kartları -->
+    <div class="bond-types-section">
+      <h3 class="text-xl font-semibold mb-4">📚 Bağ Türleri</h3>
+      <div class="bond-cards">
+        <div class="bond-card covalent">
+          <div class="bond-card-header">
+            <span class="bond-card-icon">🔗</span>
+            <h4>Kovalent Bağ</h4>
+          </div>
+          <p>Elektronların paylaşılmasıyla oluşur. Ametal-ametal arasında görülür.</p>
+          <div class="bond-example">Örnek: H₂O, CO₂, CH₄</div>
+          <div class="electronegativity-diff">ΔEN &lt; 0.5</div>
+        </div>
+        <div class="bond-card polar-covalent">
+          <div class="bond-card-header">
+            <span class="bond-card-icon">⚡</span>
+            <h4>Polar Kovalent Bağ</h4>
+          </div>
+          <p>Elektronlar eşit paylaşılmaz, bir atoma daha yakındır.</p>
+          <div class="bond-example">Örnek: HCl, H₂O, NH₃</div>
+          <div class="electronegativity-diff">0.5 ≤ ΔEN &lt; 1.7</div>
+        </div>
+        <div class="bond-card ionic">
+          <div class="bond-card-header">
+            <span class="bond-card-icon">⊕⊖</span>
+            <h4>İyonik Bağ</h4>
+          </div>
+          <p>Elektron transferi ile oluşur. Metal-ametal arasında görülür.</p>
+          <div class="bond-example">Örnek: NaCl, MgO, CaF₂</div>
+          <div class="electronegativity-diff">ΔEN ≥ 1.7</div>
+        </div>
+        <div class="bond-card metallic">
+          <div class="bond-card-header">
+            <span class="bond-card-icon">🔩</span>
+            <h4>Metalik Bağ</h4>
+          </div>
+          <p>Serbest elektronların metal katyonları arasında hareketiyle oluşur.</p>
+          <div class="bond-example">Örnek: Fe, Cu, Al, Au</div>
+          <div class="electronegativity-diff">Metal-Metal</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hazır Moleküller -->
+    <div class="preset-molecules">
+      <h3 class="text-xl font-semibold mb-4">🧬 Hazır Moleküller</h3>
+      
+      <div class="preset-filters">
+        <button class="filter-btn active" data-filter="all">Tümü</button>
+        <button class="filter-btn" data-filter="covalent">Kovalent</button>
+        <button class="filter-btn" data-filter="ionic">İyonik</button>
+        <button class="filter-btn" data-filter="organic">Organik</button>
+        <button class="filter-btn" data-filter="inorganic">İnorganik</button>
+        <button class="filter-btn" data-filter="acid">Asitler</button>
+      </div>
+
+      <div class="preset-grid">
+        <div class="preset-molecule" data-preset="water" data-category="covalent inorganic">
+          <div class="preset-icon">💧</div>
+          <div class="preset-name">Su</div>
+          <div class="preset-formula">H₂O</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="methane" data-category="covalent organic">
+          <div class="preset-icon">🔥</div>
+          <div class="preset-name">Metan</div>
+          <div class="preset-formula">CH₄</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="ammonia" data-category="covalent inorganic">
+          <div class="preset-icon">🧪</div>
+          <div class="preset-name">Amonyak</div>
+          <div class="preset-formula">NH₃</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="carbon-dioxide" data-category="covalent inorganic">
+          <div class="preset-icon">☁️</div>
+          <div class="preset-name">Karbondioksit</div>
+          <div class="preset-formula">CO₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="hydrogen-chloride" data-category="covalent inorganic acid">
+          <div class="preset-icon">⚗️</div>
+          <div class="preset-name">Hidrojen Klorür</div>
+          <div class="preset-formula">HCl</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="oxygen" data-category="covalent inorganic">
+          <div class="preset-icon">🌬️</div>
+          <div class="preset-name">Oksijen</div>
+          <div class="preset-formula">O₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="nitrogen" data-category="covalent inorganic">
+          <div class="preset-icon">🎈</div>
+          <div class="preset-name">Azot</div>
+          <div class="preset-formula">N₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="hydrogen" data-category="covalent inorganic">
+          <div class="preset-icon">💨</div>
+          <div class="preset-name">Hidrojen</div>
+          <div class="preset-formula">H₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="sodium-chloride" data-category="ionic inorganic">
+          <div class="preset-icon">🧂</div>
+          <div class="preset-name">Sodyum Klorür</div>
+          <div class="preset-formula">NaCl</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="magnesium-oxide" data-category="ionic inorganic">
+          <div class="preset-icon">⭕</div>
+          <div class="preset-name">Magnezyum Oksit</div>
+          <div class="preset-formula">MgO</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="calcium-chloride" data-category="ionic inorganic">
+          <div class="preset-icon">❄️</div>
+          <div class="preset-name">Kalsiyum Klorür</div>
+          <div class="preset-formula">CaCl₂</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="potassium-bromide" data-category="ionic inorganic">
+          <div class="preset-icon">💊</div>
+          <div class="preset-name">Potasyum Bromür</div>
+          <div class="preset-formula">KBr</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="ethane" data-category="covalent organic">
+          <div class="preset-icon">⛽</div>
+          <div class="preset-name">Etan</div>
+          <div class="preset-formula">C₂H₆</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="ethene" data-category="covalent organic">
+          <div class="preset-icon">🌱</div>
+          <div class="preset-name">Eten</div>
+          <div class="preset-formula">C₂H₄</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="ethyne" data-category="covalent organic">
+          <div class="preset-icon">📦</div>
+          <div class="preset-name">Etin</div>
+          <div class="preset-formula">C₂H₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="methanol" data-category="covalent organic">
+          <div class="preset-icon">🍶</div>
+          <div class="preset-name">Metanol</div>
+          <div class="preset-formula">CH₃OH</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="ethanol" data-category="covalent organic">
+          <div class="preset-icon">🍺</div>
+          <div class="preset-name">Etanol</div>
+          <div class="preset-formula">C₂H₅OH</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="sulfuric-acid" data-category="covalent inorganic acid">
+          <div class="preset-icon">☠️</div>
+          <div class="preset-name">Sülfürik Asit</div>
+          <div class="preset-formula">H₂SO₄</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="nitric-acid" data-category="covalent inorganic acid">
+          <div class="preset-icon">🧪</div>
+          <div class="preset-name">Nitrik Asit</div>
+          <div class="preset-formula">HNO₃</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="phosphoric-acid" data-category="covalent inorganic acid">
+          <div class="preset-icon">⚠️</div>
+          <div class="preset-name">Fosforik Asit</div>
+          <div class="preset-formula">H₃PO₄</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="propane" data-category="covalent organic">
+          <div class="preset-icon">🛢️</div>
+          <div class="preset-name">Propan</div>
+          <div class="preset-formula">C₃H₈</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="butane" data-category="covalent organic">
+          <div class="preset-icon">🧯</div>
+          <div class="preset-name">Bütan</div>
+          <div class="preset-formula">C₄H₁₀</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="acetic-acid" data-category="covalent organic acid">
+          <div class="preset-icon">🥗</div>
+          <div class="preset-name">Asetik Asit</div>
+          <div class="preset-formula">CH₃COOH</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="formic-acid" data-category="covalent organic acid">
+          <div class="preset-icon">🐜</div>
+          <div class="preset-name">Formik Asit</div>
+          <div class="preset-formula">HCOOH</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="glucose" data-category="covalent organic">
+          <div class="preset-icon">🍬</div>
+          <div class="preset-name">Glikoz</div>
+          <div class="preset-formula">C₆H₁₂O₆</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="carbonic-acid" data-category="covalent inorganic acid">
+          <div class="preset-icon">🥤</div>
+          <div class="preset-name">Karbonik Asit</div>
+          <div class="preset-formula">H₂CO₃</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="sodium-hydroxide" data-category="ionic inorganic">
+          <div class="preset-icon">🧼</div>
+          <div class="preset-name">Sodyum Hidroksit</div>
+          <div class="preset-formula">NaOH</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="potassium-hydroxide" data-category="ionic inorganic">
+          <div class="preset-icon">🧴</div>
+          <div class="preset-name">Potasyum Hidroksit</div>
+          <div class="preset-formula">KOH</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="calcium-carbonate" data-category="ionic inorganic">
+          <div class="preset-icon">�ite</div>
+          <div class="preset-name">Kalsiyum Karbonat</div>
+          <div class="preset-formula">CaCO₃</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="sodium-bicarbonate" data-category="ionic inorganic">
+          <div class="preset-icon">🧁</div>
+          <div class="preset-name">Sodyum Bikarbonat</div>
+          <div class="preset-formula">NaHCO₃</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="hydrogen-peroxide" data-category="covalent inorganic">
+          <div class="preset-icon">🧼</div>
+          <div class="preset-name">Hidrojen Peroksit</div>
+          <div class="preset-formula">H₂O₂</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="sulfur-dioxide" data-category="covalent inorganic">
+          <div class="preset-icon">🏭</div>
+          <div class="preset-name">Kükürt Dioksit</div>
+          <div class="preset-formula">SO₂</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="nitrogen-dioxide" data-category="covalent inorganic">
+          <div class="preset-icon">💨</div>
+          <div class="preset-name">Azot Dioksit</div>
+          <div class="preset-formula">NO₂</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="carbon-monoxide" data-category="covalent inorganic">
+          <div class="preset-icon">⚠️</div>
+          <div class="preset-name">Karbon Monoksit</div>
+          <div class="preset-formula">CO</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="ozone" data-category="covalent inorganic">
+          <div class="preset-icon">🌍</div>
+          <div class="preset-name">Ozon</div>
+          <div class="preset-formula">O₃</div>
+          <div class="preset-bond-type covalent">Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="hydrogen-sulfide" data-category="covalent inorganic">
+          <div class="preset-icon">🦨</div>
+          <div class="preset-name">Hidrojen Sülfür</div>
+          <div class="preset-formula">H₂S</div>
+          <div class="preset-bond-type polar">Polar Kovalent</div>
+        </div>
+        <div class="preset-molecule" data-preset="aluminum-oxide" data-category="ionic inorganic">
+          <div class="preset-icon">💎</div>
+          <div class="preset-name">Alüminyum Oksit</div>
+          <div class="preset-formula">Al₂O₃</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="iron-oxide" data-category="ionic inorganic">
+          <div class="preset-icon">🧱</div>
+          <div class="preset-name">Demir(III) Oksit</div>
+          <div class="preset-formula">Fe₂O₃</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="copper-sulfate" data-category="ionic inorganic">
+          <div class="preset-icon">🔵</div>
+          <div class="preset-name">Bakır Sülfat</div>
+          <div class="preset-formula">CuSO₄</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+        <div class="preset-molecule" data-preset="silver-nitrate" data-category="ionic inorganic">
+          <div class="preset-icon">⭐</div>
+          <div class="preset-name">Gümüş Nitrat</div>
+          <div class="preset-formula">AgNO₃</div>
+          <div class="preset-bond-type ionic">İyonik</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-brand-text">ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline"> Modeline Uygun Kimya Eğitim Platformu</p>
+      <p class="text-xs mt-2">Bu platform ticari amaçlı değildir ve sadece eğitim amaçlı kullanılmaktadır.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Element Verileri
+    const ELEMENT_DATA = {
+      H: { name: 'Hidrojen', mass: 1.008, maxBonds: 1, electronegativity: 2.20, type: 'nonmetal', canBond: true },
+      C: { name: 'Karbon', mass: 12.011, maxBonds: 4, electronegativity: 2.55, type: 'nonmetal', canBond: true },
+      N: { name: 'Azot', mass: 14.007, maxBonds: 3, electronegativity: 3.04, type: 'nonmetal', canBond: true },
+      O: { name: 'Oksijen', mass: 15.999, maxBonds: 2, electronegativity: 3.44, type: 'nonmetal', canBond: true },
+      S: { name: 'Kükürt', mass: 32.065, maxBonds: 6, electronegativity: 2.58, type: 'nonmetal', canBond: true },
+      P: { name: 'Fosfor', mass: 30.974, maxBonds: 5, electronegativity: 2.19, type: 'nonmetal', canBond: true },
+      F: { name: 'Flor', mass: 18.998, maxBonds: 1, electronegativity: 3.98, type: 'halogen', canBond: true },
+      Cl: { name: 'Klor', mass: 35.453, maxBonds: 1, electronegativity: 3.16, type: 'halogen', canBond: true },
+      Br: { name: 'Brom', mass: 79.904, maxBonds: 1, electronegativity: 2.96, type: 'halogen', canBond: true },
+      I: { name: 'İyot', mass: 126.90, maxBonds: 1, electronegativity: 2.66, type: 'halogen', canBond: true },
+      Li: { name: 'Lityum', mass: 6.941, maxBonds: 1, electronegativity: 0.98, type: 'metal', canBond: true },
+      Na: { name: 'Sodyum', mass: 22.990, maxBonds: 1, electronegativity: 0.93, type: 'metal', canBond: true },
+      K: { name: 'Potasyum', mass: 39.098, maxBonds: 1, electronegativity: 0.82, type: 'metal', canBond: true },
+      Mg: { name: 'Magnezyum', mass: 24.305, maxBonds: 2, electronegativity: 1.31, type: 'metal', canBond: true },
+      Ca: { name: 'Kalsiyum', mass: 40.078, maxBonds: 2, electronegativity: 1.00, type: 'metal', canBond: true },
+      Ba: { name: 'Baryum', mass: 137.33, maxBonds: 2, electronegativity: 0.89, type: 'metal', canBond: true },
+      Al: { name: 'Alüminyum', mass: 26.982, maxBonds: 3, electronegativity: 1.61, type: 'metal', canBond: true },
+      Fe: { name: 'Demir', mass: 55.845, maxBonds: 6, electronegativity: 1.83, type: 'metal', canBond: true },
+      Cu: { name: 'Bakır', mass: 63.546, maxBonds: 2, electronegativity: 1.90, type: 'metal', canBond: true },
+      Zn: { name: 'Çinko', mass: 65.38, maxBonds: 2, electronegativity: 1.65, type: 'metal', canBond: true },
+      Ag: { name: 'Gümüş', mass: 107.87, maxBonds: 1, electronegativity: 1.93, type: 'metal', canBond: true },
+      He: { name: 'Helyum', mass: 4.003, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false },
+      Ne: { name: 'Neon', mass: 20.180, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false },
+      Ar: { name: 'Argon', mass: 39.948, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false }
+    };
+
+    const BOND_VALUES = { single: 1, double: 2, triple: 3 };
+
+    // Toast Sistemi
+    class ToastManager {
+      constructor() {
+        this.container = document.getElementById('toast-container');
+      }
+
+      show(type, title, message, duration = 4000) {
+        const icons = { error: '❌', warning: '⚠️', success: '✅', info: 'ℹ️' };
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+          <span class="toast-icon">${icons[type]}</span>
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close">✕</button>
+        `;
+        
+        toast.querySelector('.toast-close').onclick = () => this.hide(toast);
+        this.container.appendChild(toast);
+        
+        setTimeout(() => this.hide(toast), duration);
+      }
+
+      hide(toast) {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+      }
+
+      error(title, message) { this.show('error', title, message); }
+      warning(title, message) { this.show('warning', title, message); }
+      success(title, message) { this.show('success', title, message, 2000); }
+      info(title, message) { this.show('info', title, message); }
+    }
+
+    const toast = new ToastManager();
+
+    function toSubscript(num) {
+      const subscripts = '₀₁₂₃₄₅₆₇₈₉';
+      return String(num).split('').map(d => subscripts[d]).join('');
+    }
+
+    // Hazır Molekül Formülleri
+    const PRESET_FORMULAS = {
+      'water': 'H₂O', 'methane': 'CH₄', 'ammonia': 'NH₃', 'carbon-dioxide': 'CO₂',
+      'hydrogen-chloride': 'HCl', 'oxygen': 'O₂', 'nitrogen': 'N₂', 'hydrogen': 'H₂',
+      'sodium-chloride': 'NaCl', 'magnesium-oxide': 'MgO', 'calcium-chloride': 'CaCl₂',
+      'potassium-bromide': 'KBr', 'ethane': 'C₂H₆', 'ethene': 'C₂H₄', 'ethyne': 'C₂H₂',
+      'methanol': 'CH₃OH', 'ethanol': 'C₂H₅OH', 'sulfuric-acid': 'H₂SO₄',
+      'nitric-acid': 'HNO₃', 'phosphoric-acid': 'H₃PO₄', 'propane': 'C₃H₈',
+      'butane': 'C₄H₁₀', 'acetic-acid': 'CH₃COOH', 'formic-acid': 'HCOOH',
+      'glucose': 'C₆H₁₂O₆', 'carbonic-acid': 'H₂CO₃', 'sodium-hydroxide': 'NaOH',
+      'potassium-hydroxide': 'KOH', 'calcium-carbonate': 'CaCO₃',
+      'sodium-bicarbonate': 'NaHCO₃', 'hydrogen-peroxide': 'H₂O₂',
+      'sulfur-dioxide': 'SO₂', 'nitrogen-dioxide': 'NO₂', 'carbon-monoxide': 'CO',
+      'ozone': 'O₃', 'hydrogen-sulfide': 'H₂S', 'aluminum-oxide': 'Al₂O₃',
+      'iron-oxide': 'Fe₂O₃', 'copper-sulfate': 'CuSO₄', 'silver-nitrate': 'AgNO₃'
+    };
+
+    // Hazır Molekül Yapıları
+    const PRESETS = {
+      water: { atoms: [{ el: 'O', x: 180, y: 140 }, { el: 'H', x: 140, y: 180 }, { el: 'H', x: 220, y: 180 }], bonds: [[0,1,'single'],[0,2,'single']] },
+      methane: { atoms: [{ el: 'C', x: 180, y: 150 }, { el: 'H', x: 140, y: 110 }, { el: 'H', x: 220, y: 110 }, { el: 'H', x: 140, y: 190 }, { el: 'H', x: 220, y: 190 }], bonds: [[0,1,'single'],[0,2,'single'],[0,3,'single'],[0,4,'single']] },
+      ammonia: { atoms: [{ el: 'N', x: 180, y: 140 }, { el: 'H', x: 140, y: 180 }, { el: 'H', x: 220, y: 180 }, { el: 'H', x: 180, y: 100 }], bonds: [[0,1,'single'],[0,2,'single'],[0,3,'single']] },
+      'carbon-dioxide': { atoms: [{ el: 'O', x: 120, y: 150 }, { el: 'C', x: 180, y: 150 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,1,'double'],[1,2,'double']] },
+      'hydrogen-chloride': { atoms: [{ el: 'H', x: 150, y: 150 }, { el: 'Cl', x: 210, y: 150 }], bonds: [[0,1,'single']] },
+      oxygen: { atoms: [{ el: 'O', x: 150, y: 150 }, { el: 'O', x: 210, y: 150 }], bonds: [[0,1,'double']] },
+      nitrogen: { atoms: [{ el: 'N', x: 150, y: 150 }, { el: 'N', x: 210, y: 150 }], bonds: [[0,1,'triple']] },
+      hydrogen: { atoms: [{ el: 'H', x: 150, y: 150 }, { el: 'H', x: 210, y: 150 }], bonds: [[0,1,'single']] },
+      'sodium-chloride': { atoms: [{ el: 'Na', x: 150, y: 150 }, { el: 'Cl', x: 220, y: 150 }], bonds: [[0,1,'single']] },
+      'magnesium-oxide': { atoms: [{ el: 'Mg', x: 150, y: 150 }, { el: 'O', x: 220, y: 150 }], bonds: [[0,1,'single']] },
+      'calcium-chloride': { atoms: [{ el: 'Ca', x: 180, y: 150 }, { el: 'Cl', x: 120, y: 150 }, { el: 'Cl', x: 240, y: 150 }], bonds: [[0,1,'single'],[0,2,'single']] },
+      'potassium-bromide': { atoms: [{ el: 'K', x: 150, y: 150 }, { el: 'Br', x: 220, y: 150 }], bonds: [[0,1,'single']] },
+      ethane: { atoms: [{ el: 'C', x: 150, y: 150 }, { el: 'C', x: 220, y: 150 }, { el: 'H', x: 110, y: 120 }, { el: 'H', x: 110, y: 180 }, { el: 'H', x: 150, y: 100 }, { el: 'H', x: 260, y: 120 }, { el: 'H', x: 260, y: 180 }, { el: 'H', x: 220, y: 100 }], bonds: [[0,1,'single'],[0,2,'single'],[0,3,'single'],[0,4,'single'],[1,5,'single'],[1,6,'single'],[1,7,'single']] },
+      ethene: { atoms: [{ el: 'C', x: 150, y: 150 }, { el: 'C', x: 220, y: 150 }, { el: 'H', x: 110, y: 120 }, { el: 'H', x: 110, y: 180 }, { el: 'H', x: 260, y: 120 }, { el: 'H', x: 260, y: 180 }], bonds: [[0,1,'double'],[0,2,'single'],[0,3,'single'],[1,4,'single'],[1,5,'single']] },
+      ethyne: { atoms: [{ el: 'C', x: 150, y: 150 }, { el: 'C', x: 220, y: 150 }, { el: 'H', x: 100, y: 150 }, { el: 'H', x: 270, y: 150 }], bonds: [[0,1,'triple'],[0,2,'single'],[1,3,'single']] },
+      methanol: { atoms: [{ el: 'C', x: 150, y: 150 }, { el: 'O', x: 220, y: 150 }, { el: 'H', x: 260, y: 150 }, { el: 'H', x: 120, y: 110 }, { el: 'H', x: 120, y: 190 }, { el: 'H', x: 150, y: 100 }], bonds: [[0,1,'single'],[1,2,'single'],[0,3,'single'],[0,4,'single'],[0,5,'single']] },
+      ethanol: { atoms: [{ el: 'C', x: 120, y: 150 }, { el: 'C', x: 190, y: 150 }, { el: 'O', x: 260, y: 150 }, { el: 'H', x: 300, y: 150 }, { el: 'H', x: 90, y: 110 }, { el: 'H', x: 90, y: 190 }, { el: 'H', x: 120, y: 100 }, { el: 'H', x: 190, y: 100 }, { el: 'H', x: 190, y: 200 }], bonds: [[0,1,'single'],[1,2,'single'],[2,3,'single'],[0,4,'single'],[0,5,'single'],[0,6,'single'],[1,7,'single'],[1,8,'single']] },
+      'sulfuric-acid': { atoms: [{ el: 'S', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 180, y: 210 }, { el: 'O', x: 120, y: 150 }, { el: 'O', x: 240, y: 150 }, { el: 'H', x: 80, y: 150 }, { el: 'H', x: 280, y: 150 }], bonds: [[0,1,'double'],[0,2,'double'],[0,3,'single'],[0,4,'single'],[3,5,'single'],[4,6,'single']] },
+      'nitric-acid': { atoms: [{ el: 'N', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 240, y: 150 }, { el: 'O', x: 120, y: 150 }, { el: 'H', x: 80, y: 150 }], bonds: [[0,1,'double'],[0,2,'double'],[0,3,'single'],[3,4,'single']] },
+      'phosphoric-acid': { atoms: [{ el: 'P', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 240, y: 150 }, { el: 'O', x: 120, y: 150 }, { el: 'O', x: 180, y: 210 }, { el: 'H', x: 280, y: 150 }, { el: 'H', x: 80, y: 150 }, { el: 'H', x: 180, y: 250 }], bonds: [[0,1,'double'],[0,2,'single'],[0,3,'single'],[0,4,'single'],[2,5,'single'],[3,6,'single'],[4,7,'single']] },
+      propane: { atoms: [{ el: 'C', x: 100, y: 150 }, { el: 'C', x: 180, y: 150 }, { el: 'C', x: 260, y: 150 }, { el: 'H', x: 60, y: 120 }, { el: 'H', x: 60, y: 180 }, { el: 'H', x: 100, y: 100 }, { el: 'H', x: 180, y: 100 }, { el: 'H', x: 180, y: 200 }, { el: 'H', x: 300, y: 120 }, { el: 'H', x: 300, y: 180 }, { el: 'H', x: 260, y: 100 }], bonds: [[0,1,'single'],[1,2,'single'],[0,3,'single'],[0,4,'single'],[0,5,'single'],[1,6,'single'],[1,7,'single'],[2,8,'single'],[2,9,'single'],[2,10,'single']] },
+      butane: { atoms: [{ el: 'C', x: 70, y: 150 }, { el: 'C', x: 140, y: 150 }, { el: 'C', x: 210, y: 150 }, { el: 'C', x: 280, y: 150 }, { el: 'H', x: 40, y: 120 }, { el: 'H', x: 40, y: 180 }, { el: 'H', x: 70, y: 100 }, { el: 'H', x: 140, y: 100 }, { el: 'H', x: 140, y: 200 }, { el: 'H', x: 210, y: 100 }, { el: 'H', x: 210, y: 200 }, { el: 'H', x: 310, y: 120 }, { el: 'H', x: 310, y: 180 }, { el: 'H', x: 280, y: 100 }], bonds: [[0,1,'single'],[1,2,'single'],[2,3,'single'],[0,4,'single'],[0,5,'single'],[0,6,'single'],[1,7,'single'],[1,8,'single'],[2,9,'single'],[2,10,'single'],[3,11,'single'],[3,12,'single'],[3,13,'single']] },
+      'acetic-acid': { atoms: [{ el: 'C', x: 120, y: 150 }, { el: 'C', x: 200, y: 150 }, { el: 'O', x: 200, y: 90 }, { el: 'O', x: 270, y: 150 }, { el: 'H', x: 310, y: 150 }, { el: 'H', x: 80, y: 120 }, { el: 'H', x: 80, y: 180 }, { el: 'H', x: 120, y: 100 }], bonds: [[0,1,'single'],[1,2,'double'],[1,3,'single'],[3,4,'single'],[0,5,'single'],[0,6,'single'],[0,7,'single']] },
+      'formic-acid': { atoms: [{ el: 'C', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 250, y: 150 }, { el: 'H', x: 130, y: 150 }, { el: 'H', x: 290, y: 150 }], bonds: [[0,1,'double'],[0,2,'single'],[0,3,'single'],[2,4,'single']] },
+      glucose: { atoms: [{ el: 'C', x: 100, y: 120 }, { el: 'C', x: 160, y: 120 }, { el: 'C', x: 220, y: 120 }, { el: 'C', x: 220, y: 180 }, { el: 'C', x: 160, y: 180 }, { el: 'O', x: 100, y: 180 }, { el: 'O', x: 100, y: 70 }, { el: 'O', x: 160, y: 70 }, { el: 'O', x: 270, y: 120 }, { el: 'O', x: 270, y: 180 }, { el: 'O', x: 160, y: 230 }], bonds: [[0,1,'single'],[1,2,'single'],[2,3,'single'],[3,4,'single'],[4,5,'single'],[5,0,'single'],[0,6,'single'],[1,7,'single'],[2,8,'single'],[3,9,'single'],[4,10,'single']] },
+      'carbonic-acid': { atoms: [{ el: 'C', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 120, y: 180 }, { el: 'O', x: 240, y: 180 }, { el: 'H', x: 90, y: 210 }, { el: 'H', x: 270, y: 210 }], bonds: [[0,1,'double'],[0,2,'single'],[0,3,'single'],[2,4,'single'],[3,5,'single']] },
+      'sodium-hydroxide': { atoms: [{ el: 'Na', x: 130, y: 150 }, { el: 'O', x: 200, y: 150 }, { el: 'H', x: 250, y: 150 }], bonds: [[0,1,'single'],[1,2,'single']] },
+      'potassium-hydroxide': { atoms: [{ el: 'K', x: 130, y: 150 }, { el: 'O', x: 200, y: 150 }, { el: 'H', x: 250, y: 150 }], bonds: [[0,1,'single'],[1,2,'single']] },
+      'calcium-carbonate': { atoms: [{ el: 'Ca', x: 100, y: 150 }, { el: 'C', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 240, y: 150 }, { el: 'O', x: 180, y: 210 }], bonds: [[0,1,'single'],[1,2,'double'],[1,3,'single'],[1,4,'single']] },
+      'sodium-bicarbonate': { atoms: [{ el: 'Na', x: 80, y: 150 }, { el: 'C', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 130, y: 180 }, { el: 'O', x: 240, y: 180 }, { el: 'H', x: 270, y: 210 }], bonds: [[0,3,'single'],[1,2,'double'],[1,3,'single'],[1,4,'single'],[4,5,'single']] },
+      'hydrogen-peroxide': { atoms: [{ el: 'O', x: 150, y: 150 }, { el: 'O', x: 220, y: 150 }, { el: 'H', x: 110, y: 120 }, { el: 'H', x: 260, y: 180 }], bonds: [[0,1,'single'],[0,2,'single'],[1,3,'single']] },
+      'sulfur-dioxide': { atoms: [{ el: 'S', x: 180, y: 150 }, { el: 'O', x: 120, y: 150 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,1,'double'],[0,2,'double']] },
+      'nitrogen-dioxide': { atoms: [{ el: 'N', x: 180, y: 150 }, { el: 'O', x: 120, y: 150 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,1,'double'],[0,2,'single']] },
+      'carbon-monoxide': { atoms: [{ el: 'C', x: 150, y: 150 }, { el: 'O', x: 220, y: 150 }], bonds: [[0,1,'triple']] },
+      ozone: { atoms: [{ el: 'O', x: 120, y: 150 }, { el: 'O', x: 180, y: 120 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,1,'single'],[1,2,'double']] },
+      'hydrogen-sulfide': { atoms: [{ el: 'S', x: 180, y: 140 }, { el: 'H', x: 140, y: 180 }, { el: 'H', x: 220, y: 180 }], bonds: [[0,1,'single'],[0,2,'single']] },
+      'aluminum-oxide': { atoms: [{ el: 'Al', x: 120, y: 120 }, { el: 'Al', x: 240, y: 120 }, { el: 'O', x: 100, y: 180 }, { el: 'O', x: 180, y: 180 }, { el: 'O', x: 260, y: 180 }], bonds: [[0,2,'single'],[0,3,'single'],[1,3,'single'],[1,4,'single']] },
+      'iron-oxide': { atoms: [{ el: 'Fe', x: 120, y: 120 }, { el: 'Fe', x: 240, y: 120 }, { el: 'O', x: 100, y: 180 }, { el: 'O', x: 180, y: 180 }, { el: 'O', x: 260, y: 180 }], bonds: [[0,2,'single'],[0,3,'single'],[1,3,'single'],[1,4,'single']] },
+      'copper-sulfate': { atoms: [{ el: 'Cu', x: 80, y: 150 }, { el: 'S', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 180, y: 210 }, { el: 'O', x: 130, y: 150 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,4,'single'],[1,2,'double'],[1,3,'double'],[1,4,'single'],[1,5,'single']] },
+      'silver-nitrate': { atoms: [{ el: 'Ag', x: 80, y: 150 }, { el: 'N', x: 180, y: 150 }, { el: 'O', x: 180, y: 90 }, { el: 'O', x: 130, y: 180 }, { el: 'O', x: 240, y: 150 }], bonds: [[0,3,'single'],[1,2,'double'],[1,3,'single'],[1,4,'double']] }
+    };
+
+    // CompoundBuilder Sınıfı
+    class CompoundBuilder {
+      constructor() {
+        this.canvas = document.getElementById('canvas-content');
+        this.atoms = [];
+        this.bonds = [];
+        this.selectedAtom = null;
+        this.bondingAtom = null;
+        this.currentBondType = 'single';
+        this.isDragging = false;
+        this.draggedAtom = null;
+        this.dragOffset = { x: 0, y: 0 };
+        this.history = [];
+        this.maxHistory = 50;
+        this.presetFormula = null; // Hazır molekül formülü
+        
+        this.init();
+      }
+
+      init() {
+        // Element seçimi
+        document.querySelectorAll('.palette-element').forEach(btn => {
+          btn.addEventListener('click', () => this.selectElement(btn));
+        });
+
+        // Araçlar
+        document.getElementById('clear-canvas').addEventListener('click', () => this.clear());
+        document.getElementById('undo').addEventListener('click', () => this.undo());
+        document.getElementById('delete-mode').addEventListener('click', (e) => {
+          e.target.classList.toggle('active');
+          this.deleteMode = e.target.classList.contains('active');
+        });
+
+        // Bağ türü seçimi
+        document.querySelectorAll('.bond-btn').forEach(btn => {
+          btn.addEventListener('click', () => this.selectBondType(btn));
+        });
+
+        // Canvas olayları
+        this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('mouseup', () => this.handleMouseUp());
+        this.canvas.addEventListener('mouseleave', () => this.handleMouseUp());
+
+        // Hazır moleküller
+        document.querySelectorAll('.preset-molecule').forEach(card => {
+          card.addEventListener('click', () => this.loadPreset(card.dataset.preset));
+        });
+
+        // Klavye kısayolları
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Delete' && this.selectedAtom !== null) this.deleteSelectedAtom();
+          if (e.ctrlKey && e.key === 'z') { e.preventDefault(); this.undo(); }
+          if (e.key === 'Escape') this.cancelBonding();
+        });
+      }
+
+      selectElement(btn) {
+        document.querySelectorAll('.palette-element').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        this.cancelBonding();
+      }
+
+      selectBondType(btn) {
+        document.querySelectorAll('.bond-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.currentBondType = btn.dataset.bond || 'single';
+      }
+
+      handleCanvasClick(e) {
+        if (this.isDragging) return;
+        
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Atom üzerine tıklama kontrolü
+        const clickedAtomIndex = this.findAtomAt(x, y);
+        
+        if (clickedAtomIndex !== null) {
+          // Bağ oluşturma modu
+          if (this.bondingAtom !== null) {
+            if (clickedAtomIndex !== this.bondingAtom) {
+              this.createBond(this.bondingAtom, clickedAtomIndex);
+            }
+            this.cancelBonding();
+          } else {
+            // Bağ oluşturma modunu başlat
+            this.bondingAtom = clickedAtomIndex;
+            this.selectedAtom = clickedAtomIndex;
+            this.atoms[clickedAtomIndex].element.classList.add('bonding');
+            this.updateInfoPanel();
+          }
+        } else {
+          // Boş alana tıklama - yeni atom ekle
+          const selectedBtn = document.querySelector('.palette-element.selected');
+          if (selectedBtn) {
+            this.addAtom(selectedBtn.dataset.element, x, y);
+          }
+          this.cancelBonding();
+        }
+      }
+
+      handleMouseDown(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const atomIndex = this.findAtomAt(x, y);
+        if (atomIndex !== null) {
+          this.isDragging = true;
+          this.draggedAtom = atomIndex;
+          this.dragOffset = {
+            x: x - this.atoms[atomIndex].x,
+            y: y - this.atoms[atomIndex].y
+          };
+          this.atoms[atomIndex].element.classList.add('dragging');
+        }
+      }
+
+      handleMouseMove(e) {
+        if (!this.isDragging || this.draggedAtom === null) return;
+        
+        const rect = this.canvas.getBoundingClientRect();
+        const x = Math.max(20, Math.min(rect.width - 20, e.clientX - rect.left - this.dragOffset.x));
+        const y = Math.max(20, Math.min(rect.height - 20, e.clientY - rect.top - this.dragOffset.y));
+        
+        this.atoms[this.draggedAtom].x = x;
+        this.atoms[this.draggedAtom].y = y;
+        this.atoms[this.draggedAtom].element.style.left = x + 'px';
+        this.atoms[this.draggedAtom].element.style.top = y + 'px';
+        
+        this.updateBonds();
+      }
+
+      handleMouseUp() {
+        if (this.draggedAtom !== null) {
+          this.atoms[this.draggedAtom].element.classList.remove('dragging');
+        }
+        this.isDragging = false;
+        this.draggedAtom = null;
+      }
+
+      findAtomAt(x, y) {
+        for (let i = this.atoms.length - 1; i >= 0; i--) {
+          const atom = this.atoms[i];
+          const dx = x - atom.x;
+          const dy = y - atom.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 25) return i;
+        }
+        return null;
+      }
+
+      addAtom(symbol, x, y) {
+        const data = ELEMENT_DATA[symbol];
+        if (!data) return;
+
+        this.saveState();
+        this.presetFormula = null; // Yeni atom eklenince hazır formülü sıfırla
+
+        const atom = document.createElement('div');
+        atom.className = `atom ${symbol}`;
+        atom.textContent = symbol;
+        atom.style.left = x + 'px';
+        atom.style.top = y + 'px';
+        
+        this.canvas.appendChild(atom);
+        this.atoms.push({ symbol, x, y, element: atom, bonds: 0 });
+        
+        this.updateInfoPanel();
+        toast.success('Atom Eklendi', `${data.name} (${symbol}) eklendi`);
+      }
+
+      createBond(fromIndex, toIndex) {
+        const fromAtom = this.atoms[fromIndex];
+        const toAtom = this.atoms[toIndex];
+        const fromData = ELEMENT_DATA[fromAtom.symbol];
+        const toData = ELEMENT_DATA[toAtom.symbol];
+        const bondValue = BOND_VALUES[this.currentBondType];
+
+        // Soy gaz kontrolü
+        if (!fromData.canBond || !toData.canBond) {
+          toast.error('Bağ Hatası', 'Soy gazlar bağ yapamazlar!');
+          return;
+        }
+
+        // Mevcut bağ kontrolü
+        const existingBond = this.bonds.find(b => 
+          (b.from === fromIndex && b.to === toIndex) ||
+          (b.from === toIndex && b.to === fromIndex)
+        );
+        
+        if (existingBond) {
+          toast.warning('Bağ Mevcut', 'Bu atomlar arasında zaten bir bağ var!');
+          return;
+        }
+
+        // Maksimum bağ kontrolü
+        if (fromAtom.bonds + bondValue > fromData.maxBonds) {
+          toast.error('Bağ Sınırı', `${fromData.name} en fazla ${fromData.maxBonds} bağ yapabilir!`);
+          return;
+        }
+        if (toAtom.bonds + bondValue > toData.maxBonds) {
+          toast.error('Bağ Sınırı', `${toData.name} en fazla ${toData.maxBonds} bağ yapabilir!`);
+          return;
+        }
+
+        this.saveState();
+
+        // SVG bağ çizgisi oluştur
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('bond-line');
+        svg.style.position = 'absolute';
+        svg.style.left = '0';
+        svg.style.top = '0';
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        svg.style.pointerEvents = 'none';
+        svg.style.zIndex = '0';
+        svg.style.background = 'transparent';
+
+        this.bonds.push({
+          from: fromIndex,
+          to: toIndex,
+          type: this.currentBondType,
+          element: svg
+        });
+
+        fromAtom.bonds += bondValue;
+        toAtom.bonds += bondValue;
+
+        this.canvas.insertBefore(svg, this.canvas.firstChild);
+        this.updateBonds();
+        this.updateInfoPanel();
+
+        const bondNames = { single: 'Tekli', double: 'İkili', triple: 'Üçlü' };
+        toast.success('Bağ Oluşturuldu', `${fromAtom.symbol}-${toAtom.symbol} ${bondNames[this.currentBondType]} bağ`);
+      }
+
+      updateBonds() {
+        this.bonds.forEach(bond => {
+          const from = this.atoms[bond.from];
+          const to = this.atoms[bond.to];
+          
+          const dx = to.x - from.x;
+          const dy = to.y - from.y;
+          const length = Math.sqrt(dx*dx + dy*dy);
+          const perpX = -dy / length * 4;
+          const perpY = dx / length * 4;
+
+          let lines = '';
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          const color = isDark ? '#ffffff' : '#333333';
+          
+          if (bond.type === 'single') {
+            lines = `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;
+          } else if (bond.type === 'double') {
+            lines = `
+              <line x1="${from.x + perpX}" y1="${from.y + perpY}" x2="${to.x + perpX}" y2="${to.y + perpY}" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="${from.x - perpX}" y1="${from.y - perpY}" x2="${to.x - perpX}" y2="${to.y - perpY}" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
+            `;
+          } else if (bond.type === 'triple') {
+            lines = `
+              <line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+              <line x1="${from.x + perpX * 1.5}" y1="${from.y + perpY * 1.5}" x2="${to.x + perpX * 1.5}" y2="${to.y + perpY * 1.5}" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+              <line x1="${from.x - perpX * 1.5}" y1="${from.y - perpY * 1.5}" x2="${to.x - perpX * 1.5}" y2="${to.y - perpY * 1.5}" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+            `;
+          }
+
+          bond.element.innerHTML = lines;
+        });
+      }
+
+      cancelBonding() {
+        if (this.bondingAtom !== null) {
+          this.atoms[this.bondingAtom].element.classList.remove('bonding');
+        }
+        this.bondingAtom = null;
+        this.selectedAtom = null;
+        this.updateInfoPanel();
+      }
+
+      deleteSelectedAtom() {
+        if (this.selectedAtom === null) return;
+        
+        this.saveState();
+        this.presetFormula = null; // Atom silinince hazır formülü sıfırla
+        
+        const atomIndex = this.selectedAtom;
+        
+        // Bağlı bağları sil
+        this.bonds = this.bonds.filter(bond => {
+          if (bond.from === atomIndex || bond.to === atomIndex) {
+            const otherIndex = bond.from === atomIndex ? bond.to : bond.from;
+            this.atoms[otherIndex].bonds -= BOND_VALUES[bond.type];
+            bond.element.remove();
+            return false;
+          }
+          // İndeksleri güncelle
+          if (bond.from > atomIndex) bond.from--;
+          if (bond.to > atomIndex) bond.to--;
+          return true;
+        });
+
+        // Atomu sil
+        this.atoms[atomIndex].element.remove();
+        this.atoms.splice(atomIndex, 1);
+        
+        this.selectedAtom = null;
+        this.updateInfoPanel();
+        toast.info('Atom Silindi', 'Atom ve bağları kaldırıldı');
+      }
+
+      clear() {
+        if (this.atoms.length === 0) return;
+        
+        this.saveState();
+        
+        this.atoms.forEach(atom => atom.element.remove());
+        this.bonds.forEach(bond => bond.element.remove());
+        this.atoms = [];
+        this.bonds = [];
+        this.selectedAtom = null;
+        this.bondingAtom = null;
+        this.presetFormula = null; // Hazır molekül formülünü temizle
+        
+        this.updateInfoPanel();
+        toast.info('Temizlendi', 'Tüm atomlar ve bağlar kaldırıldı');
+      }
+
+      saveState() {
+        const state = {
+          atoms: this.atoms.map(a => ({ symbol: a.symbol, x: a.x, y: a.y, bonds: a.bonds })),
+          bonds: this.bonds.map(b => ({ from: b.from, to: b.to, type: b.type }))
+        };
+        this.history.push(JSON.stringify(state));
+        if (this.history.length > this.maxHistory) this.history.shift();
+      }
+
+      undo() {
+        if (this.history.length === 0) {
+          toast.warning('Geri Alma', 'Geri alınacak işlem yok');
+          return;
+        }
+
+        const state = JSON.parse(this.history.pop());
+        
+        // Mevcut durumu temizle
+        this.atoms.forEach(atom => atom.element.remove());
+        this.bonds.forEach(bond => bond.element.remove());
+        this.atoms = [];
+        this.bonds = [];
+
+        // Durumu geri yükle
+        state.atoms.forEach(a => {
+          const atom = document.createElement('div');
+          atom.className = `atom ${a.symbol}`;
+          atom.textContent = a.symbol;
+          atom.style.left = a.x + 'px';
+          atom.style.top = a.y + 'px';
+          this.canvas.appendChild(atom);
+          this.atoms.push({ ...a, element: atom });
+        });
+
+        state.bonds.forEach(b => {
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.classList.add('bond-line');
+          svg.style.position = 'absolute';
+          svg.style.left = '0';
+          svg.style.top = '0';
+          svg.style.width = '100%';
+          svg.style.height = '100%';
+          svg.style.pointerEvents = 'none';
+          svg.style.zIndex = '0';
+          svg.style.background = 'transparent';
+          this.canvas.insertBefore(svg, this.canvas.firstChild);
+          this.bonds.push({ ...b, element: svg });
+        });
+
+        this.updateBonds();
+        this.selectedAtom = null;
+        this.bondingAtom = null;
+        this.updateInfoPanel();
+        toast.info('Geri Alındı', 'Son işlem geri alındı');
+      }
+
+      loadPreset(moleculeName) {
+        const preset = PRESETS[moleculeName];
+        if (!preset) {
+          toast.error('Hata', 'Molekül bulunamadı');
+          return;
+        }
+
+        // Mevcut atomları ve bağları temizle (saveState çağırmadan)
+        this.atoms.forEach(atom => atom.element.remove());
+        this.bonds.forEach(bond => bond.element.remove());
+        this.atoms = [];
+        this.bonds = [];
+        this.selectedAtom = null;
+        this.bondingAtom = null;
+        this.history = []; // Yeni molekül yüklenirken geçmişi temizle
+        this.presetFormula = PRESET_FORMULAS[moleculeName] || null; // Hazır molekül formülünü kaydet
+
+        // Canvas content'i al
+        const canvasContent = document.getElementById('canvas-content');
+        
+        preset.atoms.forEach(a => {
+          const atom = document.createElement('div');
+          atom.className = `atom ${a.el}`;
+          atom.textContent = a.el;
+          atom.style.left = a.x + 'px';
+          atom.style.top = a.y + 'px';
+          canvasContent.appendChild(atom);
+          this.atoms.push({ symbol: a.el, x: a.x, y: a.y, element: atom, bonds: 0 });
+        });
+
+        // Bağları kural kontrolü OLMADAN ekle (hazır moleküller için)
+        preset.bonds.forEach(([from, to, type]) => {
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.classList.add('bond-line');
+          svg.style.position = 'absolute';
+          svg.style.left = '0';
+          svg.style.top = '0';
+          svg.style.width = '100%';
+          svg.style.height = '100%';
+          svg.style.pointerEvents = 'none';
+          svg.style.zIndex = '0';
+          svg.style.background = 'transparent';
+          canvasContent.insertBefore(svg, canvasContent.firstChild);
+          
+          this.bonds.push({ from, to, type, element: svg });
+          // Bağ sayısını güncelle (kural kontrolü yok)
+          this.atoms[from].bonds += BOND_VALUES[type];
+          this.atoms[to].bonds += BOND_VALUES[type];
+        });
+
+        this.updateBonds();
+        this.updateInfoPanel();
+        
+        const formula = PRESET_FORMULAS[moleculeName] || moleculeName;
+        toast.success('Molekül Yüklendi', `${formula} hazır!`);
+      }
+
+      updateInfoPanel() {
+        const formulaEl = document.getElementById('formula');
+        const atomCountEl = document.getElementById('atom-count');
+        const bondCountEl = document.getElementById('bond-count');
+        const massEl = document.getElementById('molecular-mass');
+        const bondTypeEl = document.getElementById('bond-type-info');
+        const enFillEl = document.getElementById('en-bar-fill');
+        const enValueEl = document.getElementById('en-diff-value');
+
+        if (this.atoms.length === 0) {
+          if (formulaEl) formulaEl.textContent = '-';
+          if (atomCountEl) atomCountEl.textContent = '0';
+          if (bondCountEl) bondCountEl.textContent = '0';
+          if (massEl) massEl.textContent = '0 g/mol';
+          if (bondTypeEl) bondTypeEl.textContent = '-';
+          if (enFillEl) enFillEl.style.left = '0%';
+          if (enValueEl) enValueEl.textContent = '0';
+          return;
+        }
+
+        // Formül hesapla
+        const counts = {};
+        let totalMass = 0;
+        let totalEN = 0;
+
+        this.atoms.forEach(atom => {
+          counts[atom.symbol] = (counts[atom.symbol] || 0) + 1;
+          totalMass += ELEMENT_DATA[atom.symbol].mass;
+          totalEN += ELEMENT_DATA[atom.symbol].electronegativity;
+        });
+
+        // Standart sıralama: C, H, sonra alfabetik
+        const sortedSymbols = Object.keys(counts).sort((a, b) => {
+          if (a === 'C') return -1;
+          if (b === 'C') return 1;
+          if (a === 'H') return -1;
+          if (b === 'H') return 1;
+          return a.localeCompare(b);
+        });
+
+        let formula = '';
+        sortedSymbols.forEach(symbol => {
+          formula += symbol;
+          if (counts[symbol] > 1) formula += toSubscript(counts[symbol]);
+        });
+
+        // Hazır molekül için kayıtlı formülü kullan
+        if (this.presetFormula) {
+          formula = this.presetFormula;
+        }
+
+        if (formulaEl) formulaEl.textContent = formula || '-';
+        if (massEl) massEl.textContent = totalMass.toFixed(3) + ' g/mol';
+        if (atomCountEl) atomCountEl.textContent = this.atoms.length;
+        if (bondCountEl) bondCountEl.textContent = this.bonds.length;
+
+        // Elektronegatiflik farkı hesapla
+        let maxEN = 0, minEN = 4;
+        this.atoms.forEach(atom => {
+          const en = ELEMENT_DATA[atom.symbol].electronegativity;
+          if (en > 0) {
+            if (en > maxEN) maxEN = en;
+            if (en < minEN) minEN = en;
+          }
+        });
+        const enDiff = maxEN - minEN;
+        
+        // EN barını güncelle (0-3 arası, yüzdeye çevir)
+        if (enFillEl) enFillEl.style.left = Math.min((enDiff / 3) * 100, 100) + '%';
+        if (enValueEl) enValueEl.textContent = enDiff.toFixed(2);
+        
+        // Bağ türünü belirle
+        let bondType = 'Kovalent';
+        if (enDiff >= 1.7) bondType = 'İyonik';
+        else if (enDiff >= 0.5) bondType = 'Polar Kovalent';
+        if (bondTypeEl) bondTypeEl.textContent = bondType;
+      }
+
+      identifyMolecule(formula) {
+        const knownMolecules = {
+          'H₂O': 'Su',
+          'CO₂': 'Karbon Dioksit',
+          'CH₄': 'Metan',
+          'NH₃': 'Amonyak',
+          'NaCl': 'Sodyum Klorür (Tuz)',
+          'H₂': 'Hidrojen Gazı',
+          'O₂': 'Oksijen Gazı',
+          'N₂': 'Azot Gazı',
+          'HCl': 'Hidroklorik Asit',
+          'H₂SO₄': 'Sülfürik Asit',
+          'HNO₃': 'Nitrik Asit',
+          'H₃PO₄': 'Fosforik Asit',
+          'C₂H₆': 'Etan',
+          'C₂H₄': 'Etilen',
+          'C₂H₂': 'Asetilen',
+          'CH₃OH': 'Metanol',
+          'C₂H₅OH': 'Etanol',
+          'CH₄O': 'Metanol',
+          'C₂H₆O': 'Etanol',
+          'C₃H₈': 'Propan',
+          'C₄H₁₀': 'Bütan',
+          'MgO': 'Magnezyum Oksit',
+          'CaCl₂': 'Kalsiyum Klorür',
+          'KBr': 'Potasyum Bromür',
+          'HCOOH': 'Formik Asit',
+          'CH₂O₂': 'Formik Asit',
+          'CH₃COOH': 'Asetik Asit',
+          'C₂H₄O₂': 'Asetik Asit',
+          'C₆H₁₂O₆': 'Glikoz',
+          'H₂CO₃': 'Karbonik Asit',
+          'NaOH': 'Sodyum Hidroksit',
+          'KOH': 'Potasyum Hidroksit',
+          'CaCO₃': 'Kalsiyum Karbonat',
+          'NaHCO₃': 'Sodyum Bikarbonat',
+          'H₂O₂': 'Hidrojen Peroksit',
+          'SO₂': 'Kükürt Dioksit',
+          'NO₂': 'Azot Dioksit',
+          'CO': 'Karbon Monoksit',
+          'O₃': 'Ozon',
+          'H₂S': 'Hidrojen Sülfür',
+          'Al₂O₃': 'Alüminyum Oksit',
+          'Fe₂O₃': 'Demir Oksit',
+          'CuSO₄': 'Bakır Sülfat',
+          'AgNO₃': 'Gümüş Nitrat'
+        };
+        return knownMolecules[formula];
+      }
+    }
+
+    // Başlat
+    const builder = new CompoundBuilder();
+    
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const THEME_STORAGE_KEY = 'chemlabx-theme';
+    
+    // Sayfa yüklendiğinde tema tercihini kontrol et
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem('theme');
+    if (savedTheme) {
+      html.setAttribute('data-theme', savedTheme);
+      // Legacy anahtardan (theme) yeni anahtara (chemlabx-theme) taşı
+      localStorage.setItem(THEME_STORAGE_KEY, savedTheme);
+      localStorage.removeItem('theme');
+    }
+    
+    // Tema değiştirme butonu
+    themeToggle?.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+      // Bağ renklerini güncelle
+      builder.updateBonds();
+    });
+    
+    // Filtre butonları
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.preset-molecule').forEach(mol => {
+          if (filter === 'all') {
+            mol.classList.remove('hidden');
+          } else {
+            const categories = mol.dataset.category.split(' ');
+            mol.classList.toggle('hidden', !categories.includes(filter));
+          }
+        });
+      });
+    });
+    
+    // Mobile Menu
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mainNav = document.getElementById('mainNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    
+    if (mobileMenuToggle && mainNav) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mainNav.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
+      });
+      
+      mobileOverlay.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+      });
+    }
+  </script>
+</body>
+</html>
+

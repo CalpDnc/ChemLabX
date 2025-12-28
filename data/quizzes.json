@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "aciklama": "Bu dosya eğitim quizlerini içerir. Anahtarlar sınıfları temsil eder (9,10,11,12). Her test objesi 'id','title','description','type' ve gerekirse 'questions' alanlarını içerir. 'ogm' tipli testler için 'ogm_url' alanı kullanılır.",
+    "duzenleme_kilavuzu": "Yeni test eklerken mevcut sınıf dizilerine (örn. \"9\") obje ekleyin. JSON formatını koruyun. Bu dosyaya yorum eklenemez; açıklamalar için _meta alanını kullanın."
+  },
+  "9": [
+    {
+      "id": "9-1",
+      "title": "Test 1 - Temel Kavramlar",
+      "description": "Atom, molekül ve karışımlar",
+      "type": "local",
+      "questions": [
+        {"id":"q1","text":"Su molekülünün formülü hangisidir?","choices":["H2O","CO2","O2","NaCl"],"answer":0},
+        {"id":"q2","text":"Atomun çekirdeğinde hangi tanecikler bulunur?","choices":["Proton ve nötron","Elektron ve proton","Sadece elektron","Proton, nötron, elektron"],"answer":0}
+      ]
+    },
+    {
+      "id": "9-2",
+      "title": "Test 2 - Periyodik Cetvel Giriş",
+      "description": "Elementlerin sınıflandırılması",
+      "type": "ogm",
+      "ogm_url": "https://ogm-materyal.example.org/test/9-2"
+    },
+    {
+      "id": "9-3",
+      "title": "Test 3 - Kimyasal Bağlar",
+      "description": "İyonik ve kovalent bağlar",
+      "type": "local",
+      "questions": [
+        {"id":"q1","text":"NaCl bağ türü nedir?","choices":["İyonik","Kovalent","Metalik","Hidrojen bağı"],"answer":0}
+      ]
+    },
+    {"id":"9-4","title":"Test 4 - Asitler ve Bazlar","description":"pH ve özellikler","type":"local","questions":[{"id":"q1","text":"pH 2 hangi tür çözeltidir?","choices":["Asidik","Bazik","Nötr","Tampon"],"answer":0}]},
+    {"id":"9-5","title":"Test 5 - Gazlar","description":"Gaz yasaları ve uygulamalar","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/9-5"},
+    {"id":"9-6","title":"Test 6 - Deney Güvenliği","description":"Laboratuvar güvenliği temel bilgileri","type":"local","questions":[{"id":"q1","text":"Göz teması durumunda ne yapılır?","choices":["Göz yıkama","Su içmek","Hemen dışarı çıkmak","Hiçbiri"],"answer":0}]}
+  ],
+  "10": [
+    {"id":"10-1","title":"Test 1 - Organik Kimya Giriş","description":"Karbon bileşikleri","type":"local","questions":[{"id":"q1","text":"Alkanlar tekli bağ içerir mi?","choices":["Evet","Hayır"],"answer":0}]},
+    {"id":"10-2","title":"Test 2 - Reaksiyon Hızı","description":"Kinetik temel kavramlar","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/10-2"},
+    {"id":"10-3","title":"Test 3 - Çözünürlük","description":"Çözeltiler ve derişim","type":"local","questions":[{"id":"q1","text":"Çözünürlük sıcaklıkla artar mı? (genelde)","choices":["Artar","Azalır","Değişmez"],"answer":0}]},
+    {"id":"10-4","title":"Test 4 - Redoks","description":"Oksidasyon ve indirgenme","type":"local","questions":[{"id":"q1","text":"Elektron veren element ne yapmıştır?","choices":["Okside olur","İndirgenir"],"answer":0}]},
+    {"id":"10-5","title":"Test 5 - Termokimya","description":"Isı ve enerji değişimleri","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/10-5"},
+    {"id":"10-6","title":"Test 6 - Atom Modelleri","description":"Bohr ve diğer modeller","type":"local","questions":[{"id":"q1","text":"Bohr modelinde elektronlar ne yapar?","choices":["Yörüngede dolaşır","Rastgele hareket eder"],"answer":0}]}
+  ],
+  "11": [
+    {"id":"11-1","title":"Test 1 - Kimyasal Termodinamik","description":"Serbest enerji ve denge","type":"local","questions":[{"id":"q1","text":"ΔG negatifse reaksiyon...?","choices":["Spontan","Spontan değil"],"answer":0}]},
+    {"id":"11-2","title":"Test 2 - Organik Reaksiyonlar","description":"Substitüsyon, addition","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/11-2"},
+    {"id":"11-3","title":"Test 3 - Çözeltiler ve Elektrolitler","description":"İletkenlik ve iyonizasyon","type":"local","questions":[{"id":"q1","text":"Strong electrolyte örneği?","choices":["NaCl","C6H12O6"],"answer":0}]},
+    {"id":"11-4","title":"Test 4 - Spektroskopi","description":"IR, NMR temel kavramlar","type":"local","questions":[{"id":"q1","text":"NMR hangi çekirdeğe duyarlıdır?","choices":["1H","12C"],"answer":0}]},
+    {"id":"11-5","title":"Test 5 - Organik Sentez","description":"Reaksiyon mekanizmaları","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/11-5"},
+    {"id":"11-6","title":"Test 6 - Analitik Kimya","description":"Titrasyon ve kalibrasyon","type":"local","questions":[{"id":"q1","text":"Titrasyonda uç nokta nasıl belirlenir?","choices":["Göstergelerle","Tadım yaparak"],"answer":0}]}
+  ],
+  "12": [
+    {"id":"12-1","title":"Test 1 - Organik Kimya Derin","description":"Aromatik bileşikler","type":"local","questions":[{"id":"q1","text":"Benzen kaç C atomu içerir?","choices":["6","5","7"],"answer":0}]},
+    {"id":"12-2","title":"Test 2 - Nükleer Kimya","description":"Radyokaktivite ve uygulamalar","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/12-2"},
+    {"id":"12-3","title":"Test 3 - Biyokimya Giriş","description":"Protein ve enzimler","type":"local","questions":[{"id":"q1","text":"Enzimler ne tür moleküllerdir?","choices":["Protein","Karbonhidrat"],"answer":0}]},
+    {"id":"12-4","title":"Test 4 - İleri Termodinamik","description":"Kimyasal denge uygulamaları","type":"local","questions":[{"id":"q1","text":"Le Chatelier ilkesi neyi açıklar?","choices":["Denge tepkileri yanıtını","Sıcaklığı"],"answer":0}]},
+    {"id":"12-5","title":"Test 5 - Çevre Kimyası","description":"Kirlilik ve kontrollü maddeler","type":"ogm","ogm_url":"https://ogm-materyal.example.org/test/12-5"},
+    {"id":"12-6","title":"Test 6 - Kimya Projeleri","description":"Bilimsel araştırma yöntemleri","type":"local","questions":[{"id":"q1","text":"Hipotez nedir?","choices":["Varsayılan açıklama","Kesin bilgi"],"answer":0}]}
+  ]
+}

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Eğitim Quizleri</title>
+  <meta name="description" content="Maarif modeline uygun kimya eğitim quizleri - interaktif öğrenme">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ChemLabX - Eğitim Quizleri">
+  <meta property="og:description" content="Maarif modeline uygun kimya eğitim quizleri - interaktif öğrenme">
+  <meta property="og:image" content="./assets/logos/logo-academic.svg">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#667eea">
+  
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  
+  <style>
+    /* Quiz container */
+    .quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .quiz-selection {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    #tests-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .quiz-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      text-align: center;
+    }
+
+    .quiz-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-blue);
+    }
+
+    .quiz-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .quiz-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .quiz-difficulty {
+      background: var(--bg-secondary);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+
+    .quiz-difficulty.easy { background: #e8f5e8; color: #2e7d32; }
+    .quiz-difficulty.medium { background: #fff3e0; color: #ef6c00; }
+    .quiz-difficulty.hard { background: #ffebee; color: #c62828; }
+
+    .quiz-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quiz-modal.active {
+      display: flex;
+    }
+
+    .quiz-modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .quiz-modal-content {
+      background: #1a2332;
+      color: #f0f0f5;
+    }
+
+    .quiz-question {
+      padding: 2rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .question-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .option {
+      padding: 1rem;
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: white;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .option {
+      background: #253450;
+      border-color: #374556;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .option:hover {
+      border-color: #667eea;
+      background: #2a5aa8;
+    }
+
+    .option:hover {
+      border-color: var(--primary-blue);
+      background: var(--hover-bg);
+    }
+
+    .option.selected {
+      border-color: var(--primary-blue);
+      background: var(--active-bg);
+    }
+
+    .option.correct {
+      border-color: var(--success);
+      background: #d4edda;
+    }
+
+    .option.incorrect {
+      border-color: var(--error);
+      background: #f8d7da;
+    }
+
+    .quiz-navigation {
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+    }
+
+    .quiz-progress {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .nav-btn {
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all var(--transition-fast);
+    }
+
+    .nav-btn:hover {
+      background: var(--hover-bg);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .nav-btn.primary {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+
+    .nav-btn.primary:hover {
+      background: #244A8A;
+    }
+
+    .quiz-results {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .results-score {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary-blue);
+      margin: 1rem 0;
+    }
+
+    .results-message {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .results-breakdown {
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .result-item.correct {
+      color: var(--success);
+    }
+
+    .result-item.incorrect {
+      color: var(--error);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      border-radius: var(--radius-md);
+      transition: background var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      background: var(--hover-bg);
+    }
+
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 1rem;
+      }
+
+      .quiz-selection,
+      #tests-list {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-modal-content {
+        width: 95%;
+        margin: 1rem;
+      }
+
+      .quiz-question {
+        padding: 1.5rem;
+      }
+
+      .quiz-navigation {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* ==========================================================
+       BÖLÜM: 2K VE ÜZERİ GENİŞ EKRANLAR
+       AÇIKLAMA: WQHD (2560x1440) ve üzeri ekranlar için ölçekleme
+       ========================================================== */
+    @media (min-width: 1920px) {
+      .quiz-container {
+        max-width: 1200px;
+      }
+      
+      .quiz-selection {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+      }
+      
+      .quiz-card {
+        padding: 2rem;
+      }
+      
+      .quiz-icon {
+        font-size: 3.5rem;
+      }
+      
+      .quiz-title {
+        font-size: 1.4rem;
+      }
+      
+      .quiz-modal-content {
+        max-width: 800px;
+      }
+      
+      .question-text {
+        font-size: 1.4rem;
+      }
+      
+      .option {
+        padding: 1.25rem;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (min-width: 2400px) {
+      .quiz-container {
+        max-width: 1600px;
+      }
+      
+      .quiz-selection {
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 2.5rem;
+      }
+      
+      .quiz-card {
+        padding: 2.5rem;
+      }
+      
+      .quiz-icon {
+        font-size: 4rem;
+      }
+      
+      .quiz-title {
+        font-size: 1.6rem;
+      }
+      
+      .quiz-modal-content {
+        max-width: 1000px;
+      }
+      
+      .question-text {
+        font-size: 1.6rem;
+      }
+      
+      .option {
+        padding: 1.5rem;
+        font-size: 1.25rem;
+      }
+    }
+    
+    /* ========== DARK MODE ========== */
+    [data-theme="dark"] .quiz-card {
+      background: #1a2332;
+      border-color: #374556;
+    }
+    
+    [data-theme="dark"] .quiz-card:hover {
+      background: #253450;
+      border-color: #667eea;
+    }
+    
+    [data-theme="dark"] .quiz-title {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .quiz-description {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .quiz-meta {
+      color: #808090;
+    }
+    
+    [data-theme="dark"] .quiz-difficulty {
+      background: #253450;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .quiz-difficulty.easy {
+      background: rgba(46, 125, 50, 0.2);
+      color: #81c784;
+    }
+    
+    [data-theme="dark"] .quiz-difficulty.medium {
+      background: rgba(239, 108, 0, 0.2);
+      color: #ffb74d;
+    }
+    
+    [data-theme="dark"] .quiz-difficulty.hard {
+      background: rgba(198, 40, 40, 0.2);
+      color: #ef5350;
+    }
+    
+    [data-theme="dark"] .question-text {
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .quiz-navigation {
+      background: #253450;
+    }
+    
+    [data-theme="dark"] .quiz-progress {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .nav-btn {
+      background: #1a2332;
+      border-color: #374556;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .nav-btn:hover {
+      background: #253450;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .nav-btn.primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: transparent;
+      color: white;
+    }
+    
+    [data-theme="dark"] .quiz-results {
+      background: #1a2332;
+    }
+    
+    [data-theme="dark"] .results-score {
+      color: #90caf9;
+    }
+    
+    [data-theme="dark"] .results-message {
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .result-item {
+      border-bottom-color: #374556;
+      color: #b0b0c0;
+    }
+    
+    [data-theme="dark"] .option.correct {
+      background: rgba(46, 125, 50, 0.3);
+      border-color: #4caf50;
+      color: #81c784;
+    }
+    
+    [data-theme="dark"] .option.incorrect {
+      background: rgba(198, 40, 40, 0.3);
+      border-color: #f44336;
+      color: #ef5350;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center" style="text-decoration: none;">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40" style="filter: none;">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link">Bileşikler</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+        <a href="quizzes.html" class="nav-link active">Quizler</a>
+        <a href="videos.html" class="nav-link">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <div style="padding:2rem 0;">
+      
+      <!-- === Başlık Bölümü === -->
+      <div class="quiz-header">
+        <h1 class="text-3xl font-bold text-primary mb-4">Eğitim Quizleri</h1>
+        <p class="text-lg text-secondary">Sınıfınızı seçin (9-12) ve ilgili testlerden birini başlatın. OGM materyali varsa sayfa içinde gömülü olarak açılır.</p>
+      </div>
+
+      <!-- === İki Kolonlu Düzen === -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start;">
+        
+        <!-- Sol Panel: Sınıf Seçimi ve Testler -->
+        <div>
+          <div style="margin-bottom:1rem;">
+            <div id="grade-select" style="display:flex;gap:8px"></div>
+          </div>
+
+          <div id="tests-list"></div>
+        </div>
+
+        <!-- Sağ Panel: Seçili Test Bilgisi -->
+        <aside style="width:320px;">
+          <div style="background:var(--bg-primary);padding:12px;border-radius:8px;border:1px solid var(--border-light);">
+            <h3>Seçili Test</h3>
+            <div id="selected-info">Sınıf seçin ve bir test seçin.</div>
+            <div style="margin-top:12px"><button id="view-results" class="nav-btn">Sonuçları Gör</button></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <!-- Quiz sorularını gösteren açılır pencere -->
+  <div class="quiz-modal" id="quiz-modal">
+    <div class="quiz-modal-content">
+      <button class="modal-close" id="modal-close">&times;</button>
+
+      <!-- Quiz Content -->
+      <div id="quiz-content">
+        <!-- Quiz questions and results will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-brand-text">ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline"> Modeline Uygun Kimya Eğitim Platform</p>
+      <p class="text-xs mt-2">Bu platform ticari amaçlı değildir ve sadece eğitim amaçlı kullanılmaktadır.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // data/quizzes.json dosyasından testleri yükle ve OGM gömülü açmayı destekle
+    async function loadExternalQuizzes() {
+      try {
+        const res = await fetch('./data/quizzes.json');
+        return await res.json();
+      } catch (e) {
+        console.error('quizzes.json yüklenemedi', e);
+        return {};
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadExternalQuizzes();
+      const grades = ['9','10','11','12'];
+      const gradeSelect = document.getElementById('grade-select');
+      const testsList = document.getElementById('tests-list');
+      const selectedInfo = document.getElementById('selected-info');
+      let currentGrade = '9';
+
+      function renderGradeButtons() {
+        gradeSelect.innerHTML = '';
+        grades.forEach(g => {
+          const b = document.createElement('button');
+          b.className = 'nav-btn';
+          b.textContent = g + '. Sınıf';
+          if (g === currentGrade) b.classList.add('primary');
+          b.addEventListener('click', () => { currentGrade = g; renderGradeButtons(); renderTests(); });
+          gradeSelect.appendChild(b);
+        });
+      }
+
+      function renderTests() {
+        testsList.innerHTML = '';
+        const tests = data[currentGrade] || [];
+        if (!tests.length) {
+          testsList.textContent = 'Bu sınıfa ait test bulunamadı.';
+          return;
+        }
+
+        tests.forEach(test => {
+          const card = document.createElement('div');
+          card.className = 'quiz-card';
+          card.innerHTML = `<div style="font-weight:700">${test.title}</div><div class="quiz-description">${test.description || ''}</div><div style="margin-top:8px;font-size:0.85rem;color:var(--text-secondary)">Tür: ${test.type}</div>`;
+          const btn = document.createElement('button');
+          btn.className = 'nav-btn';
+          btn.style.marginTop = '8px';
+          btn.textContent = test.type === 'ogm' ? 'OGM Kaynağını Aç' : 'Testi Başlat';
+          btn.addEventListener('click', () => openTest(test));
+          card.appendChild(btn);
+
+          if (test.type === 'ogm') {
+            const note = document.createElement('div');
+            note.style.fontSize = '0.85rem';
+            note.style.color = 'var(--text-secondary)';
+            note.style.marginTop = '6px';
+            note.textContent = 'OGM materyali sayfa içi gömülü olarak açılacaktır (iframe). Eğer engellenirse yeni sekmede açabilirsiniz.';
+            card.appendChild(note);
+          }
+
+          testsList.appendChild(card);
+        });
+      }
+
+      // OGM modal penceresi
+      const ogmModal = document.createElement('div');
+      ogmModal.className = 'quiz-modal';
+      ogmModal.id = 'ogm-modal';
+      ogmModal.innerHTML = `
+        <div class="quiz-modal-content" style="height:80%;max-width:1000px;">
+          <button class="modal-close" id="ogm-close">&times;</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px">
+            <strong id="ogm-title">OGM Kaynağı</strong>
+            <div>
+              <button id="ogm-new" class="nav-btn">Yeni Sekmede Aç</button>
+            </div>
+          </div>
+          <iframe id="ogm-iframe" style="width:100%;height:calc(100% - 64px);border:none;border-radius:6px"></iframe>
+        </div>`;
+      document.body.appendChild(ogmModal);
+
+      const ogmIframe = document.getElementById('ogm-iframe');
+      const ogmClose = document.getElementById('ogm-close');
+      const ogmNew = document.getElementById('ogm-new');
+      const ogmTitle = document.getElementById('ogm-title');
+
+      function openOgm(test) {
+        if (!test.ogm_url) return alert('OGM URL bulunamadı');
+        ogmTitle.textContent = test.title + ' — OGM';
+        ogmIframe.src = test.ogm_url;
+        ogmModal.classList.add('active');
+        ogmNew.onclick = () => window.open(test.ogm_url, '_blank');
+      }
+
+      ogmClose.addEventListener('click', () => { ogmModal.classList.remove('active'); ogmIframe.src = ''; });
+      ogmModal.addEventListener('click', (e) => { if (e.target === ogmModal) { ogmModal.classList.remove('active'); ogmIframe.src = ''; } });
+
+      // Basit yerel quiz çalıştırıcı (modal)
+      function openTest(test) {
+        selectedInfo.innerHTML = `<strong>${test.title}</strong><div class="quiz-description">${test.description || ''}</div>`;
+        if (test.type === 'ogm') return openOgm(test);
+        if (!test.questions || !test.questions.length) return alert('Bu test için soru yok.');
+
+        // Quiz çalıştırıcı modalını oluştur
+        const runner = document.createElement('div');
+        runner.className = 'quiz-modal active';
+        runner.innerHTML = `
+          <div class="quiz-modal-content">
+            <button class="modal-close runner-close">&times;</button>
+            <div id="runner-body" style="padding:12px;overflow:auto;max-height:70vh"></div>
+          </div>`;
+        document.body.appendChild(runner);
+
+        const runnerBody = runner.querySelector('#runner-body');
+        const closeRunner = runner.querySelector('.runner-close');
+
+        // Soruları sıralı olarak göster
+        test.questions.forEach((q, idx) => {
+          const qDiv = document.createElement('div');
+          qDiv.style.marginBottom = '12px';
+          qDiv.innerHTML = `<div style="font-weight:700;margin-bottom:8px">Soru ${idx+1}: ${q.text}</div>`;
+          const choices = document.createElement('div');
+          q.choices.forEach((c, ci) => {
+            const b = document.createElement('button');
+            b.className = 'nav-btn';
+            b.style.display = 'block';
+            b.style.width = '100%';
+            b.style.margin = '6px 0';
+            b.textContent = c;
+            b.addEventListener('click', () => { q._selected = ci; choices.querySelectorAll('button').forEach(bb=>bb.classList.remove('primary')); b.classList.add('primary'); });
+            choices.appendChild(b);
+          });
+          qDiv.appendChild(choices);
+          runnerBody.appendChild(qDiv);
+        });
+
+        const submit = document.createElement('button');
+        submit.className = 'nav-btn primary';
+        submit.textContent = 'Teslim Et';
+        submit.style.marginTop = '8px';
+        runnerBody.appendChild(submit);
+
+        closeRunner.addEventListener('click', () => document.body.removeChild(runner));
+        submit.addEventListener('click', () => {
+          let correct = 0; const total = test.questions.length;
+          test.questions.forEach(q => { if (q._selected === q.answer) correct++; });
+          alert(`Sonuç: ${correct} / ${total}`);
+          saveResult({ testId: test.id, grade: currentGrade, score: correct, total, date: new Date().toISOString() });
+          document.body.removeChild(runner);
+        });
+      }
+
+      // Sonuçları saklama
+      function saveResult(r) {
+        const key = 'chem_quiz_results_v1';
+        const arr = JSON.parse(localStorage.getItem(key) || '[]');
+        arr.push(r);
+        localStorage.setItem(key, JSON.stringify(arr));
+      }
+
+      document.getElementById('view-results').addEventListener('click', () => {
+        const key = 'chem_quiz_results_v1';
+        const arr = JSON.parse(localStorage.getItem(key) || '[]');
+        if (!arr.length) return alert('Henüz sonuç yok.');
+        const txt = arr.map(a => `${a.date} — Sınıf ${a.grade} — ${a.testId} — ${a.score}/${a.total}`).join('\n');
+        alert(txt);
+      });
+
+      // Başlangıç
+      renderGradeButtons();
+      renderTests();
+
+      // Karanlık Mod
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('chemlabx-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('chemlabx-theme', newTheme);
+      });
+
+      // Mobil Menü
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mainNav = document.getElementById('mainNav');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+      
+      mobileMenuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        mainNav.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+      });
+      
+      mobileOverlay.addEventListener('click', function() {
+        mobileMenuToggle.classList.remove('active');
+        mainNav.classList.remove('active');
+        this.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

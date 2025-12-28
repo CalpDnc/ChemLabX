@@ -1,0 +1,10 @@
+{
+  "name": "chemlabx",
+  "version": "1.0.0",
+  "description": "Maarif modeline uygun interaktif kimya eğitim platformu",
+  "scripts": {
+    "preview": "python -m http.server 8000",
+    "validate": "node scripts/validate-elements-json.js"
+  },
+  "license": "Educational Use Only"
+}

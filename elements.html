@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemLabX - Periyodik Cetvel</title>
+  <meta name="description" content="Maarif modeline uygun interaktif periyodik cetvel - Lise öğrencileri için">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
+  
+  <style>
+    :root {
+      --cell-size: 48px;
+      --fs-number: 0.6rem;
+      --fs-symbol: 1rem;
+      --fs-name: 0.5rem;
+    }
+
+    .periodic-table-container {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) 0 var(--space-4) 0;
+      box-shadow: none;
+      margin: var(--space-4) 0;
+    }
+
+    .periodic-table {
+      display: grid;
+      grid-template-columns: repeat(18, var(--cell-size));
+      grid-auto-rows: var(--cell-size);
+      gap: 8px;
+      justify-content: flex-start;
+      max-width: calc(18 * var(--cell-size) + 17 * 8px);
+      margin: 0;
+    }
+
+    .element {
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      height: var(--cell-size);
+      width: var(--cell-size);
+      padding: 4px 2px;
+      box-sizing: border-box;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .element:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-blue);
+    }
+
+    .element.active {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .element.empty {
+      background: transparent;
+      border: none;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .element.empty:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--border-light);
+    }
+
+    /* Lantanit ve Aktinit satır başlıkları */
+    .lanthanide-row-label,
+    .actinide-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: calc(var(--fs-number) * 1.1);
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.12);
+      width: calc(var(--cell-size) * 2 + 8px);
+      height: var(--cell-size);
+    }
+
+    .lanthanide-row-label {
+      grid-column: 1 / 3;
+      grid-row: 9;
+      background: linear-gradient(135deg, #D6F0FF 0%, #A0E1FF 100%);
+    }
+
+    .actinide-row-label {
+      grid-column: 1 / 3;
+      grid-row: 10;
+      background: linear-gradient(135deg, #FFD6A5 0%, #FFB385 100%);
+    }
+
+    /* Dark mode için Lantanit/Aktinit başlıkları */
+    [data-theme="dark"] .lanthanide-row-label,
+    [data-theme="dark"] .actinide-row-label {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border-color: var(--border-light);
+    }
+
+    /* Element Kategorileri - Görsel palet */
+    .element.alkali-metal { background: linear-gradient(135deg, #8EE5D1 0%, #34D399 100%); color: #1a1a2e; }
+    .element.alkaline-earth { background: linear-gradient(135deg, #FFB3AB 0%, #FF6B6B 100%); color: #1a1a2e; }
+    .element.transition-metal { background: linear-gradient(135deg, #E3D2FF 0%, #C7A4FF 100%); color: #1a1a2e; }
+    .element.post-transition { background: linear-gradient(135deg, #C7F3C1 0%, #74C69D 100%); color: #1a1a2e; }
+    .element.metalloid { background: linear-gradient(135deg, #FFD79C 0%, #F4A261 100%); color: #1a1a2e; }
+    .element.nonmetal { background: linear-gradient(135deg, #BEE1FF 0%, #7EC8E3 100%); color: #1a1a2e; }
+    .element.halogen { background: linear-gradient(135deg, #A7C7FF 0%, #6CA0FF 100%); color: #1a1a2e; }
+    .element.noble-gas { background: linear-gradient(135deg, #F9C5D1 0%, #F29AA3 100%); color: #1a1a2e; }
+    .element.lanthanide { background: linear-gradient(135deg, #D6F0FF 0%, #A0E1FF 100%); color: #1a1a2e; }
+    .element.actinide { background: linear-gradient(135deg, #FFD6A5 0%, #FFB385 100%); color: #1a1a2e; }
+    .element.unknown { background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%); color: #1a1a2e; }
+
+    .element-number {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      font-size: var(--fs-number);
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .element-symbol {
+      font-size: var(--fs-symbol);
+      font-weight: 700;
+      margin-top: 2px;
+      z-index: 1;
+    }
+
+    .element-name {
+      font-size: var(--fs-name);
+      margin-top: 1px;
+      opacity: 0.9;
+      z-index: 1;
+      text-align: center;
+      line-height: 1.1;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0 2px;
+    }
+
+    /* Gösterge */
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-3);
+      margin: var(--space-4) 0;
+      padding: var(--space-4);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      background: var(--bg-primary);
+      transition: all 0.2s ease;
+    }
+
+    .legend-item:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .legend-color {
+      width: 24px;
+      height: 20px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      box-shadow: none;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    /* Legend color swatches matching element categories */
+    .legend-color.alkali-metal { background: linear-gradient(135deg, #8EE5D1 0%, #34D399 100%); }
+    .legend-color.alkaline-earth { background: linear-gradient(135deg, #FFB3AB 0%, #FF6B6B 100%); }
+    .legend-color.transition-metal { background: linear-gradient(135deg, #E3D2FF 0%, #C7A4FF 100%); }
+    .legend-color.post-transition { background: linear-gradient(135deg, #C7F3C1 0%, #74C69D 100%); }
+    .legend-color.metalloid { background: linear-gradient(135deg, #FFD79C 0%, #F4A261 100%); }
+    .legend-color.nonmetal { background: linear-gradient(135deg, #BEE1FF 0%, #7EC8E3 100%); }
+    .legend-color.halogen { background: linear-gradient(135deg, #A7C7FF 0%, #6CA0FF 100%); }
+    .legend-color.noble-gas { background: linear-gradient(135deg, #F9C5D1 0%, #F29AA3 100%); }
+    .legend-color.lanthanide { background: linear-gradient(135deg, #D6F0FF 0%, #A0E1FF 100%); }
+    .legend-color.actinide { background: linear-gradient(135deg, #FFD6A5 0%, #FFB385 100%); }
+    .legend-color.unknown { background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%); }
+
+    .legend-text {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Element Detay Paneli */
+    .element-detail-panel {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: var(--space-4);
+      width: 320px;
+      min-width: 320px;
+      margin-left: auto;
+    }
+
+    .element-detail-header {
+      text-align: center;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 2px solid var(--border-light);
+    }
+
+    .element-large-symbol {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-2);
+    }
+
+    .element-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .element-subtitle {
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .element-properties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin: var(--space-4) 0;
+    }
+
+    .property-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      text-align: center;
+      border: 1px solid var(--border-light);
+    }
+
+    .property-label {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-1);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .property-value {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .element-description {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(42, 157, 143, 0.1) 100%);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+      border-left: 4px solid var(--primary-green);
+    }
+
+    .element-description h4 {
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+
+    .element-description p {
+      color: var(--text-secondary);
+      line-height: var(--leading-relaxed);
+      margin: 0;
+      font-size: var(--text-sm);
+    }
+
+    /* Eğitim Bilgilendirmesi */
+    .educational-note {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(44, 90, 160, 0.1) 100%);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .educational-note h4 {
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+
+    .educational-note p {
+      color: var(--text-secondary);
+      line-height: var(--leading-relaxed);
+      margin: 0;
+      font-size: var(--text-sm);
+    }
+
+    /* Mobil Uyumluluk */
+    @media (max-width: 768px) {
+      .periodic-table {
+        grid-template-columns: repeat(9, 1fr);
+        gap: var(--space-1);
+      }
+
+      .element {
+        min-height: 50px;
+        font-size: 0.7rem;
+      }
+
+      .element-symbol {
+        font-size: 0.9rem;
+      }
+
+      .element-name {
+        font-size: 0.45rem;
+      }
+
+      .legend {
+        grid-template-columns: 1fr;
+      }
+
+      .element-properties {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animasyonlar */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .element-detail-panel {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Full HD üstü ekranlar için (32" monitör - 2K) */
+    @media (min-width: 1920px) {
+      :root {
+        --cell-size: 56px;
+        --fs-number: 0.7rem;
+        --fs-symbol: 1.15rem;
+        --fs-name: 0.55rem;
+      }
+      .legend-color { width: 26px; height: 21px; }
+      .element-detail-panel { width: 380px; min-width: 380px; }
+      .periodic-table { gap: 6px; }
+    }
+
+    /* WQHD ve üstü ekranlar için ölçek (akıllı tahta dostu) */
+    @media (min-width: 2560px) {
+      :root {
+        --cell-size: 72px;
+        --fs-number: 0.9rem;
+        --fs-symbol: 1.6rem;
+        --fs-name: 0.75rem;
+      }
+      .legend-color { width: 28px; height: 22px; }
+      .element-detail-panel { width: 450px; min-width: 450px; }
+      .periodic-table { gap: 8px; }
+    }
+
+    /* 4K (3840x2160) ve üzeri */
+    @media (min-width: 3000px) and (min-height: 1800px) {
+      :root {
+        --cell-size: 88px;
+        --fs-number: 1.05rem;
+        --fs-symbol: 2rem;
+        --fs-name: 0.95rem;
+      }
+      .legend-color { width: 32px; height: 24px; }
+      .element-detail-panel { width: 520px; min-width: 520px; }
+    }
+
+    /* Tam 4K sınıf projeksiyonu için ekstra konfor */
+    @media (min-width: 3800px) and (min-height: 2100px) {
+      :root {
+        --cell-size: 96px;
+        --fs-number: 1.15rem;
+        --fs-symbol: 2.2rem;
+        --fs-name: 1rem;
+      }
+      .legend-color { width: 36px; height: 26px; }
+      .element-detail-panel { width: 600px; min-width: 600px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="index.html" class="flex items-center" style="text-decoration: none;">
+        <img src="./assets/logos/logo-academic.svg" alt="ChemLabX Logo" height="40">
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+        <a href="elements.html" class="nav-link active">Periyodik Cetvel</a>
+        <a href="compounds.html" class="nav-link">Bileşikler</a>
+        <a href="experiments.html" class="nav-link">Deneyler</a>
+        <a href="quizzes.html" class="nav-link">Quizler</a>
+        <a href="videos.html" class="nav-link">Ders Anlatımları</a>
+      </nav>
+      
+      <div class="flex items-center" style="gap: 0.5rem;">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    
+    <!-- === Başlık ve Araçlar Bölümü === -->
+    <section class="text-center p-6 m-6">
+      <h1 class="text-3xl font-bold text-primary mb-3">İnteraktif Periyodik Cetvel</h1>
+      <p class="text-lg text-secondary mb-4 max-w-3xl mx-auto">
+        Maarif modeline uygun, 118 elementlik interaktif periyodik cetvel.
+        Her elementi tıklayarak detaylı bilgilerini öğrenebilirsiniz.
+      </p>
+      
+      <!-- Araç Çubuğu -->
+      <div class="flex justify-center items-center" style="gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+        <!-- Arama Kutusu -->
+        <div class="search-box" style="min-width: 250px;">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" class="search-input" id="elementSearch" placeholder="Element ara (ör: Hidrojen, H, 1)" autocomplete="off">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        
+        <!-- Yazdır Butonu -->
+        <button class="print-btn" onclick="window.print()" title="Periyodik cetveli yazdır">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 6,2 18,2 18,9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Yazdır
+        </button>
+      </div>
+      
+      <div class="educational-note">
+        <h4>📚 Eğitim Bilgilendirmesi</h4>
+        <p>
+          Bu periyodik cetvel, lise kimya müfredatına uygun olarak hazırlanmıştır.
+          Elementleri keşfederken atom numarası, grup, periyot ve element aileleri hakkında bilgi edinebilirsiniz.
+        </p>
+      </div>
+    </section>
+
+    <!-- === Ana Grid: Periyodik Cetvel ve Detay Paneli === -->
+    <div class="grid periodic-layout" style="grid-template-columns: auto 1fr; gap: 2rem; align-items: start; justify-content: space-between;">
+      
+      <!-- Sol Taraf: Periyodik Cetvel -->
+      <div>
+        <!-- Gösterge (Legend) -->
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color alkali-metal"></div>
+            <span class="legend-text">Alkali Metaller</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color alkaline-earth"></div>
+            <span class="legend-text">Toprak Alkali Metaller</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color transition-metal"></div>
+            <span class="legend-text">Geçiş Metalleri</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color post-transition"></div>
+            <span class="legend-text">Geçiş Sonrası Metaller</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color metalloid"></div>
+            <span class="legend-text">Yarı Metaller</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color nonmetal"></div>
+            <span class="legend-text">Ametaller</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color halogen"></div>
+            <span class="legend-text">Halojenler</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color noble-gas"></div>
+            <span class="legend-text">Soygazlar</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color lanthanide"></div>
+            <span class="legend-text">Lantanitler</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color actinide"></div>
+            <span class="legend-text">Aktinitler</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color unknown"></div>
+            <span class="legend-text">Bilinmeyen (109–118)</span>
+          </div>
+        </div>
+
+        <!-- Periyodik Cetvel Container -->
+        <div class="periodic-table-container">
+          <div class="periodic-table" id="periodic-table">
+            <!-- Elementler JavaScript ile data/elements.json'dan yüklenir -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ Taraf: Element Detay Paneli -->
+      <div class="element-detail-panel" id="element-detail">
+        <div class="element-detail-header">
+          <div class="element-large-symbol" id="detail-symbol">H</div>
+          <h3 class="element-title" id="detail-name">Hidrojen</h3>
+          <p class="element-subtitle" id="detail-category">Ametal</p>
+        </div>
+
+        <div class="element-properties">
+          <div class="property-card">
+            <div class="property-label">Atom Numarası</div>
+            <div class="property-value" id="detail-atomic-number">1</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Atom Kütlesi</div>
+            <div class="property-value" id="detail-atomic-mass">1.008 u</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Grup</div>
+            <div class="property-value" id="detail-group">1</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Periyot</div>
+            <div class="property-value" id="detail-period">1</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Elektron Dizilimi</div>
+            <div class="property-value" id="detail-electron-config">1s¹</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Hal</div>
+            <div class="property-value" id="detail-state">Gaz</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Erime Noktası</div>
+            <div class="property-value" id="detail-melting">-259.16 °C</div>
+          </div>
+          <div class="property-card">
+            <div class="property-label">Kaynama Noktası</div>
+            <div class="property-value" id="detail-boiling">-252.87 °C</div>
+          </div>
+        </div>
+
+        <div class="element-description">
+          <h4>Kullanım Alanları</h4>
+          <p id="detail-description">Evrenin en bol elementi. Yıldızların yakıtı ve yaşamın temel bileşeni.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-brand-text">ChemLabX - <img src="assets/logos/maarif.svg" alt="Maarif el yazısı" class="maarif-logo-inline"> Modeline Uygun Kimya Eğitim Platform</p>
+      <p class="text-sm text-secondary mt-2">
+        Lise öğrencileri için interaktif öğrenme • Bilimsel keşiflerin kapısı
+      </p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Element tıklama işlevi
+    document.addEventListener('DOMContentLoaded', async function() {
+      const periodicTableEl = document.getElementById('periodic-table');
+      const detailPanel = document.getElementById('element-detail');
+      
+      let elementsData = [];
+
+      // Büyük ekranlarda (akıllı tahta) sağ panel genişliğini uyarlayın
+      function adjustLayoutForLargeScreens() {
+        const panel = document.querySelector('.element-detail-panel');
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        if (!panel) return;
+        if (vw >= 3000) {
+          panel.style.width = '520px';
+          panel.style.minWidth = '520px';
+        } else if (vw >= 2560) {
+          panel.style.width = '420px';
+          panel.style.minWidth = '420px';
+        } else {
+          panel.style.width = '320px';
+          panel.style.minWidth = '320px';
+        }
+      }
+      adjustLayoutForLargeScreens();
+      window.addEventListener('resize', adjustLayoutForLargeScreens);
+
+      // JSON'dan elementleri yükle
+      try {
+        const response = await fetch('./data/elements.json');
+        const data = await response.json();
+        elementsData = data.elements;
+
+        // Node.js gerektirmeyen basit veri doğrulaması (konsola yazar)
+        validateElementsData(elementsData);
+        
+        // Elementleri render et
+        renderElements(elementsData);
+        
+        // Varsayılan element (Hidrojen) göster
+        showElementDetailById(1);
+      } catch (error) {
+        console.error('Element verileri yüklenemedi:', error);
+        // Hata durumunda mevcut HTML elementleri kullanılır
+        setupExistingElements();
+      }
+
+      function validateElementsData(elements) {
+        const issues = [];
+        if (!Array.isArray(elements)) {
+          console.warn('[ChemLabX] elements.json: elements alanı array değil.');
+          return;
+        }
+
+        if (elements.length !== 118) {
+          issues.push(`Element sayısı 118 olmalı, şu an: ${elements.length}`);
+        }
+
+        const byAtomicNumber = new Map();
+        const symbols = new Set();
+        for (const el of elements) {
+          if (!el || typeof el !== 'object') {
+            issues.push('Geçersiz element kaydı (object değil)');
+            continue;
+          }
+
+          const n = el.atomicNumber;
+          if (typeof n !== 'number' || !Number.isInteger(n) || n < 1 || n > 118) {
+            issues.push(`Geçersiz atomicNumber: ${String(n)}`);
+          } else {
+            if (byAtomicNumber.has(n)) issues.push(`Tekrarlı atomicNumber: ${n}`);
+            byAtomicNumber.set(n, el);
+          }
+
+          if (typeof el.symbol !== 'string' || !el.symbol.trim()) {
+            issues.push(`atomicNumber ${String(n)}: symbol eksik/boş`);
+          } else {
+            const sym = el.symbol.trim();
+            if (symbols.has(sym)) issues.push(`Tekrarlı symbol: ${sym}`);
+            symbols.add(sym);
+          }
+
+          const requiredStringFields = ['name', 'category', 'atomicMass', 'electronConfig', 'description'];
+          for (const key of requiredStringFields) {
+            if (typeof el[key] !== 'string' || !el[key].trim()) {
+              issues.push(`atomicNumber ${String(n)}: ${key} eksik/boş`);
+            }
+          }
+
+          if (!('meltingPoint' in el)) issues.push(`atomicNumber ${String(n)}: meltingPoint alanı yok`);
+          if (!('boilingPoint' in el)) issues.push(`atomicNumber ${String(n)}: boilingPoint alanı yok`);
+
+          if ('meltingPoint' in el && el.meltingPoint !== null && typeof el.meltingPoint !== 'number') {
+            issues.push(`atomicNumber ${String(n)}: meltingPoint number/null olmalı`);
+          }
+          if ('boilingPoint' in el && el.boilingPoint !== null && typeof el.boilingPoint !== 'number') {
+            issues.push(`atomicNumber ${String(n)}: boilingPoint number/null olmalı`);
+          }
+        }
+
+        for (let i = 1; i <= 118; i++) {
+          if (!byAtomicNumber.has(i)) issues.push(`Eksik atomicNumber: ${i}`);
+        }
+
+        if (issues.length) {
+          console.warn('[ChemLabX] elements.json doğrulama uyarıları:', issues);
+        } else {
+          console.info('[ChemLabX] elements.json doğrulaması OK (118 element).');
+        }
+      }
+
+      // Elementleri JSON'dan render et
+      function renderElements(elements) {
+        // Önce mevcut element div'leri temizle (boş olanları koru)
+        const existingEmpties = periodicTableEl.querySelectorAll('.element.empty');
+        periodicTableEl.innerHTML = '';
+        
+        elements.forEach(el => {
+          const categoryClass = getCategoryClass(el.category, el.atomicNumber);
+          const div = document.createElement('div');
+          div.className = `element ${categoryClass}`;
+          div.dataset.element = el.atomicNumber;
+          div.dataset.symbol = el.symbol;
+          div.dataset.name = el.name;
+          div.dataset.category = (el.atomicNumber >= 109 ? 'Bilinmeyen' : el.category);
+          div.dataset.atomicMass = el.atomicMass;
+          div.dataset.electronConfig = el.electronConfig;
+          div.dataset.description = el.description;
+          if (el.group) div.dataset.group = el.group;
+          if (el.period) div.dataset.period = el.period;
+          if (el.state) div.dataset.state = el.state;
+          if (el.meltingPoint !== null && el.meltingPoint !== undefined) div.dataset.meltingPoint = el.meltingPoint;
+          if (el.boilingPoint !== null && el.boilingPoint !== undefined) div.dataset.boilingPoint = el.boilingPoint;
+          
+          div.innerHTML = `
+            <div class="element-number">${el.atomicNumber}</div>
+            <div class="element-symbol">${el.symbol}</div>
+            <div class="element-name">${el.name}</div>
+          `;
+          
+          const pos = mapPosition(el.atomicNumber);
+          div.style.gridColumnStart = String(pos.c);
+          div.style.gridRowStart = String(pos.r);
+          
+          div.addEventListener('click', function() {
+            document.querySelectorAll('.element.active').forEach(e => e.classList.remove('active'));
+            this.classList.add('active');
+            showElementDetail(this);
+          });
+          
+          periodicTableEl.appendChild(div);
+        });
+        
+        // Boş placeholder kutuları ekle (grid boşluklarını doldurmak için)
+        addEmptyPlaceholders();
+      }
+
+      // Kategori class eşleştirme
+      function getCategoryClass(category, atomicNumber) {
+        if (Number(atomicNumber) >= 109) return 'unknown';
+        const map = {
+          'Alkali Metal': 'alkali-metal',
+          'Toprak Alkali Metal': 'alkaline-earth',
+          'Geçiş Metali': 'transition-metal',
+          'Geçiş Sonrası Metal': 'post-transition',
+          'Yarı Metal': 'metalloid',
+          'Ametal': 'nonmetal',
+          'Halojen': 'halogen',
+          'Soygaz': 'noble-gas',
+          'Lantanoid': 'lanthanide',
+          'Aktinoid': 'actinide',
+          'Bilinmeyen': 'unknown'
+        };
+        return map[category] || 'nonmetal';
+      }
+
+      // Boş placeholder kutuları ekle
+      function addEmptyPlaceholders() {
+        // Period 1: columns 2-17
+        for (let c = 2; c <= 17; c++) {
+          addEmptyBox(c, 1);
+        }
+        // Period 2-3: columns 3-12
+        for (let r = 2; r <= 3; r++) {
+          for (let c = 3; c <= 12; c++) {
+            addEmptyBox(c, r);
+          }
+        }
+        // Add row labels for lanthanides and actinides
+        addRowLabel('Lantanitler', 9, 'lanthanide-row-label');
+        addRowLabel('Aktinitler', 10, 'actinide-row-label');
+        
+        // Add spacing row
+        for (let c = 1; c <= 18; c++) {
+          addEmptyBox(c, 8);
+        }
+      }
+
+      function addEmptyBox(col, row) {
+        const div = document.createElement('div');
+        div.className = 'element empty';
+        div.style.gridColumnStart = String(col);
+        div.style.gridRowStart = String(row);
+        periodicTableEl.appendChild(div);
+      }
+
+      function addRowLabel(text, row, className) {
+        const div = document.createElement('div');
+        div.className = className;
+        div.textContent = text;
+        div.style.gridRow = String(row);
+        periodicTableEl.appendChild(div);
+      }
+
+      // Mevcut HTML elementlerini kullan (fallback)
+      function setupExistingElements() {
+        const elements = document.querySelectorAll('.element[data-element]');
+        elements.forEach(element => {
+          const n = element.dataset.element;
+          if (!n) return;
+          const pos = mapPosition(n);
+          element.style.gridColumnStart = String(pos.c);
+          element.style.gridRowStart = String(pos.r);
+          
+          element.addEventListener('click', function() {
+            document.querySelectorAll('.element.active').forEach(el => {
+              el.classList.remove('active');
+            });
+            this.classList.add('active');
+            showElementDetail(this);
+          });
+        });
+        
+        const defaultElement = document.querySelector('.element[data-element="1"]');
+        if (defaultElement) {
+          showElementDetail(defaultElement);
+        }
+      }
+
+      // Grid pozisyonlarını programatik olarak atayalım (klasik periyodik cetvel düzeni)
+      function mapPosition(n) {
+        n = Number(n);
+        // Kenar durumları ve p-bloku için açık eşlemeler
+        const explicit = {
+          1: {c:1,r:1}, 2: {c:18,r:1},
+          3: {c:1,r:2}, 4: {c:2,r:2}, 5: {c:13,r:2}, 6: {c:14,r:2}, 7: {c:15,r:2}, 8: {c:16,r:2}, 9: {c:17,r:2}, 10: {c:18,r:2},
+          11: {c:1,r:3}, 12: {c:2,r:3}, 13: {c:13,r:3}, 14: {c:14,r:3}, 15: {c:15,r:3}, 16: {c:16,r:3}, 17: {c:17,r:3}, 18: {c:18,r:3}
+        };
+        if (explicit[n]) return explicit[n];
+
+        // 4. Periyot
+        if (n >= 19 && n <= 36) return {c: n - 18, r:4};
+        // 5. Periyot
+        if (n >= 37 && n <= 54) return {c: n - 36, r:5};
+        // 6. Periyot (55-86); 57-71 Lantanitler ayrı satıra taşınır
+        if (n === 55) return {c:1,r:6};
+        if (n === 56) return {c:2,r:6};
+        if (n >= 72 && n <= 86) return {c: 4 + (n - 72), r:6};
+        // 7. Periyot (87-118); 89-103 Aktinitler ayrı satır
+        if (n === 87) return {c:1,r:7};
+        if (n === 88) return {c:2,r:7};
+        if (n >= 104 && n <= 118) return {c: 4 + (n - 104), r:7};
+        // Lantanit satırı (57-71) -> 9. satır, 3. sütundan (etiketten sonra)
+        if (n >= 57 && n <= 71) return {c: 3 + (n - 57), r:9};
+        // Aktinit satırı (89-103) -> 10. satır, 3. sütundan (etiketten sonra)
+        if (n >= 89 && n <= 103) return {c: 3 + (n - 89), r:10};
+
+        // Yedek: başa yerleştir
+        return {c:1,r:1};
+      }
+
+      // ID ile element detaylarını göster
+      function showElementDetailById(atomicNumber) {
+        const element = elementsData.find(e => e.atomicNumber === atomicNumber);
+        if (!element) return;
+        
+        const data = {
+          symbol: element.symbol,
+          name: element.name,
+          category: (element.atomicNumber >= 109 ? 'Bilinmeyen' : element.category),
+          atomicNumber: element.atomicNumber,
+          atomicMass: element.atomicMass,
+          group: element.group || '—',
+          period: element.period || '—',
+          electronConfig: element.electronConfig,
+          description: element.description,
+          state: element.state || 'Katı',
+          meltingPoint: element.meltingPoint,
+          boilingPoint: element.boilingPoint
+        };
+
+        updateDetailPanel(data);
+      }
+
+      // Element detaylarını göster
+      function showElementDetail(elementDiv) {
+        const data = {
+          symbol: elementDiv.dataset.symbol,
+          name: elementDiv.dataset.name,
+          category: elementDiv.dataset.category,
+          atomicNumber: elementDiv.dataset.element,
+          atomicMass: elementDiv.dataset.atomicMass,
+          group: elementDiv.dataset.group || '—',
+          period: elementDiv.dataset.period || '—',
+          electronConfig: elementDiv.dataset.electronConfig,
+          description: elementDiv.dataset.description,
+          state: elementDiv.dataset.state || 'Katı',
+          meltingPoint: elementDiv.dataset.meltingPoint !== undefined ? parseFloat(elementDiv.dataset.meltingPoint) : null,
+          boilingPoint: elementDiv.dataset.boilingPoint !== undefined ? parseFloat(elementDiv.dataset.boilingPoint) : null
+        };
+
+        updateDetailPanel(data);
+      }
+
+      // Detay panelini güncelle
+      function updateDetailPanel(data) {
+        document.getElementById('detail-symbol').textContent = data.symbol;
+        document.getElementById('detail-name').textContent = data.name;
+        document.getElementById('detail-category').textContent = data.category;
+        document.getElementById('detail-atomic-number').textContent = data.atomicNumber;
+        document.getElementById('detail-atomic-mass').textContent = data.atomicMass;
+        document.getElementById('detail-group').textContent = data.group;
+        document.getElementById('detail-period').textContent = data.period;
+        document.getElementById('detail-electron-config').textContent = data.electronConfig;
+        document.getElementById('detail-state').textContent = data.state;
+        document.getElementById('detail-description').textContent = data.description;
+        
+        // Erime ve kaynama noktalarını göster
+        const meltingEl = document.getElementById('detail-melting');
+        const boilingEl = document.getElementById('detail-boiling');
+        
+        if (data.meltingPoint !== null && data.meltingPoint !== undefined) {
+          meltingEl.textContent = data.meltingPoint + ' °C';
+        } else {
+          meltingEl.textContent = 'Bilinmiyor';
+        }
+        
+        if (data.boilingPoint !== null && data.boilingPoint !== undefined) {
+          boilingEl.textContent = data.boilingPoint + ' °C';
+        } else {
+          boilingEl.textContent = 'Bilinmiyor';
+        }
+      }
+
+      // ============================================
+      // ELEMENT ARAMA ÖZELLİĞİ
+      // ============================================
+      const searchInput = document.getElementById('elementSearch');
+      const searchResults = document.getElementById('searchResults');
+
+      searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        
+        if (query.length < 1) {
+          searchResults.classList.remove('active');
+          return;
+        }
+
+        const matches = elementsData.filter(el => 
+          el.name.toLowerCase().includes(query) ||
+          el.symbol.toLowerCase().includes(query) ||
+          el.atomicNumber.toString() === query
+        ).slice(0, 8);
+
+        if (matches.length === 0) {
+          searchResults.innerHTML = '<div class="search-result-item" style="color: var(--text-muted);">Sonuç bulunamadı</div>';
+        } else {
+          searchResults.innerHTML = matches.map(el => `
+            <div class="search-result-item" data-atomic="${el.atomicNumber}">
+              <div class="element-symbol ${categoryToClass(el.category)}" style="color: var(--text-primary);">${el.symbol}</div>
+              <div class="element-info">
+                <div class="element-name">${el.name}</div>
+                <div class="element-number">${el.atomicNumber} • ${el.category}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+        
+        searchResults.classList.add('active');
+      });
+
+      searchResults.addEventListener('click', function(e) {
+        const item = e.target.closest('.search-result-item');
+        if (item && item.dataset.atomic) {
+          const atomicNumber = parseInt(item.dataset.atomic);
+          showElementDetailById(atomicNumber);
+          
+          // Element kutusunu vurgula
+          document.querySelectorAll('.element.active').forEach(el => el.classList.remove('active'));
+          const elementBox = document.querySelector(`.element[data-element="${atomicNumber}"]`);
+          if (elementBox) {
+            elementBox.classList.add('active');
+            elementBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          
+          searchInput.value = '';
+          searchResults.classList.remove('active');
+        }
+      });
+
+      // Dışarı tıklayınca arama sonuçlarını kapat
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-box')) {
+          searchResults.classList.remove('active');
+        }
+      });
+
+      // ============================================
+      // KARANLIK MOD
+      // ============================================
+      const themeToggle = document.getElementById('themeToggle');
+      
+      // Kayıtlı temayı yükle
+      const savedTheme = localStorage.getItem('chemlabx-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('chemlabx-theme', newTheme);
+      });
+
+      // ============================================
+      // MOBİL MENÜ
+      // ============================================
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mainNav = document.getElementById('mainNav');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+
+      mobileMenuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        mainNav.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+      });
+
+      mobileOverlay.addEventListener('click', function() {
+        mobileMenuToggle.classList.remove('active');
+        mainNav.classList.remove('active');
+        this.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
