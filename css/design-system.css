@@ -138,21 +138,4 @@
   --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* Sistem karanlık mod tercihi */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg-primary: #0f1419;
-    --bg-secondary: #1a2332;
-    --bg-tertiary: #253450;
-    --text-primary: #f0f0f5;
-    --text-secondary: #b0b0c0;
-    --text-muted: #808090;
-    --border-light: #374556;
-    --border-medium: #4a5d7a;
-    --hover-bg: #2a3a52;
-    --active-bg: #2a5aa8;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.6);
-  }
-}
+/* Light mode varsayılan - dark mode yalnızca kullanıcı tercihiyle aktif olur */

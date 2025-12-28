@@ -16,6 +16,13 @@
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#667eea">
   
+  <!-- Erken tema tespiti - FOUC önleme -->
+  <script>
+    (function() {
+      var theme = localStorage.getItem('chemlabx-theme');
+      if (theme) document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <link rel="stylesheet" href="./css/main.css">
   <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
   <style>
@@ -205,12 +212,27 @@
     }
 
     .canvas-header {
-      padding: 1rem 1.25rem;
+      padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--border-light);
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #fafafa;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .canvas-header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .canvas-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
     }
     
     [data-theme="dark"] .canvas-header {
@@ -1538,20 +1560,27 @@
       <div class="canvas-area" id="canvas">
         <div class="canvas-header">
           <h3>🔬 Molekülünüz</h3>
-          <div class="bond-type-selector">
-            <span class="bond-label">Bağ:</span>
-            <button class="bond-btn active" id="single-bond" data-bond="single">
-              <span class="bond-icon">―</span>
-              <span>Tek</span>
-            </button>
-            <button class="bond-btn" id="double-bond" data-bond="double">
-              <span class="bond-icon">=</span>
-              <span>Çift</span>
-            </button>
-            <button class="bond-btn" id="triple-bond" data-bond="triple">
-              <span class="bond-icon">≡</span>
-              <span>Üçlü</span>
-            </button>
+          <div class="canvas-header-controls">
+            <div class="canvas-tools">
+              <button class="canvas-tool-btn" id="undo" title="Geri Al">↩️</button>
+              <button class="canvas-tool-btn" id="delete-mode" title="Sil Modu">❌</button>
+              <button class="canvas-tool-btn danger" id="clear-canvas" title="Temizle">🗑️</button>
+            </div>
+            <div class="bond-type-selector">
+              <span class="bond-label">Bağ:</span>
+              <button class="bond-btn active" id="single-bond" data-bond="single">
+                <span class="bond-icon">―</span>
+                <span>Tek</span>
+              </button>
+              <button class="bond-btn" id="double-bond" data-bond="double">
+                <span class="bond-icon">=</span>
+                <span>Çift</span>
+              </button>
+              <button class="bond-btn" id="triple-bond" data-bond="triple">
+                <span class="bond-icon">≡</span>
+                <span>Üçlü</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="canvas-content" id="canvas-content">
@@ -1559,13 +1588,6 @@
             <p>🎯 Elementleri seçip buraya tıklayın</p>
             <p class="hint">İki atoma tıklayarak bağ oluşturabilirsiniz</p>
           </div>
-        </div>
-        <div class="canvas-footer">
-          <button class="canvas-tool-btn" id="undo">↩️ Geri Al</button>
-          <button class="canvas-tool-btn" id="delete-mode">❌ Sil Modu</button>
-          <button class="canvas-tool-btn danger" id="clear-canvas">🗑️ Temizle</button>
-          <div style="flex: 1;"></div>
-          <span class="bond-info-mini" id="current-bond-type">Kovalent Bağ</span>
         </div>
       </div>
       

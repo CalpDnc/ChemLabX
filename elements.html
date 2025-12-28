@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChemLabX - Periyodik Cetvel</title>
   <meta name="description" content="Maarif modeline uygun interaktif periyodik cetvel - Lise öğrencileri için">
+  <!-- Erken tema tespiti - FOUC önleme -->
+  <script>
+    (function() {
+      var theme = localStorage.getItem('chemlabx-theme');
+      if (theme) document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   <link rel="stylesheet" href="./css/main.css">
   <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
   
@@ -951,7 +958,7 @@
         document.getElementById('detail-name').textContent = data.name;
         document.getElementById('detail-category').textContent = data.category;
         document.getElementById('detail-atomic-number').textContent = data.atomicNumber;
-        document.getElementById('detail-atomic-mass').textContent = data.atomicMass;
+        document.getElementById('detail-atomic-mass').textContent = data.atomicMass + ' u';
         document.getElementById('detail-group').textContent = data.group;
         document.getElementById('detail-period').textContent = data.period;
         document.getElementById('detail-electron-config').textContent = data.electronConfig;
