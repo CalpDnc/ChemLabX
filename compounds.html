@@ -2048,6 +2048,13 @@
         const clickedAtomIndex = this.findAtomAt(x, y);
         
         if (clickedAtomIndex !== null) {
+          // Silme modu aktifse atomu sil
+          if (this.deleteMode) {
+            this.selectedAtom = clickedAtomIndex;
+            this.deleteSelectedAtom();
+            return;
+          }
+          
           // Bağ oluşturma modu
           if (this.bondingAtom !== null) {
             if (clickedAtomIndex !== this.bondingAtom) {
