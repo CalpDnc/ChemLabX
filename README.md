@@ -32,4 +32,4 @@ node scripts/validate-elements-json.js
 
 ## Lisans
 
-Yalnızca eğitim amaclı kullanım. Ticari kullanım yasaktır
+Yalnızca eğitim amaclı kullanım. Ticari kullanım yasaktır.
