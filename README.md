@@ -15,15 +15,15 @@ Maarif modeline uygun, lise öğrencileri (9-12. sınıf) için **ticari olmayan
 ChemLabX/
 - index.html (Ana sayfa)
 - elements.html (Periyodik cetvel)
-- compounds.html (Bilesik olusturucu)
+- compounds.html (Bileşik oluşturucu)
 - experiments.html (Sanal deneyler)
-- quizzes.html (Quiz sayfasi)
-- videos.html (Video cozumler)
-- css/design-system.css (Degiskenler)
-- css/main.css (Bilesen stilleri)
+- quizzes.html (Quiz sayfası)
+- videos.html (Video çözümler)
+- css/design-system.css (Değişkenler)
+- css/main.css (Bileşen stilleri)
 - data/elements.json (118 element verisi)
-- data/quizzes.json (Quiz sorulari)
-- scripts/validate-elements-json.js (Dogrulayici)
+- data/quizzes.json (Quiz soruları)
+- scripts/validate-elements-json.js (Doğrulayıcı)
 
 ## Kullanım
 
@@ -32,4 +32,4 @@ node scripts/validate-elements-json.js
 
 ## Lisans
 
-Yalnizca eğitim amacli kullanım. Ticari kullanım yasaktır. 
+Yalnızca eğitim amaclı kullanım. Ticari kullanım yasaktır
