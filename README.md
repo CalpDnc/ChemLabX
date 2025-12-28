@@ -182,44 +182,6 @@ sürdürülebilir bir dijital öğrenme aracı olmayı hedeflemektedir.
 
 ---
 
-## 📁 Proje Yapısı (Özet)
-
-
-
-ChemLabX/
-│
-├─ index.html # Ana sayfa
-├─ elements.html # Periyodik cetvel
-├─ compounds.html # Bileşik oluşturucu
-├─ experiments.html # Sanal deneyler
-├─ quizzes.html # Quizler
-├─ videos.html # Video çözümler
-├─ 404.html # Hata sayfası
-│
-├─ css/
-│ ├─ design-system.css # Renkler, fontlar, değişkenler
-│ └─ main.css # Genel stiller
-│
-├─ data/
-│ ├─ elements.json # 118 element verisi
-│ ├─ experiments.json # Deney verileri
-│ └─ quizzes.json # Quiz soruları
-│
-├─ assets/
-│ ├─ logos/ # Logo varyasyonları
-│ └─ icons/ # İkonlar
-│
-├─ scripts/
-│ └─ validate-elements-json.js # Veri doğrulama betiği
-│
-├─ package.json
-├─ manifest.json # PWA ayarları
-├─ robots.txt
-└─ README.md
-
-
----
-
 ## ▶️ Kullanım
 
 Bu proje **GitHub Pages** üzerinden yayınlanmaktadır.  
