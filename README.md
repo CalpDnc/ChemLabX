@@ -98,14 +98,6 @@ Takım çalışmasına uygun modüler dosya yapısı vardır
 
 GitHub Pages ile yayınlanmaktadır
 
-📜 Lisans
-
-Bu proje yalnızca eğitim amaçlıdır.
-Ticari kullanım kesinlikle yasaktır.
-
-ChemLabX’in temel amacı, Türkiye’deki lise öğrencilerinin kimya öğrenme sürecini desteklemek ve geliştirmektir.
-
-
 ---
 
 ### İstersen bir sonraki adımda:
@@ -152,14 +144,6 @@ sürdürülebilir bir dijital öğrenme aracı olmayı hedeflemektedir.
 
 ---
 
-## 🎯 Amaç
-
-- Kimya konularını görsel ve etkileşimli şekilde sunmak  
-- Öğrencilerin element, bileşik ve deney kavramlarını daha iyi kavramasını sağlamak  
-- Ders tekrarı ve pekiştirme için dijital bir yardımcı kaynak oluşturmak  
-
----
-
 ## ✨ Özellikler
 
 - **Periyodik Cetvel**  
@@ -181,27 +165,6 @@ sürdürülebilir bir dijital öğrenme aracı olmayı hedeflemektedir.
   Mobil cihazlara “Ana Ekrana Ekle” ile kurulabilir
 
 ---
-
-## ▶️ Kullanım
-
-Bu proje **GitHub Pages** üzerinden yayınlanmaktadır.  
-Yerel sunucu kullanımı zorunlu değildir.
-
-Gerekirse yerel çalıştırma için:
-bash
-python -m http.server 8000
-
-
-Veri dosyalarını kontrol etmek için:
-npm run validate
-
-👥 Geliştirme Süreci
-
-VS Code + Git + GitHub kullanılarak geliştirilmiştir
-
-Takım çalışmasına uygun modüler dosya yapısı vardır
-
-GitHub Pages üzerinden yayınlanmaktadır
 
 📜 Lisans
 
