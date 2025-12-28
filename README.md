@@ -102,12 +102,10 @@ Bu proje **GitHub Pages** üzerinden yayınlanmaktadır.
 Yerel sunucu kullanımı zorunlu değildir.
 
 Gerekirse yerel çalıştırma için:
-*bash
-python -m http.server 8000*
+*python -m http.server 8000*
 
 Veri dosyalarını kontrol etmek için:
-*bash
-npm run validate*
+*npm run validate*
 
 👥 Geliştirme Süreci
 
