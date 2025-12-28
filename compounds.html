@@ -19,13 +19,14 @@
   <link rel="stylesheet" href="./css/main.css">
   <link rel="icon" type="image/svg+xml" href="./assets/logos/logo-minimal.svg">
   <style>
-    /* Ana Layout - Desktop: İki Kolon (Sol Panel + Sağ Canvas) */
+    /* Ana Layout - Desktop: Üç Kolon (Sol Moleküller + Orta Canvas + Sağ Elementler) */
     .compound-builder {
       display: flex;
       flex-direction: row;
-      gap: 1.5rem;
+      gap: 1rem;
       margin: 1.5rem 0;
       align-items: flex-start;
+      height: 440px;
     }
 
     /* Element Paleti - Sol Panel */
@@ -41,10 +42,14 @@
       flex-shrink: 0;
     }
     
-    /* Canvas Area - Sağ Panel */
+    /* Canvas Area - Orta Panel */
     .canvas-area {
-      flex: 1;
-      min-width: 0;
+      flex: 1 1 1200px;
+      min-width: 1000px;
+      max-width: 1300px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     [data-theme="dark"] .element-palette {
@@ -281,7 +286,6 @@
 
     .canvas-content {
       flex: 1;
-      min-height: 350px;
       position: relative;
       background: linear-gradient(90deg, #f0f0f0 1px, transparent 1px),
                   linear-gradient(#f0f0f0 1px, transparent 1px);
@@ -320,10 +324,12 @@
     }
 
     .canvas-footer {
-      padding: 0.75rem 1.25rem;
+      padding: 0.6rem 1rem;
       border-top: 1px solid var(--border-light);
       background: #fafafa;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       color: var(--text-primary);
     }
     
@@ -461,16 +467,39 @@
     .atom.O { background: #f44336; color: white; }
     .atom.S { background: #ffeb3b; color: #333; }
     .atom.P { background: #ff9800; color: white; }
+    .atom.Si { background: #607d8b; color: white; }
+    .atom.B { background: #e91e63; color: white; }
+    .atom.Se { background: #ff5722; color: white; }
     .atom.F, .atom.Cl { background: #4caf50; color: white; }
     .atom.Br { background: #8d4004; color: white; }
     .atom.I { background: #9c27b0; color: white; }
+    .atom.At { background: #7b1fa2; color: white; }
     .atom.Li, .atom.Na, .atom.K { background: #ff5722; color: white; }
+    .atom.Rb, .atom.Cs { background: #e64a19; color: white; }
+    .atom.Be { background: #aed581; color: #333; }
     .atom.Mg, .atom.Ca, .atom.Ba { background: #8bc34a; color: white; }
-    .atom.Al { background: #9e9e9e; color: white; }
+    .atom.Sr { background: #7cb342; color: white; }
+    .atom.Sc, .atom.Ti, .atom.V { background: #b0bec5; color: #333; }
+    .atom.Cr { background: #78909c; color: white; }
+    .atom.Mn { background: #90a4ae; color: #333; }
     .atom.Fe { background: #795548; color: white; }
+    .atom.Co { background: #5d4037; color: white; }
+    .atom.Ni { background: #607d8b; color: white; }
     .atom.Cu { background: #ff7043; color: white; }
     .atom.Zn { background: #78909c; color: white; }
+    .atom.Ag { background: #bdbdbd; color: #333; }
+    .atom.Au { background: #ffc107; color: #333; }
+    .atom.Pt { background: #cfd8dc; color: #333; }
+    .atom.Hg { background: #b0bec5; color: #333; }
+    .atom.Pb { background: #546e7a; color: white; }
+    .atom.Sn { background: #90a4ae; color: #333; }
+    .atom.Al { background: #9e9e9e; color: white; }
+    .atom.Ga { background: #80cbc4; color: #333; }
+    .atom.In { background: #4db6ac; color: white; }
+    .atom.Tl { background: #26a69a; color: white; }
+    .atom.Bi { background: #009688; color: white; }
     .atom.He, .atom.Ne, .atom.Ar { background: #00bcd4; color: white; }
+    .atom.Kr, .atom.Xe { background: #0097a7; color: white; }
 
     /* Bağlar */
     .bond-line {
@@ -490,7 +519,7 @@
     .bond-line.ionic { background: linear-gradient(90deg, #f44336, #2196f3); border-radius: 2px; }
 
     /* Bağ Türleri Kartları */
-    .bond-types-section { margin: 2rem 0; }
+    .bond-types-section { margin: 1.5rem 0; }
 
     .bond-cards {
       display: grid;
@@ -530,8 +559,8 @@
 
     /* Bilgi Paneli */
     .info-panel {
-      margin-top: 2rem;
-      padding: 1.5rem;
+      margin-top: 1.25rem;
+      padding: 1.25rem;
       background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-light);
@@ -727,6 +756,392 @@
     @media (max-width: 1200px) { .preset-grid { grid-template-columns: repeat(4, 1fr); } }
     @media (max-width: 900px) { .preset-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 600px) { .preset-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } .preset-molecule { padding: 1rem 0.75rem; } }
+    
+    /* Canvas İçi Element Paneli - Artık sağ sidebar */
+    .elements-sidebar {
+      width: 360px;
+      min-width: 360px;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #f8f9fa 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      border: 1px solid var(--border-light);
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    
+    [data-theme="dark"] .elements-sidebar {
+      background: linear-gradient(135deg, #0d1929 0%, #1a2d4a 100%);
+      border-color: #2a4a6a;
+    }
+    
+    .elements-sidebar h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    
+    [data-theme="dark"] .elements-sidebar h4 {
+      color: #f0f0f5;
+    }
+    
+    .elements-sidebar .element-group {
+      margin-bottom: 1rem;
+    }
+    
+    .elements-sidebar .element-group h5 {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    
+    [data-theme="dark"] .elements-sidebar .element-group h5 {
+      color: #90caf9;
+    }
+    
+    .elements-sidebar .palette-elements {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.35rem;
+    }
+    
+    .elements-sidebar .palette-element {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    
+    .elements-sidebar .palette-element:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .elements-sidebar .palette-element.selected {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Element Renkleri */
+    .elements-sidebar .palette-element.H { background: #e8f5e8; color: #2e7d32; }
+    .elements-sidebar .palette-element.C { background: #424242; color: white; }
+    .elements-sidebar .palette-element.N { background: #3f51b5; color: white; }
+    .elements-sidebar .palette-element.O { background: #f44336; color: white; }
+    .elements-sidebar .palette-element.S { background: #ffeb3b; color: #333; }
+    .elements-sidebar .palette-element.P { background: #ff9800; color: white; }
+    .elements-sidebar .palette-element.Si { background: #607d8b; color: white; }
+    .elements-sidebar .palette-element.B { background: #e91e63; color: white; }
+    .elements-sidebar .palette-element.Se { background: #ff5722; color: white; }
+    .elements-sidebar .palette-element.F, .elements-sidebar .palette-element.Cl { background: #4caf50; color: white; }
+    .elements-sidebar .palette-element.Br { background: #8d4004; color: white; }
+    .elements-sidebar .palette-element.I { background: #9c27b0; color: white; }
+    .elements-sidebar .palette-element.At { background: #7b1fa2; color: white; }
+    .elements-sidebar .palette-element.Li, .elements-sidebar .palette-element.Na, .elements-sidebar .palette-element.K { background: #ff5722; color: white; }
+    .elements-sidebar .palette-element.Rb, .elements-sidebar .palette-element.Cs { background: #e64a19; color: white; }
+    .elements-sidebar .palette-element.Be { background: #aed581; color: #333; }
+    .elements-sidebar .palette-element.Mg, .elements-sidebar .palette-element.Ca, .elements-sidebar .palette-element.Ba { background: #8bc34a; color: white; }
+    .elements-sidebar .palette-element.Sr { background: #7cb342; color: white; }
+    .elements-sidebar .palette-element.Sc, .elements-sidebar .palette-element.Ti, .elements-sidebar .palette-element.V { background: #b0bec5; color: #333; }
+    .elements-sidebar .palette-element.Cr { background: #78909c; color: white; }
+    .elements-sidebar .palette-element.Mn { background: #90a4ae; color: #333; }
+    .elements-sidebar .palette-element.Fe { background: #795548; color: white; }
+    .elements-sidebar .palette-element.Co { background: #5d4037; color: white; }
+    .elements-sidebar .palette-element.Ni { background: #607d8b; color: white; }
+    .elements-sidebar .palette-element.Cu { background: #ff7043; color: white; }
+    .elements-sidebar .palette-element.Zn { background: #78909c; color: white; }
+    .elements-sidebar .palette-element.Ag { background: #bdbdbd; color: #333; }
+    .elements-sidebar .palette-element.Au { background: #ffc107; color: #333; }
+    .elements-sidebar .palette-element.Pt { background: #cfd8dc; color: #333; }
+    .elements-sidebar .palette-element.Hg { background: #b0bec5; color: #333; }
+    .elements-sidebar .palette-element.Pb { background: #546e7a; color: white; }
+    .elements-sidebar .palette-element.Sn { background: #90a4ae; color: #333; }
+    .elements-sidebar .palette-element.Al { background: #9e9e9e; color: white; }
+    .elements-sidebar .palette-element.Ga { background: #80cbc4; color: #333; }
+    .elements-sidebar .palette-element.In { background: #4db6ac; color: white; }
+    .elements-sidebar .palette-element.Tl { background: #26a69a; color: white; }
+    .elements-sidebar .palette-element.Bi { background: #009688; color: white; }
+    .elements-sidebar .palette-element.He, .elements-sidebar .palette-element.Ne, .elements-sidebar .palette-element.Ar { background: #00bcd4; color: white; }
+    .elements-sidebar .palette-element.Kr, .elements-sidebar .palette-element.Xe { background: #0097a7; color: white; }
+    
+    /* Sol Panel - Hazır Moleküller */
+    .molecules-sidebar {
+      width: 460px;
+      min-width: 460px;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #f8f9fa 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      border: 1px solid var(--border-light);
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    
+    [data-theme="dark"] .molecules-sidebar {
+      background: linear-gradient(135deg, #0d1929 0%, #1a2d4a 100%);
+      border-color: #2a4a6a;
+    }
+    
+    .molecules-sidebar h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    [data-theme="dark"] .molecules-sidebar h3 {
+      color: #f0f0f5;
+    }
+    
+    .sidebar-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .sidebar-filter-btn {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.7rem;
+    }
+    
+    .sidebar-filter-btn:hover, .sidebar-filter-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+    
+    [data-theme="dark"] .sidebar-filter-btn {
+      background: #1a2d4a;
+      border-color: #2a4a6a;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .sidebar-filter-btn:hover,
+    [data-theme="dark"] .sidebar-filter-btn.active {
+      background: #667eea;
+      border-color: #667eea;
+    }
+    
+    .sidebar-molecules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    
+    .sidebar-molecule {
+      padding: 0.75rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .sidebar-molecule:hover {
+      border-color: var(--primary-blue);
+      background: #f0f7ff;
+    }
+    
+    .sidebar-molecule.hidden { display: none; }
+    
+    [data-theme="dark"] .sidebar-molecule {
+      background: #1a2d4a;
+      border-color: #2a4a6a;
+    }
+    
+    [data-theme="dark"] .sidebar-molecule:hover {
+      border-color: #667eea;
+      background: #1e3a5f;
+    }
+    
+    .sidebar-molecule-icon {
+      font-size: 1.25rem;
+      width: 32px;
+      text-align: center;
+    }
+    
+    .sidebar-molecule-info {
+      flex: 1;
+    }
+    
+    .sidebar-molecule-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .sidebar-molecule-name {
+      color: #f0f0f5;
+    }
+    
+    .sidebar-molecule-formula {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'Times New Roman', serif;
+    }
+    
+    [data-theme="dark"] .sidebar-molecule-formula {
+      color: #90caf9;
+    }
+    
+    .sidebar-molecule-badge {
+      font-size: 0.6rem;
+      padding: 0.15rem 0.35rem;
+      border-radius: var(--radius-sm);
+    }
+    
+    .sidebar-molecule-badge.covalent { background: #e3f2fd; color: #1565c0; }
+    .sidebar-molecule-badge.ionic { background: #ffebee; color: #c62828; }
+    .sidebar-molecule-badge.polar { background: #fff3e0; color: #e65100; }
+    
+    [data-theme="dark"] .sidebar-molecule-badge.covalent { background: #1e3a5f; color: #90caf9; }
+    [data-theme="dark"] .sidebar-molecule-badge.ionic { background: #3a1a1a; color: #ef9a9a; }
+    [data-theme="dark"] .sidebar-molecule-badge.polar { background: #3a2a1a; color: #ffcc80; }
+    
+    /* Canvas içi araçlar */
+    .canvas-tools-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-light);
+    }
+    
+    [data-theme="dark"] .canvas-tools-row {
+      border-top-color: #374556;
+    }
+    
+    .canvas-tool-btn {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    
+    .canvas-tool-btn:hover {
+      background: var(--hover-bg);
+    }
+    
+    [data-theme="dark"] .canvas-tool-btn {
+      background: #253450;
+      border-color: #374556;
+      color: #f0f0f5;
+    }
+    
+    [data-theme="dark"] .canvas-tool-btn:hover {
+      background: #2d3f5f;
+    }
+    
+    .canvas-tool-btn.danger:hover {
+      background: #fee2e2;
+      border-color: #f87171;
+      color: #dc2626;
+    }
+    
+    [data-theme="dark"] .canvas-tool-btn.danger:hover {
+      background: #3a1a1a;
+      border-color: #ef5350;
+      color: #ef5350;
+    }
+    
+    .canvas-tool-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+    
+    /* Responsive - Sidebar Hazır Moleküller */
+    @media (max-width: 1200px) {
+      .molecules-sidebar {
+        width: 240px;
+        min-width: 240px;
+      }
+      
+      .elements-sidebar {
+        width: 220px;
+        min-width: 220px;
+      }
+      
+      .elements-sidebar .palette-elements {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+    
+    @media (max-width: 1024px) {
+      .molecules-sidebar {
+        width: 200px;
+        min-width: 200px;
+      }
+      
+      .elements-sidebar {
+        width: 180px;
+        min-width: 180px;
+      }
+      
+      .elements-sidebar .palette-elements {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .compound-builder {
+        flex-direction: column;
+        min-height: auto;
+      }
+      
+      .molecules-sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-height: 200px;
+        order: 3;
+      }
+      
+      .elements-sidebar {
+        width: 100%;
+        min-width: 100%;
+        max-height: 180px;
+        order: 1;
+      }
+      
+      .elements-sidebar .palette-elements {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      
+      .canvas-area {
+        order: 2;
+      }
+      
+      .sidebar-molecules-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -783,85 +1198,348 @@
 
     <!-- Bileşik Oluşturucu Grid -->
     <div class="compound-builder">
-      <!-- Sol Panel: Element Paleti -->
-      <div class="element-palette">
-        <h3 class="text-xl font-semibold mb-4">🧪 Elementler</h3>
-
-        <div class="element-group">
-          <h4>Ametaller</h4>
-          <div class="palette-elements">
-            <div class="palette-element H" data-element="H" data-valence="1" data-electronegativity="2.20">H</div>
-            <div class="palette-element C" data-element="C" data-valence="4" data-electronegativity="2.55">C</div>
-            <div class="palette-element N" data-element="N" data-valence="3" data-electronegativity="3.04">N</div>
-            <div class="palette-element O" data-element="O" data-valence="2" data-electronegativity="3.44">O</div>
-            <div class="palette-element S" data-element="S" data-valence="2" data-electronegativity="2.58">S</div>
-            <div class="palette-element P" data-element="P" data-valence="3" data-electronegativity="2.19">P</div>
-          </div>
+      <!-- Sol Panel: Hazır Moleküller -->
+      <div class="molecules-sidebar">
+        <h3>🧬 Hazır Moleküller</h3>
+        
+        <div class="sidebar-filters">
+          <button class="sidebar-filter-btn active" data-filter="all">Tümü</button>
+          <button class="sidebar-filter-btn" data-filter="covalent">Kovalent</button>
+          <button class="sidebar-filter-btn" data-filter="ionic">İyonik</button>
+          <button class="sidebar-filter-btn" data-filter="organic">Organik</button>
+          <button class="sidebar-filter-btn" data-filter="acid">Asitler</button>
         </div>
-
-        <div class="element-group">
-          <h4>Halojenler</h4>
-          <div class="palette-elements">
-            <div class="palette-element F" data-element="F" data-valence="1" data-electronegativity="3.98">F</div>
-            <div class="palette-element Cl" data-element="Cl" data-valence="1" data-electronegativity="3.16">Cl</div>
-            <div class="palette-element Br" data-element="Br" data-valence="1" data-electronegativity="2.96">Br</div>
-            <div class="palette-element I" data-element="I" data-valence="1" data-electronegativity="2.66">I</div>
+        
+        <div class="sidebar-molecules-grid" id="sidebar-molecules">
+          <div class="sidebar-molecule" data-preset="water" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">💧</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Su</div>
+              <div class="sidebar-molecule-formula">H₂O</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
           </div>
-        </div>
-
-        <div class="element-group">
-          <h4>Alkali Metaller</h4>
-          <div class="palette-elements">
-            <div class="palette-element Li" data-element="Li" data-valence="1" data-electronegativity="0.98">Li</div>
-            <div class="palette-element Na" data-element="Na" data-valence="1" data-electronegativity="0.93">Na</div>
-            <div class="palette-element K" data-element="K" data-valence="1" data-electronegativity="0.82">K</div>
+          <div class="sidebar-molecule" data-preset="methane" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🔥</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Metan</div>
+              <div class="sidebar-molecule-formula">CH₄</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
           </div>
-        </div>
-
-        <div class="element-group">
-          <h4>Toprak Alkali Metaller</h4>
-          <div class="palette-elements">
-            <div class="palette-element Mg" data-element="Mg" data-valence="2" data-electronegativity="1.31">Mg</div>
-            <div class="palette-element Ca" data-element="Ca" data-valence="2" data-electronegativity="1.00">Ca</div>
-            <div class="palette-element Ba" data-element="Ba" data-valence="2" data-electronegativity="0.89">Ba</div>
+          <div class="sidebar-molecule" data-preset="ammonia" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🧪</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Amonyak</div>
+              <div class="sidebar-molecule-formula">NH₃</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
           </div>
-        </div>
-
-        <div class="element-group">
-          <h4>Diğer Metaller</h4>
-          <div class="palette-elements">
-            <div class="palette-element Al" data-element="Al" data-valence="3" data-electronegativity="1.61">Al</div>
-            <div class="palette-element Fe" data-element="Fe" data-valence="3" data-electronegativity="1.83">Fe</div>
-            <div class="palette-element Cu" data-element="Cu" data-valence="2" data-electronegativity="1.90">Cu</div>
-            <div class="palette-element Zn" data-element="Zn" data-valence="2" data-electronegativity="1.65">Zn</div>
+          <div class="sidebar-molecule" data-preset="carbon-dioxide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">☁️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Karbondioksit</div>
+              <div class="sidebar-molecule-formula">CO₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
           </div>
-        </div>
-
-        <div class="element-group">
-          <h4>Soy Gazlar</h4>
-          <div class="palette-elements">
-            <div class="palette-element He" data-element="He" data-valence="0" data-electronegativity="0">He</div>
-            <div class="palette-element Ne" data-element="Ne" data-valence="0" data-electronegativity="0">Ne</div>
-            <div class="palette-element Ar" data-element="Ar" data-valence="0" data-electronegativity="0">Ar</div>
+          <div class="sidebar-molecule" data-preset="sodium-chloride" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🧂</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Sodyum Klorür</div>
+              <div class="sidebar-molecule-formula">NaCl</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
           </div>
-        </div>
-
-        <div class="element-group tools-group">
-          <h4>🔧 Araçlar</h4>
-          <div class="canvas-controls vertical">
-            <button class="control-btn danger" id="clear-canvas">🗑️ Temizle</button>
-            <button class="control-btn" id="undo">↩️ Geri Al</button>
-            <button class="control-btn" id="delete-mode">❌ Sil Modu</button>
+          <div class="sidebar-molecule" data-preset="hydrogen-chloride" data-category="covalent inorganic acid">
+            <div class="sidebar-molecule-icon">⚗️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Hidrojen Klorür</div>
+              <div class="sidebar-molecule-formula">HCl</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="oxygen" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🌬️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Oksijen</div>
+              <div class="sidebar-molecule-formula">O₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="nitrogen" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🎈</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Azot</div>
+              <div class="sidebar-molecule-formula">N₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="hydrogen" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">💨</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Hidrojen</div>
+              <div class="sidebar-molecule-formula">H₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="ethanol" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🍺</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Etanol</div>
+              <div class="sidebar-molecule-formula">C₂H₅OH</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="magnesium-oxide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">⭕</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Magnezyum Oksit</div>
+              <div class="sidebar-molecule-formula">MgO</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="sulfuric-acid" data-category="covalent inorganic acid">
+            <div class="sidebar-molecule-icon">☠️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Sülfürik Asit</div>
+              <div class="sidebar-molecule-formula">H₂SO₄</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="glucose" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🍬</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Glikoz</div>
+              <div class="sidebar-molecule-formula">C₆H₁₂O₆</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="acetic-acid" data-category="covalent organic acid">
+            <div class="sidebar-molecule-icon">🥗</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Asetik Asit</div>
+              <div class="sidebar-molecule-formula">CH₃COOH</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="calcium-chloride" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">❄️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Kalsiyum Klorür</div>
+              <div class="sidebar-molecule-formula">CaCl₂</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="ethane" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">⛽</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Etan</div>
+              <div class="sidebar-molecule-formula">C₂H₆</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="propane" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🛢️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Propan</div>
+              <div class="sidebar-molecule-formula">C₃H₈</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="sodium-hydroxide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🧼</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Sodyum Hidroksit</div>
+              <div class="sidebar-molecule-formula">NaOH</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="carbon-monoxide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">💨</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Karbon Monoksit</div>
+              <div class="sidebar-molecule-formula">CO</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="ozone" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🌤️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Ozon</div>
+              <div class="sidebar-molecule-formula">O₃</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="hydrogen-sulfide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🥚</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Hidrojen Sülfür</div>
+              <div class="sidebar-molecule-formula">H₂S</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="sulfur-dioxide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🏭</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Kükürt Dioksit</div>
+              <div class="sidebar-molecule-formula">SO₂</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="nitric-acid" data-category="covalent inorganic acid">
+            <div class="sidebar-molecule-icon">⚗️</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Nitrik Asit</div>
+              <div class="sidebar-molecule-formula">HNO₃</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="phosphoric-acid" data-category="covalent inorganic acid">
+            <div class="sidebar-molecule-icon">🧴</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Fosforik Asit</div>
+              <div class="sidebar-molecule-formula">H₃PO₄</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="hydrogen-peroxide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">💧</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Hidrojen Peroksit</div>
+              <div class="sidebar-molecule-formula">H₂O₂</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="methanol" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🧪</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Metanol</div>
+              <div class="sidebar-molecule-formula">CH₃OH</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="ethene" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🔹</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Etilen</div>
+              <div class="sidebar-molecule-formula">C₂H₄</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="ethyne" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🔸</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Asetilen</div>
+              <div class="sidebar-molecule-formula">C₂H₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="butane" data-category="covalent organic">
+            <div class="sidebar-molecule-icon">🔥</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Bütan</div>
+              <div class="sidebar-molecule-formula">C₄H₁₀</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="formic-acid" data-category="covalent organic acid">
+            <div class="sidebar-molecule-icon">🐜</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Formik Asit</div>
+              <div class="sidebar-molecule-formula">HCOOH</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="potassium-hydroxide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🧪</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Potasyum Hidroksit</div>
+              <div class="sidebar-molecule-formula">KOH</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="calcium-carbonate" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🪨</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Kalsiyum Karbonat</div>
+              <div class="sidebar-molecule-formula">CaCO₃</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="potassium-bromide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">💎</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Potasyum Bromür</div>
+              <div class="sidebar-molecule-formula">KBr</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="aluminum-oxide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">⬜</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Alüminyum Oksit</div>
+              <div class="sidebar-molecule-formula">Al₂O₃</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="iron-oxide" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🟤</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Demir Oksit</div>
+              <div class="sidebar-molecule-formula">Fe₂O₃</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="copper-sulfate" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🔵</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Bakır Sülfat</div>
+              <div class="sidebar-molecule-formula">CuSO₄</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="silver-nitrate" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">⚪</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Gümüş Nitrat</div>
+              <div class="sidebar-molecule-formula">AgNO₃</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="nitrogen-dioxide" data-category="covalent inorganic">
+            <div class="sidebar-molecule-icon">🟠</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Azot Dioksit</div>
+              <div class="sidebar-molecule-formula">NO₂</div>
+            </div>
+            <span class="sidebar-molecule-badge covalent">Kovalent</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="carbonic-acid" data-category="covalent inorganic acid">
+            <div class="sidebar-molecule-icon">🥤</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Karbonik Asit</div>
+              <div class="sidebar-molecule-formula">H₂CO₃</div>
+            </div>
+            <span class="sidebar-molecule-badge polar">Polar</span>
+          </div>
+          <div class="sidebar-molecule" data-preset="sodium-bicarbonate" data-category="ionic inorganic">
+            <div class="sidebar-molecule-icon">🧁</div>
+            <div class="sidebar-molecule-info">
+              <div class="sidebar-molecule-name">Sodyum Bikarbonat</div>
+              <div class="sidebar-molecule-formula">NaHCO₃</div>
+            </div>
+            <span class="sidebar-molecule-badge ionic">İyonik</span>
           </div>
         </div>
       </div>
 
-      <!-- Sağ Panel: Çizim Alanı (Canvas) -->
+      <!-- Orta Panel: Çizim Alanı (Canvas) -->
       <div class="canvas-area" id="canvas">
         <div class="canvas-header">
           <h3>🔬 Molekülünüz</h3>
           <div class="bond-type-selector">
-            <span class="bond-label">Bağ Türü:</span>
+            <span class="bond-label">Bağ:</span>
             <button class="bond-btn active" id="single-bond" data-bond="single">
               <span class="bond-icon">―</span>
               <span>Tek</span>
@@ -883,8 +1561,107 @@
           </div>
         </div>
         <div class="canvas-footer">
-          <div class="bond-info-mini">
-            <span id="current-bond-type">Kovalent Bağ</span>
+          <button class="canvas-tool-btn" id="undo">↩️ Geri Al</button>
+          <button class="canvas-tool-btn" id="delete-mode">❌ Sil Modu</button>
+          <button class="canvas-tool-btn danger" id="clear-canvas">🗑️ Temizle</button>
+          <div style="flex: 1;"></div>
+          <span class="bond-info-mini" id="current-bond-type">Kovalent Bağ</span>
+        </div>
+      </div>
+      
+      <!-- Sağ Panel: Elementler -->
+      <div class="elements-sidebar">
+        <h4>🧪 Elementler</h4>
+        
+        <div class="element-group">
+          <h5>Ametaller</h5>
+          <div class="palette-elements">
+            <div class="palette-element H" data-element="H" data-valence="1" data-electronegativity="2.20">H</div>
+            <div class="palette-element C" data-element="C" data-valence="4" data-electronegativity="2.55">C</div>
+            <div class="palette-element N" data-element="N" data-valence="3" data-electronegativity="3.04">N</div>
+            <div class="palette-element O" data-element="O" data-valence="2" data-electronegativity="3.44">O</div>
+            <div class="palette-element S" data-element="S" data-valence="2" data-electronegativity="2.58">S</div>
+            <div class="palette-element P" data-element="P" data-valence="3" data-electronegativity="2.19">P</div>
+            <div class="palette-element Si" data-element="Si" data-valence="4" data-electronegativity="1.90">Si</div>
+            <div class="palette-element B" data-element="B" data-valence="3" data-electronegativity="2.04">B</div>
+            <div class="palette-element Se" data-element="Se" data-valence="2" data-electronegativity="2.55">Se</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Halojenler</h5>
+          <div class="palette-elements">
+            <div class="palette-element F" data-element="F" data-valence="1" data-electronegativity="3.98">F</div>
+            <div class="palette-element Cl" data-element="Cl" data-valence="1" data-electronegativity="3.16">Cl</div>
+            <div class="palette-element Br" data-element="Br" data-valence="1" data-electronegativity="2.96">Br</div>
+            <div class="palette-element I" data-element="I" data-valence="1" data-electronegativity="2.66">I</div>
+            <div class="palette-element At" data-element="At" data-valence="1" data-electronegativity="2.20">At</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Alkali</h5>
+          <div class="palette-elements">
+            <div class="palette-element Li" data-element="Li" data-valence="1" data-electronegativity="0.98">Li</div>
+            <div class="palette-element Na" data-element="Na" data-valence="1" data-electronegativity="0.93">Na</div>
+            <div class="palette-element K" data-element="K" data-valence="1" data-electronegativity="0.82">K</div>
+            <div class="palette-element Rb" data-element="Rb" data-valence="1" data-electronegativity="0.82">Rb</div>
+            <div class="palette-element Cs" data-element="Cs" data-valence="1" data-electronegativity="0.79">Cs</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Toprak Alkali</h5>
+          <div class="palette-elements">
+            <div class="palette-element Be" data-element="Be" data-valence="2" data-electronegativity="1.57">Be</div>
+            <div class="palette-element Mg" data-element="Mg" data-valence="2" data-electronegativity="1.31">Mg</div>
+            <div class="palette-element Ca" data-element="Ca" data-valence="2" data-electronegativity="1.00">Ca</div>
+            <div class="palette-element Sr" data-element="Sr" data-valence="2" data-electronegativity="0.95">Sr</div>
+            <div class="palette-element Ba" data-element="Ba" data-valence="2" data-electronegativity="0.89">Ba</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Geçiş Metalleri</h5>
+          <div class="palette-elements">
+            <div class="palette-element Sc" data-element="Sc" data-valence="3" data-electronegativity="1.36">Sc</div>
+            <div class="palette-element Ti" data-element="Ti" data-valence="4" data-electronegativity="1.54">Ti</div>
+            <div class="palette-element V" data-element="V" data-valence="5" data-electronegativity="1.63">V</div>
+            <div class="palette-element Cr" data-element="Cr" data-valence="6" data-electronegativity="1.66">Cr</div>
+            <div class="palette-element Mn" data-element="Mn" data-valence="7" data-electronegativity="1.55">Mn</div>
+            <div class="palette-element Fe" data-element="Fe" data-valence="3" data-electronegativity="1.83">Fe</div>
+            <div class="palette-element Co" data-element="Co" data-valence="3" data-electronegativity="1.88">Co</div>
+            <div class="palette-element Ni" data-element="Ni" data-valence="2" data-electronegativity="1.91">Ni</div>
+            <div class="palette-element Cu" data-element="Cu" data-valence="2" data-electronegativity="1.90">Cu</div>
+            <div class="palette-element Zn" data-element="Zn" data-valence="2" data-electronegativity="1.65">Zn</div>
+            <div class="palette-element Ag" data-element="Ag" data-valence="1" data-electronegativity="1.93">Ag</div>
+            <div class="palette-element Au" data-element="Au" data-valence="3" data-electronegativity="2.54">Au</div>
+            <div class="palette-element Pt" data-element="Pt" data-valence="4" data-electronegativity="2.28">Pt</div>
+            <div class="palette-element Hg" data-element="Hg" data-valence="2" data-electronegativity="2.00">Hg</div>
+            <div class="palette-element Pb" data-element="Pb" data-valence="4" data-electronegativity="2.33">Pb</div>
+            <div class="palette-element Sn" data-element="Sn" data-valence="4" data-electronegativity="1.96">Sn</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Diğer Metaller</h5>
+          <div class="palette-elements">
+            <div class="palette-element Al" data-element="Al" data-valence="3" data-electronegativity="1.61">Al</div>
+            <div class="palette-element Ga" data-element="Ga" data-valence="3" data-electronegativity="1.81">Ga</div>
+            <div class="palette-element In" data-element="In" data-valence="3" data-electronegativity="1.78">In</div>
+            <div class="palette-element Tl" data-element="Tl" data-valence="3" data-electronegativity="1.62">Tl</div>
+            <div class="palette-element Bi" data-element="Bi" data-valence="5" data-electronegativity="2.02">Bi</div>
+          </div>
+        </div>
+
+        <div class="element-group">
+          <h5>Soy Gazlar</h5>
+          <div class="palette-elements">
+            <div class="palette-element He" data-element="He" data-valence="0" data-electronegativity="0">He</div>
+            <div class="palette-element Ne" data-element="Ne" data-valence="0" data-electronegativity="0">Ne</div>
+            <div class="palette-element Ar" data-element="Ar" data-valence="0" data-electronegativity="0">Ar</div>
+            <div class="palette-element Kr" data-element="Kr" data-valence="0" data-electronegativity="3.00">Kr</div>
+            <div class="palette-element Xe" data-element="Xe" data-valence="0" data-electronegativity="2.60">Xe</div>
           </div>
         </div>
       </div>
@@ -977,263 +1754,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Hazır Moleküller -->
-    <div class="preset-molecules">
-      <h3 class="text-xl font-semibold mb-4">🧬 Hazır Moleküller</h3>
-      
-      <div class="preset-filters">
-        <button class="filter-btn active" data-filter="all">Tümü</button>
-        <button class="filter-btn" data-filter="covalent">Kovalent</button>
-        <button class="filter-btn" data-filter="ionic">İyonik</button>
-        <button class="filter-btn" data-filter="organic">Organik</button>
-        <button class="filter-btn" data-filter="inorganic">İnorganik</button>
-        <button class="filter-btn" data-filter="acid">Asitler</button>
-      </div>
-
-      <div class="preset-grid">
-        <div class="preset-molecule" data-preset="water" data-category="covalent inorganic">
-          <div class="preset-icon">💧</div>
-          <div class="preset-name">Su</div>
-          <div class="preset-formula">H₂O</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="methane" data-category="covalent organic">
-          <div class="preset-icon">🔥</div>
-          <div class="preset-name">Metan</div>
-          <div class="preset-formula">CH₄</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="ammonia" data-category="covalent inorganic">
-          <div class="preset-icon">🧪</div>
-          <div class="preset-name">Amonyak</div>
-          <div class="preset-formula">NH₃</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="carbon-dioxide" data-category="covalent inorganic">
-          <div class="preset-icon">☁️</div>
-          <div class="preset-name">Karbondioksit</div>
-          <div class="preset-formula">CO₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="hydrogen-chloride" data-category="covalent inorganic acid">
-          <div class="preset-icon">⚗️</div>
-          <div class="preset-name">Hidrojen Klorür</div>
-          <div class="preset-formula">HCl</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="oxygen" data-category="covalent inorganic">
-          <div class="preset-icon">🌬️</div>
-          <div class="preset-name">Oksijen</div>
-          <div class="preset-formula">O₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="nitrogen" data-category="covalent inorganic">
-          <div class="preset-icon">🎈</div>
-          <div class="preset-name">Azot</div>
-          <div class="preset-formula">N₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="hydrogen" data-category="covalent inorganic">
-          <div class="preset-icon">💨</div>
-          <div class="preset-name">Hidrojen</div>
-          <div class="preset-formula">H₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="sodium-chloride" data-category="ionic inorganic">
-          <div class="preset-icon">🧂</div>
-          <div class="preset-name">Sodyum Klorür</div>
-          <div class="preset-formula">NaCl</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="magnesium-oxide" data-category="ionic inorganic">
-          <div class="preset-icon">⭕</div>
-          <div class="preset-name">Magnezyum Oksit</div>
-          <div class="preset-formula">MgO</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="calcium-chloride" data-category="ionic inorganic">
-          <div class="preset-icon">❄️</div>
-          <div class="preset-name">Kalsiyum Klorür</div>
-          <div class="preset-formula">CaCl₂</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="potassium-bromide" data-category="ionic inorganic">
-          <div class="preset-icon">💊</div>
-          <div class="preset-name">Potasyum Bromür</div>
-          <div class="preset-formula">KBr</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="ethane" data-category="covalent organic">
-          <div class="preset-icon">⛽</div>
-          <div class="preset-name">Etan</div>
-          <div class="preset-formula">C₂H₆</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="ethene" data-category="covalent organic">
-          <div class="preset-icon">🌱</div>
-          <div class="preset-name">Eten</div>
-          <div class="preset-formula">C₂H₄</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="ethyne" data-category="covalent organic">
-          <div class="preset-icon">📦</div>
-          <div class="preset-name">Etin</div>
-          <div class="preset-formula">C₂H₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="methanol" data-category="covalent organic">
-          <div class="preset-icon">🍶</div>
-          <div class="preset-name">Metanol</div>
-          <div class="preset-formula">CH₃OH</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="ethanol" data-category="covalent organic">
-          <div class="preset-icon">🍺</div>
-          <div class="preset-name">Etanol</div>
-          <div class="preset-formula">C₂H₅OH</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="sulfuric-acid" data-category="covalent inorganic acid">
-          <div class="preset-icon">☠️</div>
-          <div class="preset-name">Sülfürik Asit</div>
-          <div class="preset-formula">H₂SO₄</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="nitric-acid" data-category="covalent inorganic acid">
-          <div class="preset-icon">🧪</div>
-          <div class="preset-name">Nitrik Asit</div>
-          <div class="preset-formula">HNO₃</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="phosphoric-acid" data-category="covalent inorganic acid">
-          <div class="preset-icon">⚠️</div>
-          <div class="preset-name">Fosforik Asit</div>
-          <div class="preset-formula">H₃PO₄</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="propane" data-category="covalent organic">
-          <div class="preset-icon">🛢️</div>
-          <div class="preset-name">Propan</div>
-          <div class="preset-formula">C₃H₈</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="butane" data-category="covalent organic">
-          <div class="preset-icon">🧯</div>
-          <div class="preset-name">Bütan</div>
-          <div class="preset-formula">C₄H₁₀</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="acetic-acid" data-category="covalent organic acid">
-          <div class="preset-icon">🥗</div>
-          <div class="preset-name">Asetik Asit</div>
-          <div class="preset-formula">CH₃COOH</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="formic-acid" data-category="covalent organic acid">
-          <div class="preset-icon">🐜</div>
-          <div class="preset-name">Formik Asit</div>
-          <div class="preset-formula">HCOOH</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="glucose" data-category="covalent organic">
-          <div class="preset-icon">🍬</div>
-          <div class="preset-name">Glikoz</div>
-          <div class="preset-formula">C₆H₁₂O₆</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="carbonic-acid" data-category="covalent inorganic acid">
-          <div class="preset-icon">🥤</div>
-          <div class="preset-name">Karbonik Asit</div>
-          <div class="preset-formula">H₂CO₃</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="sodium-hydroxide" data-category="ionic inorganic">
-          <div class="preset-icon">🧼</div>
-          <div class="preset-name">Sodyum Hidroksit</div>
-          <div class="preset-formula">NaOH</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="potassium-hydroxide" data-category="ionic inorganic">
-          <div class="preset-icon">🧴</div>
-          <div class="preset-name">Potasyum Hidroksit</div>
-          <div class="preset-formula">KOH</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="calcium-carbonate" data-category="ionic inorganic">
-          <div class="preset-icon">�ite</div>
-          <div class="preset-name">Kalsiyum Karbonat</div>
-          <div class="preset-formula">CaCO₃</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="sodium-bicarbonate" data-category="ionic inorganic">
-          <div class="preset-icon">🧁</div>
-          <div class="preset-name">Sodyum Bikarbonat</div>
-          <div class="preset-formula">NaHCO₃</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="hydrogen-peroxide" data-category="covalent inorganic">
-          <div class="preset-icon">🧼</div>
-          <div class="preset-name">Hidrojen Peroksit</div>
-          <div class="preset-formula">H₂O₂</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="sulfur-dioxide" data-category="covalent inorganic">
-          <div class="preset-icon">🏭</div>
-          <div class="preset-name">Kükürt Dioksit</div>
-          <div class="preset-formula">SO₂</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="nitrogen-dioxide" data-category="covalent inorganic">
-          <div class="preset-icon">💨</div>
-          <div class="preset-name">Azot Dioksit</div>
-          <div class="preset-formula">NO₂</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="carbon-monoxide" data-category="covalent inorganic">
-          <div class="preset-icon">⚠️</div>
-          <div class="preset-name">Karbon Monoksit</div>
-          <div class="preset-formula">CO</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="ozone" data-category="covalent inorganic">
-          <div class="preset-icon">🌍</div>
-          <div class="preset-name">Ozon</div>
-          <div class="preset-formula">O₃</div>
-          <div class="preset-bond-type covalent">Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="hydrogen-sulfide" data-category="covalent inorganic">
-          <div class="preset-icon">🦨</div>
-          <div class="preset-name">Hidrojen Sülfür</div>
-          <div class="preset-formula">H₂S</div>
-          <div class="preset-bond-type polar">Polar Kovalent</div>
-        </div>
-        <div class="preset-molecule" data-preset="aluminum-oxide" data-category="ionic inorganic">
-          <div class="preset-icon">💎</div>
-          <div class="preset-name">Alüminyum Oksit</div>
-          <div class="preset-formula">Al₂O₃</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="iron-oxide" data-category="ionic inorganic">
-          <div class="preset-icon">🧱</div>
-          <div class="preset-name">Demir(III) Oksit</div>
-          <div class="preset-formula">Fe₂O₃</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="copper-sulfate" data-category="ionic inorganic">
-          <div class="preset-icon">🔵</div>
-          <div class="preset-name">Bakır Sülfat</div>
-          <div class="preset-formula">CuSO₄</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-        <div class="preset-molecule" data-preset="silver-nitrate" data-category="ionic inorganic">
-          <div class="preset-icon">⭐</div>
-          <div class="preset-name">Gümüş Nitrat</div>
-          <div class="preset-formula">AgNO₃</div>
-          <div class="preset-bond-type ionic">İyonik</div>
-        </div>
-      </div>
-    </div>
   </main>
 
   <!-- Footer -->
@@ -1254,24 +1774,50 @@
       O: { name: 'Oksijen', mass: 15.999, maxBonds: 2, electronegativity: 3.44, type: 'nonmetal', canBond: true },
       S: { name: 'Kükürt', mass: 32.065, maxBonds: 6, electronegativity: 2.58, type: 'nonmetal', canBond: true },
       P: { name: 'Fosfor', mass: 30.974, maxBonds: 5, electronegativity: 2.19, type: 'nonmetal', canBond: true },
+      Si: { name: 'Silisyum', mass: 28.086, maxBonds: 4, electronegativity: 1.90, type: 'metalloid', canBond: true },
+      B: { name: 'Bor', mass: 10.811, maxBonds: 3, electronegativity: 2.04, type: 'metalloid', canBond: true },
+      Se: { name: 'Selenyum', mass: 78.971, maxBonds: 2, electronegativity: 2.55, type: 'nonmetal', canBond: true },
       F: { name: 'Flor', mass: 18.998, maxBonds: 1, electronegativity: 3.98, type: 'halogen', canBond: true },
       Cl: { name: 'Klor', mass: 35.453, maxBonds: 1, electronegativity: 3.16, type: 'halogen', canBond: true },
       Br: { name: 'Brom', mass: 79.904, maxBonds: 1, electronegativity: 2.96, type: 'halogen', canBond: true },
       I: { name: 'İyot', mass: 126.90, maxBonds: 1, electronegativity: 2.66, type: 'halogen', canBond: true },
+      At: { name: 'Astatin', mass: 210, maxBonds: 1, electronegativity: 2.20, type: 'halogen', canBond: true },
       Li: { name: 'Lityum', mass: 6.941, maxBonds: 1, electronegativity: 0.98, type: 'metal', canBond: true },
       Na: { name: 'Sodyum', mass: 22.990, maxBonds: 1, electronegativity: 0.93, type: 'metal', canBond: true },
       K: { name: 'Potasyum', mass: 39.098, maxBonds: 1, electronegativity: 0.82, type: 'metal', canBond: true },
+      Rb: { name: 'Rubidyum', mass: 85.468, maxBonds: 1, electronegativity: 0.82, type: 'metal', canBond: true },
+      Cs: { name: 'Sezyum', mass: 132.91, maxBonds: 1, electronegativity: 0.79, type: 'metal', canBond: true },
+      Be: { name: 'Berilyum', mass: 9.012, maxBonds: 2, electronegativity: 1.57, type: 'metal', canBond: true },
       Mg: { name: 'Magnezyum', mass: 24.305, maxBonds: 2, electronegativity: 1.31, type: 'metal', canBond: true },
       Ca: { name: 'Kalsiyum', mass: 40.078, maxBonds: 2, electronegativity: 1.00, type: 'metal', canBond: true },
+      Sr: { name: 'Stronsiyum', mass: 87.62, maxBonds: 2, electronegativity: 0.95, type: 'metal', canBond: true },
       Ba: { name: 'Baryum', mass: 137.33, maxBonds: 2, electronegativity: 0.89, type: 'metal', canBond: true },
-      Al: { name: 'Alüminyum', mass: 26.982, maxBonds: 3, electronegativity: 1.61, type: 'metal', canBond: true },
+      Sc: { name: 'Skandiyum', mass: 44.956, maxBonds: 3, electronegativity: 1.36, type: 'metal', canBond: true },
+      Ti: { name: 'Titanyum', mass: 47.867, maxBonds: 4, electronegativity: 1.54, type: 'metal', canBond: true },
+      V: { name: 'Vanadyum', mass: 50.942, maxBonds: 5, electronegativity: 1.63, type: 'metal', canBond: true },
+      Cr: { name: 'Krom', mass: 51.996, maxBonds: 6, electronegativity: 1.66, type: 'metal', canBond: true },
+      Mn: { name: 'Mangan', mass: 54.938, maxBonds: 7, electronegativity: 1.55, type: 'metal', canBond: true },
       Fe: { name: 'Demir', mass: 55.845, maxBonds: 6, electronegativity: 1.83, type: 'metal', canBond: true },
+      Co: { name: 'Kobalt', mass: 58.933, maxBonds: 3, electronegativity: 1.88, type: 'metal', canBond: true },
+      Ni: { name: 'Nikel', mass: 58.693, maxBonds: 2, electronegativity: 1.91, type: 'metal', canBond: true },
       Cu: { name: 'Bakır', mass: 63.546, maxBonds: 2, electronegativity: 1.90, type: 'metal', canBond: true },
       Zn: { name: 'Çinko', mass: 65.38, maxBonds: 2, electronegativity: 1.65, type: 'metal', canBond: true },
       Ag: { name: 'Gümüş', mass: 107.87, maxBonds: 1, electronegativity: 1.93, type: 'metal', canBond: true },
+      Au: { name: 'Altın', mass: 196.97, maxBonds: 3, electronegativity: 2.54, type: 'metal', canBond: true },
+      Pt: { name: 'Platin', mass: 195.08, maxBonds: 4, electronegativity: 2.28, type: 'metal', canBond: true },
+      Hg: { name: 'Cıva', mass: 200.59, maxBonds: 2, electronegativity: 2.00, type: 'metal', canBond: true },
+      Pb: { name: 'Kurşun', mass: 207.2, maxBonds: 4, electronegativity: 2.33, type: 'metal', canBond: true },
+      Sn: { name: 'Kalay', mass: 118.71, maxBonds: 4, electronegativity: 1.96, type: 'metal', canBond: true },
+      Al: { name: 'Alüminyum', mass: 26.982, maxBonds: 3, electronegativity: 1.61, type: 'metal', canBond: true },
+      Ga: { name: 'Galyum', mass: 69.723, maxBonds: 3, electronegativity: 1.81, type: 'metal', canBond: true },
+      In: { name: 'İndiyum', mass: 114.82, maxBonds: 3, electronegativity: 1.78, type: 'metal', canBond: true },
+      Tl: { name: 'Talyum', mass: 204.38, maxBonds: 3, electronegativity: 1.62, type: 'metal', canBond: true },
+      Bi: { name: 'Bizmut', mass: 208.98, maxBonds: 5, electronegativity: 2.02, type: 'metal', canBond: true },
       He: { name: 'Helyum', mass: 4.003, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false },
       Ne: { name: 'Neon', mass: 20.180, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false },
-      Ar: { name: 'Argon', mass: 39.948, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false }
+      Ar: { name: 'Argon', mass: 39.948, maxBonds: 0, electronegativity: 0, type: 'noble', canBond: false },
+      Kr: { name: 'Kripton', mass: 83.798, maxBonds: 0, electronegativity: 3.00, type: 'noble', canBond: false },
+      Xe: { name: 'Ksenon', mass: 131.29, maxBonds: 0, electronegativity: 2.60, type: 'noble', canBond: false }
     };
 
     const BOND_VALUES = { single: 1, double: 2, triple: 3 };
@@ -1401,8 +1947,8 @@
       }
 
       init() {
-        // Element seçimi
-        document.querySelectorAll('.palette-element').forEach(btn => {
+        // Element seçimi (sağ sidebar'daki elementler)
+        document.querySelectorAll('.elements-sidebar .palette-element').forEach(btn => {
           btn.addEventListener('click', () => this.selectElement(btn));
         });
 
@@ -1426,9 +1972,27 @@
         this.canvas.addEventListener('mouseup', () => this.handleMouseUp());
         this.canvas.addEventListener('mouseleave', () => this.handleMouseUp());
 
-        // Hazır moleküller
-        document.querySelectorAll('.preset-molecule').forEach(card => {
+        // Hazır moleküller (hem alt kısımdaki hem sidebar'daki)
+        document.querySelectorAll('.preset-molecule, .sidebar-molecule').forEach(card => {
           card.addEventListener('click', () => this.loadPreset(card.dataset.preset));
+        });
+
+        // Sidebar filtre butonları
+        document.querySelectorAll('.sidebar-filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.sidebar-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.dataset.filter;
+            
+            document.querySelectorAll('.sidebar-molecule').forEach(molecule => {
+              const category = molecule.dataset.category || '';
+              if (filter === 'all' || category.includes(filter)) {
+                molecule.classList.remove('hidden');
+              } else {
+                molecule.classList.add('hidden');
+              }
+            });
+          });
         });
 
         // Klavye kısayolları
@@ -1440,7 +2004,7 @@
       }
 
       selectElement(btn) {
-        document.querySelectorAll('.palette-element').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.elements-sidebar .palette-element').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.cancelBonding();
       }
@@ -1477,7 +2041,7 @@
           }
         } else {
           // Boş alana tıklama - yeni atom ekle
-          const selectedBtn = document.querySelector('.palette-element.selected');
+          const selectedBtn = document.querySelector('.elements-sidebar .palette-element.selected');
           if (selectedBtn) {
             this.addAtom(selectedBtn.dataset.element, x, y);
           }
