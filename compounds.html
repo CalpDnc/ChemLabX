@@ -674,7 +674,7 @@
     @media (max-width: 1400px) {
       .canvas-area { min-width: 350px; }
       .element-palette { width: 220px; min-width: 220px; }
-      .molecules-sidebar { width: 200px; min-width: 200px; }
+      .molecules-sidebar { width: 280px; min-width: 280px; }
     }
     
     /* Responsive - Tablet */
@@ -972,8 +972,15 @@
     
     .sidebar-molecules-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 0.5rem;
+    }
+    
+    /* Büyük ekranlarda çift sütun */
+    @media (min-width: 1600px) {
+      .sidebar-molecules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
     
     .sidebar-molecule {
@@ -1111,8 +1118,8 @@
     /* Responsive - Sidebar Hazır Moleküller */
     @media (max-width: 1400px) {
       .molecules-sidebar {
-        width: 200px;
-        min-width: 200px;
+        width: 280px;
+        min-width: 280px;
       }
       
       .elements-sidebar {
@@ -1127,29 +1134,29 @@
     
     @media (max-width: 1200px) {
       .molecules-sidebar {
-        width: 180px;
-        min-width: 180px;
+        width: 250px;
+        min-width: 250px;
       }
       
       .elements-sidebar {
-        width: 170px;
-        min-width: 170px;
+        width: 200px;
+        min-width: 200px;
       }
       
       .elements-sidebar .palette-elements {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
     }
     
     @media (max-width: 1024px) {
       .molecules-sidebar {
-        width: 150px;
-        min-width: 150px;
+        width: 220px;
+        min-width: 220px;
       }
       
       .elements-sidebar {
-        width: 150px;
-        min-width: 150px;
+        width: 200px;
+        min-width: 200px;
       }
       
       .elements-sidebar .palette-elements {
@@ -1187,8 +1194,14 @@
       
       .sidebar-molecules-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 0.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .sidebar-molecules-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
