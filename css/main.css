@@ -51,6 +51,12 @@ body {
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 var(--space-6);
+  overflow-x: hidden;
+}
+
+/* Body overflow kontrolü */
+body {
+  overflow-x: hidden;
 }
 
 .grid {

@@ -34,6 +34,8 @@
       margin: 1.5rem 0;
       align-items: flex-start;
       height: 440px;
+      max-width: 100%;
+      overflow-x: hidden;
     }
 
     /* Element Paleti - Sol Panel */
@@ -51,8 +53,8 @@
     
     /* Canvas Area - Orta Panel */
     .canvas-area {
-      flex: 1 1 1200px;
-      min-width: 1000px;
+      flex: 1 1 auto;
+      min-width: 400px;
       max-width: 1300px;
       height: 100%;
       display: flex;
@@ -668,9 +670,18 @@
     [data-theme="dark"] .en-value { color: #f0f0f5; }
     [data-theme="dark"] .bar-label { color: #90caf9; }
 
+    /* Responsive - Laptop */
+    @media (max-width: 1400px) {
+      .canvas-area { min-width: 350px; }
+      .element-palette { width: 220px; min-width: 220px; }
+      .molecules-sidebar { width: 200px; min-width: 200px; }
+    }
+    
     /* Responsive - Tablet */
     @media (max-width: 1024px) {
-      .element-palette { width: 240px; min-width: 240px; }
+      .compound-builder { flex-wrap: wrap; }
+      .canvas-area { min-width: 300px; flex: 1 1 100%; order: 1; }
+      .element-palette { width: 200px; min-width: 200px; }
       .palette-elements { grid-template-columns: repeat(4, 1fr); }
       .palette-element { width: 38px; height: 38px; font-size: 0.85rem; }
       .bond-type-selector { flex-wrap: wrap; }
@@ -1098,35 +1109,51 @@
     }
     
     /* Responsive - Sidebar Hazır Moleküller */
-    @media (max-width: 1200px) {
-      .molecules-sidebar {
-        width: 240px;
-        min-width: 240px;
-      }
-      
-      .elements-sidebar {
-        width: 220px;
-        min-width: 220px;
-      }
-      
-      .elements-sidebar .palette-elements {
-        grid-template-columns: repeat(5, 1fr);
-      }
-    }
-    
-    @media (max-width: 1024px) {
+    @media (max-width: 1400px) {
       .molecules-sidebar {
         width: 200px;
         min-width: 200px;
       }
       
       .elements-sidebar {
-        width: 180px;
-        min-width: 180px;
+        width: 200px;
+        min-width: 200px;
       }
       
       .elements-sidebar .palette-elements {
         grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 1200px) {
+      .molecules-sidebar {
+        width: 180px;
+        min-width: 180px;
+      }
+      
+      .elements-sidebar {
+        width: 170px;
+        min-width: 170px;
+      }
+      
+      .elements-sidebar .palette-elements {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 1024px) {
+      .molecules-sidebar {
+        width: 150px;
+        min-width: 150px;
+      }
+      
+      .elements-sidebar {
+        width: 150px;
+        min-width: 150px;
+      }
+      
+      .elements-sidebar .palette-elements {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
     
