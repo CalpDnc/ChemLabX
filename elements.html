@@ -144,11 +144,24 @@
       opacity: 0.9;
     }
 
+    /* 3 basamaklı atom numaraları için (100-118) */
+    .element-number.three-digit {
+      font-size: calc(var(--fs-number) * 0.75);
+      top: 1px;
+      left: 1px;
+      letter-spacing: -0.5px;
+    }
+
     .element-symbol {
       font-size: var(--fs-symbol);
       font-weight: 700;
       margin-top: 2px;
       z-index: 1;
+    }
+
+    /* 3 basamaklı elementlerde sembolü biraz aşağı çek */
+    .element.has-three-digit .element-symbol {
+      margin-top: 4px;
     }
 
     .element-name {
@@ -338,32 +351,483 @@
       font-size: var(--text-sm);
     }
 
-    /* Mobil Uyumluluk */
-    @media (max-width: 768px) {
+    /* ============================================
+       RESPONSIVE TASARIM - Küçük/Orta Ekranlar
+       ============================================ */
+    
+    /* Ana layout için responsive class */
+    .periodic-layout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* Periyodik cetvel container - yatay scroll için */
+    .periodic-table-wrapper {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: var(--space-2);
+    }
+
+    /* Scroll göstergesi (küçük ekranlarda) */
+    .scroll-hint {
+      display: none;
+      text-align: center;
+      padding: var(--space-2);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+    }
+
+    .scroll-hint svg {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* 1400px altı - Detay paneli daraltılır */
+    @media (max-width: 1400px) {
+      :root {
+        --cell-size: 42px;
+        --fs-number: 0.55rem;
+        --fs-symbol: 0.9rem;
+        --fs-name: 0.45rem;
+      }
+      
+      .element-detail-panel {
+        width: 280px;
+        min-width: 280px;
+      }
+      
       .periodic-table {
-        grid-template-columns: repeat(9, 1fr);
-        gap: var(--space-1);
+        gap: 4px;
       }
+      
+      .lanthanide-row-label,
+      .actinide-row-label {
+        font-size: 0.5rem;
+        padding: 2px 4px;
+      }
+    }
 
-      .element {
-        min-height: 50px;
+    /* 1200px altı - Daha da küçültülür */
+    @media (max-width: 1200px) {
+      :root {
+        --cell-size: 36px;
+        --fs-number: 0.48rem;
+        --fs-symbol: 0.8rem;
+        --fs-name: 0.38rem;
+      }
+      
+      .periodic-layout {
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+      }
+      
+      .element-detail-panel {
+        width: 240px;
+        min-width: 220px;
+        position: sticky;
+        top: var(--space-4);
+        padding: var(--space-3);
+      }
+      
+      .element-detail-header {
+        margin-bottom: var(--space-3);
+        padding-bottom: var(--space-2);
+      }
+      
+      .element-large-symbol {
+        font-size: 2.2rem;
+      }
+      
+      .element-title {
+        font-size: 1rem;
+      }
+      
+      .element-subtitle {
+        font-size: 0.8rem;
+      }
+      
+      .element-properties {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      
+      .property-card {
+        padding: 6px;
+      }
+      
+      .property-label {
+        font-size: 0.55rem;
+        margin-bottom: 2px;
+      }
+      
+      .property-value {
+        font-size: 0.75rem;
+      }
+      
+      .element-description {
+        padding: var(--space-2);
+        margin-top: var(--space-2);
+      }
+      
+      .element-description h4 {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+      }
+      
+      .element-description p {
         font-size: 0.7rem;
+        line-height: 1.4;
       }
+      
+      .periodic-table {
+        gap: 3px;
+      }
+      
+      .legend {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: var(--space-2);
+        padding: var(--space-3);
+      }
+      
+      .legend-item {
+        padding: var(--space-1) var(--space-2);
+      }
+      
+      .legend-text {
+        font-size: 0.75rem;
+      }
+      
+      .scroll-hint {
+        display: block;
+      }
+    }
 
-      .element-symbol {
+    /* 1024px altı - Tablet */
+    @media (max-width: 1024px) {
+      :root {
+        --cell-size: 32px;
+        --fs-number: 0.42rem;
+        --fs-symbol: 0.72rem;
+        --fs-name: 0.34rem;
+      }
+      
+      .periodic-layout {
+        gap: 0.75rem;
+      }
+      
+      .element-detail-panel {
+        width: 200px;
+        min-width: 180px;
+        padding: 10px;
+      }
+      
+      .element-large-symbol {
+        font-size: 1.9rem;
+      }
+      
+      .element-title {
         font-size: 0.9rem;
       }
-
-      .element-name {
-        font-size: 0.45rem;
+      
+      .element-subtitle {
+        font-size: 0.7rem;
       }
+      
+      .element-detail-header {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+      }
+      
+      .element-properties {
+        gap: 5px;
+      }
+      
+      .property-card {
+        padding: 5px;
+      }
+      
+      .property-label {
+        font-size: 0.5rem;
+      }
+      
+      .property-value {
+        font-size: 0.7rem;
+      }
+      
+      .element-description {
+        padding: 8px;
+        margin-top: 8px;
+      }
+      
+      .element-description h4 {
+        font-size: 0.7rem;
+        margin-bottom: 4px;
+      }
+      
+      .element-description p {
+        font-size: 0.6rem;
+        line-height: 1.35;
+      }
+      
+      .periodic-table {
+        gap: 2px;
+      }
+      
+      .lanthanide-row-label,
+      .actinide-row-label {
+        font-size: 0.38rem;
+        width: calc(var(--cell-size) * 2 + 2px);
+      }
+    }
 
+    /* 768px altı - Mobil (Telefon) - Detay paneli aşağı geçer */
+    @media (max-width: 768px) {
+      :root {
+        --cell-size: 32px;
+        --fs-number: 0.4rem;
+        --fs-symbol: 0.7rem;
+        --fs-name: 0.32rem;
+      }
+      
+      /* Sadece telefonda layout tek sütuna geçer */
+      .periodic-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .element-detail-panel {
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+        position: relative;
+        top: 0;
+        padding: var(--space-4);
+        margin: 0 auto;
+      }
+      
+      .element-detail-header {
+        margin-bottom: var(--space-3);
+        padding-bottom: var(--space-3);
+      }
+      
+      .element-large-symbol {
+        font-size: 2.8rem;
+      }
+      
+      .element-title {
+        font-size: 1.2rem;
+      }
+      
+      .element-subtitle {
+        font-size: 0.85rem;
+      }
+      
+      .element-properties {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2);
+      }
+      
+      .property-card {
+        padding: var(--space-2);
+      }
+      
+      .property-label {
+        font-size: 0.6rem;
+      }
+      
+      .property-value {
+        font-size: 0.9rem;
+      }
+      
+      .element-description {
+        padding: var(--space-3);
+        margin-top: var(--space-3);
+      }
+      
+      .element-description h4 {
+        font-size: 0.9rem;
+      }
+      
+      .element-description p {
+        font-size: 0.8rem;
+      }
+      
+      .periodic-table {
+        gap: 2px;
+      }
+      
+      .legend {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-1);
+        padding: var(--space-2);
+      }
+      
+      .legend-item {
+        padding: var(--space-1);
+      }
+      
+      .legend-color {
+        width: 18px;
+        height: 14px;
+      }
+      
+      .legend-text {
+        font-size: 0.65rem;
+      }
+      
+      .educational-note,
+      .element-description {
+        padding: var(--space-3);
+      }
+      
+      .educational-note h4,
+      .element-description h4 {
+        font-size: 0.9rem;
+      }
+      
+      .educational-note p,
+      .element-description p {
+        font-size: 0.8rem;
+      }
+      
+      .lanthanide-row-label,
+      .actinide-row-label {
+        font-size: 0.35rem;
+        padding: 1px 2px;
+      }
+    }
+
+    /* 576px altı - Küçük mobil */
+    @media (max-width: 576px) {
+      :root {
+        --cell-size: 28px;
+        --fs-number: 0.35rem;
+        --fs-symbol: 0.6rem;
+        --fs-name: 0.28rem;
+      }
+      
+      .periodic-table {
+        gap: 1px;
+      }
+      
+      .legend {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .element-properties {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-1);
+      }
+      
+      .property-card {
+        padding: var(--space-1);
+      }
+      
+      .property-label {
+        font-size: 0.5rem;
+        letter-spacing: 0;
+      }
+      
+      .property-value {
+        font-size: 0.75rem;
+      }
+      
+      .element-large-symbol {
+        font-size: 2rem;
+      }
+      
+      .element-title {
+        font-size: 1rem;
+      }
+      
+      .lanthanide-row-label,
+      .actinide-row-label {
+        font-size: 0.3rem;
+        width: calc(var(--cell-size) * 2 + 1px);
+      }
+      
+      .search-box {
+        min-width: 200px !important;
+      }
+    }
+
+    /* 480px altı - Çok küçük ekranlar */
+    @media (max-width: 480px) {
+      :root {
+        --cell-size: 24px;
+        --fs-number: 0.3rem;
+        --fs-symbol: 0.55rem;
+        --fs-name: 0.25rem;
+      }
+      
+      .element-name {
+        display: none;
+      }
+      
+      .element-number {
+        top: 1px;
+        left: 1px;
+      }
+      
       .legend {
         grid-template-columns: 1fr;
       }
+      
+      .lanthanide-row-label,
+      .actinide-row-label {
+        font-size: 0.25rem;
+      }
+    }
 
+    /* 1200px - 1400px arası - Orta ekranlar */
+    @media (min-width: 1200px) and (max-width: 1400px) {
+      .periodic-layout {
+        grid-template-columns: 1fr auto;
+      }
+      
+      .element-detail-panel {
+        position: sticky;
+        top: var(--space-4);
+        width: 260px;
+        min-width: 240px;
+      }
+      
       .element-properties {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .property-label {
+        font-size: 0.6rem;
+      }
+      
+      .property-value {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* 1400px - 1920px arası */
+    @media (min-width: 1400px) and (max-width: 1919px) {
+      .periodic-layout {
+        grid-template-columns: 1fr auto;
+      }
+      
+      .element-detail-panel {
+        position: sticky;
+        top: var(--space-4);
+        width: 260px;
+        min-width: 240px;
+      }
+      
+      .element-properties {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -377,6 +841,10 @@
       animation: fadeIn 0.3s ease-out;
     }
 
+    /* ============================================
+       RESPONSIVE TASARIM - Büyük Ekranlar
+       ============================================ */
+
     /* Full HD üstü ekranlar için (32" monitör - 2K) */
     @media (min-width: 1920px) {
       :root {
@@ -386,8 +854,16 @@
         --fs-name: 0.55rem;
       }
       .legend-color { width: 26px; height: 21px; }
-      .element-detail-panel { width: 380px; min-width: 380px; }
+      .element-detail-panel { 
+        width: 380px; 
+        min-width: 380px;
+        position: sticky;
+        top: var(--space-4);
+      }
       .periodic-table { gap: 6px; }
+      .periodic-layout {
+        grid-template-columns: 1fr auto;
+      }
     }
 
     /* WQHD ve üstü ekranlar için ölçek (akıllı tahta dostu) */
@@ -516,10 +992,17 @@
     </section>
 
     <!-- === Ana Grid: Periyodik Cetvel ve Detay Paneli === -->
-    <div class="grid periodic-layout" style="grid-template-columns: auto 1fr; gap: 2rem; align-items: start; justify-content: space-between;">
+    <div class="periodic-layout">
       
       <!-- Sol Taraf: Periyodik Cetvel -->
-      <div>
+      <div class="periodic-table-wrapper">
+        <!-- Scroll ipucu (küçük ekranlarda görünür) -->
+        <div class="scroll-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+          Periyodik cetveli kaydırarak görüntüleyebilirsiniz
+        </div>
         <!-- Gösterge (Legend) -->
         <div class="legend">
           <div class="legend-item">
@@ -574,7 +1057,7 @@
             <!-- Elementler JavaScript ile data/elements.json'dan yüklenir -->
           </div>
         </div>
-      </div>
+      </div> <!-- /.periodic-table-wrapper -->
 
       <!-- Sağ Taraf: Element Detay Paneli -->
       <div class="element-detail-panel" id="element-detail">
@@ -759,6 +1242,12 @@
           const categoryClass = getCategoryClass(el.category, el.atomicNumber);
           const div = document.createElement('div');
           div.className = `element ${categoryClass}`;
+          
+          // 3 basamaklı atom numaraları için özel class
+          if (el.atomicNumber >= 100) {
+            div.classList.add('has-three-digit');
+          }
+          
           div.dataset.element = el.atomicNumber;
           div.dataset.symbol = el.symbol;
           div.dataset.name = el.name;
@@ -772,8 +1261,11 @@
           if (el.meltingPoint !== null && el.meltingPoint !== undefined) div.dataset.meltingPoint = el.meltingPoint;
           if (el.boilingPoint !== null && el.boilingPoint !== undefined) div.dataset.boilingPoint = el.boilingPoint;
           
+          // 3 basamaklı numaralar için özel class
+          const numberClass = el.atomicNumber >= 100 ? 'element-number three-digit' : 'element-number';
+          
           div.innerHTML = `
-            <div class="element-number">${el.atomicNumber}</div>
+            <div class="${numberClass}">${el.atomicNumber}</div>
             <div class="element-symbol">${el.symbol}</div>
             <div class="element-name">${el.name}</div>
           `;
