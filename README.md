@@ -8,6 +8,7 @@ Proje; kimya derslerini daha anlaşılır, güvenli ve erişilebilir hâle getir
 
 🔗 **Canlı site (GitHub Pages):**  
 https://calpdnc.github.io/ChemLabX/
+https://chemlabx-t-rkiye-y-zy-l-maarif-modeli-kimya-platf-180905737715.europe-west2.run.app
 
 ---
 
